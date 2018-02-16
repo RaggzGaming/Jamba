@@ -1,7 +1,7 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-Jamba Version: v8.0-Alpha(0001)
+Jamba Version: v8.0-Alpha(0002)
 Game Version: 7.3.5
 Release Date: TBA
 
