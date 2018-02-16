@@ -1,0 +1,27 @@
+<!--
+				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    
+				Current Author: Jennifer Cally (Ebony) 2016-2018 )					
+														
+				License: The MIT License (MIT)													
+				Copyright 2008 - 2018 Michael "Jafula" Miller 			            
+
+-->
+
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="JambaAdvancedLoot.lua" />
+	<Script file="JambaCurr.lua" />
+	<Script file="JambaDisplayTeam.lua" />
+	<Script file="JambaFollow.lua" />
+	<Script file="JambaFTL.lua" />
+	<Script file="JambaItemUse.lua" />
+	<Script file="JambaMount.lua" />
+	<Script file="JambaPurchase.lua" />
+	<Script file="JambaQuest.lua" />
+	<Script file="JambaQuestWatcher.lua" />
+	<Script file="JambaSell.lua" />
+	<Script file="JambaTalk.lua" />
+	<Script file="JambaTaxi.lua" />
+	<Script file="JambaToon.lua" />
+	<Script file="JambaTrade.lua" />
+	
+</Ui>

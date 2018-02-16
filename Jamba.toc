@@ -1,18 +1,28 @@
 ## Interface: 70300
 ## Title: Jamba
-## Notes: Jamba
-## Author: Ebony, Former Author: Jafula
-## Version: 5.4.1
+## Notes: Jamba Ebony's_Edition
+## Author: Ebony
+## Version: v8.0-Alpha(0001)
 ## SavedVariables: JambaCoreProfileDB, JambaCommunicationsProfileDB, JambaTeamProfileDB, JambaTagProfileDB, JambaMessageProfileDB
+
+#Libs
 JambaEmbeds.xml
 JambaUtilities.lua
-Locales\Locales.xml
-JambaHelperSettings.lua
-JambaCore.lua
-JambaCommunications.lua
-JambaModule.lua
-JambaTeam.lua
-JambaTag.lua
-JambaMessage.lua
-JambaStartupMessage.xml
-startupmessage.html
+
+#Locales
+Core\Locales\Locales.xml
+Modules\Locales\Locales.xml
+
+#GUI
+GUI\JambaHelperSettings.lua
+
+#Core
+Core\JambaCore.lua
+Core\JambaCommunications.lua
+Core\JambaModule.lua
+Core\JambaTeam.lua
+Core\JambaTag.lua
+Core\JambaMessage.lua
+
+#Modules
+Modules\Modules.xml
