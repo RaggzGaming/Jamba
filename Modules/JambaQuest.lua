@@ -28,7 +28,7 @@ AJM.moduleName = "Jamba-Quest"
 AJM.settingsDatabaseName = "JambaQuestProfileDB"
 AJM.chatCommand = "jamba-quest"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Quest"]
 AJM.moduleDisplayName = L["Quest"]
 
 

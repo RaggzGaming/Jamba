@@ -1,6 +1,19 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+
+Jamba Version: v8.0-Alpha(0016)
+Game Version: 7.3.5
+Release Date: TBA
+---------------------------
+## Core
+	- Changed the layout of the GUI around again.
+    - New Grouping system no longer has "blank Pages"
+	- New Layout for modules (Subject to change)
+
+-- \tons more changes not liseted\
+
+---------------------------
 Jamba Version: v8.0-Alpha(0006)
 Game Version: 7.3.5
 Release Date: TBA

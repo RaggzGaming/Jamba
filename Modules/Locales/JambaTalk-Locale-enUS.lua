@@ -6,7 +6,7 @@ License: The MIT License
 
 local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-Talk", "enUS", true )
 L["Slash Commands"] = true
-L["Chat"] = true
+L["Toon"] = true
 L["Talk"] = true
 L["Push Settings"] = true
 L["Push the talk settings to all characters in the team."] = true

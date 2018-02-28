@@ -27,8 +27,8 @@ AJM.moduleName = "Jamba-Sell"
 AJM.settingsDatabaseName = "JambaSellProfileDB"
 AJM.chatCommand = "jamba-sell"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Sell"]
+AJM.parentDisplayName = L["Vender"]
+AJM.moduleDisplayName = L["Vender"]
 
 
 -- Settings - the values to store and their defaults for the settings database.
@@ -582,7 +582,7 @@ local function SettingsCreate()
 --	)
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControlOthers, 
-		L["Sell: Others"], 
+		L["Sell: List"], 
 		AJM.parentDisplayName, 
 		AJM.SettingsPushSettingsClick 
 	)	

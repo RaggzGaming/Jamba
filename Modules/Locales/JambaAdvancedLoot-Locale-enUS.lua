@@ -11,7 +11,9 @@ Credits: Built on top of the awesome JAMBA addon, most code is copied nearly dir
 local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-AdvancedLoot", "enUS", true )
 L["Slash Commands"] = true
 L["Merchant"] = true
+L["Interaction"] = true
 L["Team"] = true
+L["PH"] = true
 L["Advanced Loot"] = true
 L["Enable Advanced Loot"] = true
 L["Auto Close Loot Window On Minions"] = true

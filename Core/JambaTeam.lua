@@ -25,8 +25,10 @@ AJM.moduleName = "Jamba-Team"
 AJM.settingsDatabaseName = "JambaTeamProfileDB"
 AJM.chatCommand = "jamba-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Core: Team"]
+AJM.parentDisplayName = L["Team"]
+AJM.moduleDisplayName = L["Team"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
 
 -- Jamba key bindings.
 BINDING_HEADER_JAMBATEAM = L["Jamba-Team"]
@@ -210,9 +212,9 @@ AJM.MESSAGE_CHARACTER_OFFLINE = "JmbTmChrOf"
 -- Constants used by module.
 -------------------------------------------------------------------------------------------------------------
 
-AJM.PARTY_LOOT_FREEFORALL = "freeforall"
-AJM.PARTY_LOOT_GROUP = "group"
-AJM.PARTY_LOOT_PERSONAL = "personalloot"
+--AJM.PARTY_LOOT_FREEFORALL = "freeforall"
+--AJM.PARTY_LOOT_GROUP = "group"
+--AJM.PARTY_LOOT_PERSONAL = "personalloot"
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -226,12 +228,13 @@ local function SettingsCreateTeamList()
 	local buttonHeight = JambaHelperSettings:GetButtonHeight()
 	local top = JambaHelperSettings:TopOfSettings()
 	local left = JambaHelperSettings:LeftOfSettings()
+	local lefticon =  left + 35
 	local headingHeight = JambaHelperSettings:HeadingHeight()
 	local headingWidth = JambaHelperSettings:HeadingWidth( false )
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local teamListWidth = headingWidth - teamListButtonControlWidth - horizontalSpacing
-	local rightOfList = left + teamListWidth + horizontalSpacing
+	local rightOfList = left + 35 + teamListWidth + horizontalSpacing
 	local topOfList = top - headingHeight
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.teamListHighlightRow = 1
@@ -243,7 +246,7 @@ local function SettingsCreateTeamList()
 	list.listFrameName = "JambaTeamSettingsTeamListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
 	list.listTop = topOfList
-	list.listLeft = left
+	list.listLeft = lefticon
 	list.listWidth = teamListWidth
 	list.rowHeight = 25
 	list.rowsToDisplay = 5
@@ -465,6 +468,7 @@ local function SettingsCreatePartyInvitationsControl( top )
 	return bottomOfSection	
 end
 
+--[[
 local function SettingsCreatePartyLootControl( top )
 	-- Get positions.
 	local checkBoxHeight = JambaHelperSettings:GetCheckBoxHeight()
@@ -520,7 +524,7 @@ local function SettingsCreatePartyLootControl( top )
 		L["Set loot to Group Loot."]
 	)
 	AJM.settingsControl.partyLootControlCheckBoxSetGroupLoot:SetType( "radio" )
---[[
+
 	AJM.settingsControl.partyLootControlCheckBoxSetOptOutOfLoot = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
@@ -530,10 +534,9 @@ local function SettingsCreatePartyLootControl( top )
 		AJM.SettingsSetMinionsOptOutToggle,
 		L["Minions Don't need loot."]
 	)		
---]]
 	return bottomOfSection	
 end
-
+]]
 local function SettingsCreate()
 	AJM.settingsControl = {}
 	-- Create the settings panel.
@@ -541,7 +544,8 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon
 	)
 	-- Create the team list controls.
 	local bottomOfTeamList = SettingsCreateTeamList()
@@ -550,7 +554,7 @@ local function SettingsCreate()
 	-- Create the party invitation controls.
 	local bottomOfPartyInvitationControl = SettingsCreatePartyInvitationsControl( bottomOfMasterControl )
 	-- Create the party loot control controls.
-	local bottomOfPartyLootControl = SettingsCreatePartyLootControl( bottomOfPartyInvitationControl )
+--	local bottomOfPartyLootControl = SettingsCreatePartyLootControl( bottomOfPartyInvitationControl )
 	AJM.settingsControl.widgetSettings.content:SetHeight( - bottomOfPartyInvitationControl )
 	-- Help
 	local helpTable = {}
@@ -1094,12 +1098,6 @@ end
 
 -- Invite team to party.
 
-function AJM:InviteTeamToPartys()
-	--Clean up in next xpac!
-	AJM:Print("This Command Has Been Removed and is now used as \"/Jamba-Team Invite <TagName>/")
-end
-
-
 function AJM.DoTeamPartyInvite()
 	InviteUnit( AJM.inviteList[AJM.currentInviteCount] )
 	AJM.currentInviteCount = AJM.currentInviteCount + 1
@@ -1160,6 +1158,7 @@ function AJM:InviteTeamToParty( info, tag )
 	end	
 end
 
+--[[
 function AJM:TagParty(event, characterName, tag, ...)
 	--AJM:Print("test", characterName, tag )
 	if AJM.characterName == characterName then
@@ -1171,6 +1170,7 @@ function AJM:TagParty(event, characterName, tag, ...)
 		end
 	 end
 end
+]]
 
 function AJM:PLAYER_FOCUS_CHANGED()
 	-- Change master on focus change option enabled?
@@ -1185,71 +1185,6 @@ function AJM:PLAYER_FOCUS_CHANGED()
 				SetMaster( name )
 			end
 		end
-	end
-end
-
-local function SetPartyLoot( desiredLootOption )
-	-- Is this character in a party and the party leader?
-	if IsInGroup( "player" ) and UnitIsGroupLeader( "player" ) == true then
-		-- What is the current loot method?
-		local lootMethod, partyMaster, raidMaster = GetLootMethod()
-		-- Can the loot method be changed?
-		local canChangeLootMethod = false
-		-- Different loot methods?
-		if lootMethod ~= desiredLootOption then
-			-- Yes, can change loot method.
-			canChangeLootMethod = true
-		else
-			-- Same, loot methods, but master looter...		
-			if desiredLootOption == AJM.PARTY_LOOT_MASTER and partyMaster ~= nil then
-				-- And is a different master looter...
-				-- If partyMaster is 0, then this player is the master looter.
-				if partyMaster == 0 and IsCharacterTheMaster( AJM.characterName ) == false then
-					-- Then, yes, can change loot method.
-					canChangeLootMethod = true
-				end
-				-- If partyMaster between 1 and 4 then that player (party1 .. party4) is the master looter.
-				if partyMaster > 0 then
-					local checkName, checkRealm = UnitName( "party"..partyMaster )
-					local character = JambaUtilities:AddRealmToNameIfNotNil( checkName, checkName )
-					if character ~= GetMasterName() then
-						-- Then, yes, can change loot method.
-						canChangeLootMethod = true
-					end
-				end
-			end
-		end
-		-- SetLootMethod fires the PartyLeaderChanged event (need to check that loot is not being set to 
-		-- the same loot method; otherwise an infinite loop occurs).
-		if canChangeLootMethod == true then	
-			if desiredLootOption == AJM.PARTY_LOOT_MASTER then
-				--SetLootMethod( desiredLootOption, GetMasterName(), 1 )
-				SetLootMethod( desiredLootOption, ( Ambiguate( GetMasterName(), "none" ) ), 1 )
-				--AJM.Print("setloot", name , desiredLootOption)
-			else
-				SetLootMethod( desiredLootOption )
-			end
-		end
-	end
-end
-
-function AJM:PARTY_LEADER_CHANGED( event, ... )
-	if AJM.db.lootSetAutomatically == true then
-		inInstance, instanceType = IsInInstance()
-		--if inInstance then
-			-- Automatically set the loot to free for all?
-			if AJM.db.lootSetFreeForAll == true then
-				SetPartyLoot( AJM.PARTY_LOOT_FREEFORALL )
-			end
-				-- Automatically set the loot to Group loot?
-			if AJM.db.lootSetGroupLoot == true then
-				SetPartyLoot( AJM.PARTY_LOOT_GROUP )
-			end
-			-- Automatically set the loot to Personal Loot
-			if AJM.db.lootSetPersLooter == true then
-				SetPartyLoot( AJM.PARTY_LOOT_PERSONAL )
-			end	
-		--end
 	end
 end
 
@@ -1414,23 +1349,19 @@ function AJM:OnInitialize()
 	--Sets The class of the char.
 	setClass()
 	
---todo look at this ebony
---	local updateMatchStart = AJM.db.master:find( "-" )
---	if not updateMatchStart then
---		AJM.db.master = AJM.db.master.."-"..realmName
---	end
 end
 
 -- Called when the addon is enabled.
 function AJM:OnEnable()
 	AJM:RegisterEvent( "PARTY_INVITE_REQUEST" )
-	AJM:RegisterEvent( "PARTY_LEADER_CHANGED" )
---	AJM:RegisterEvent( "GROUP_ROSTER_UPDATE" )
---	AJM:RegisterEvent( "GROUP_JOINED", "GROUP_ROSTER_UPDATE" )
+
+	
 	AJM:RegisterMessage( AJM.MESSAGE_TEAM_MASTER_CHANGED, "OnMasterChange" )
 	-- Kickstart the settings team list scroll frame.
 	AJM:SettingsTeamListScrollRefresh()
+	
 	AJM:RegisterEvent( "PLAYER_FOCUS_CHANGED" )
+	
 	-- Initialise key bindings.
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	AJM:RegisterEvent( "UPDATE_BINDINGS" )		
@@ -1476,18 +1407,18 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.partyInviteControlCheckBoxConvertToRaid:SetValue( AJM.db.inviteConvertToRaid )
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetValue( AJM.db.inviteSetAllAssistant )
 	-- Party Loot Control.
-	AJM.settingsControl.partyLootControlCheckBoxSetLootMethod:SetValue( AJM.db.lootSetAutomatically )
-	AJM.settingsControl.partyLootControlCheckBoxSetFFA:SetValue( AJM.db.lootSetFreeForAll )
-	AJM.settingsControl.partyLootControlCheckBoxSetGroupLoot:SetValue( AJM.db.lootSetGroupLoot )
-	AJM.settingsControl.partyLootControlCheckBoxSetPersLooter:SetValue( AJM.db.lootSetPersLooter )
+	--AJM.settingsControl.partyLootControlCheckBoxSetLootMethod:SetValue( AJM.db.lootSetAutomatically )
+	--AJM.settingsControl.partyLootControlCheckBoxSetFFA:SetValue( AJM.db.lootSetFreeForAll )
+	--AJM.settingsControl.partyLootControlCheckBoxSetGroupLoot:SetValue( AJM.db.lootSetGroupLoot )
+	--AJM.settingsControl.partyLootControlCheckBoxSetPersLooter:SetValue( AJM.db.lootSetPersLooter )
 	--AJM.settingsControl.partyLootControlCheckBoxStrangerToGroup:SetValue( AJM.db.lootToGroupIfStrangerPresent )
 	--AJM.settingsControl.partyLootControlCheckBoxFriendsNotStrangers:SetValue( AJM.db.lootToGroupFriendsAreNotStrangers )
 	--AJM.settingsControl.partyLootControlCheckBoxSetOptOutOfLoot:SetValue( AJM.db.lootSlavesOptOutOfLoot )
 	-- Ensure correct state.
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetDisabled (not AJM.db.inviteConvertToRaid )
-	AJM.settingsControl.partyLootControlCheckBoxSetFFA:SetDisabled( not AJM.db.lootSetAutomatically )
-	AJM.settingsControl.partyLootControlCheckBoxSetGroupLoot:SetDisabled( not AJM.db.lootSetAutomatically )
-	AJM.settingsControl.partyLootControlCheckBoxSetPersLooter:SetDisabled( not AJM.db.lootSetAutomatically )
+	--AJM.settingsControl.partyLootControlCheckBoxSetFFA:SetDisabled( not AJM.db.lootSetAutomatically )
+	--AJM.settingsControl.partyLootControlCheckBoxSetGroupLoot:SetDisabled( not AJM.db.lootSetAutomatically )
+	--AJM.settingsControl.partyLootControlCheckBoxSetPersLooter:SetDisabled( not AJM.db.lootSetAutomatically )
 	--AJM.settingsControl.partyLootControlCheckBoxStrangerToGroup:SetDisabled( not AJM.db.lootSetAutomatically )
 	--AJM.settingsControl.partyLootControlCheckBoxFriendsNotStrangers:SetDisabled( not AJM.db.lootSetAutomatically or not AJM.db.lootToGroupIfStrangerPresent)
 	-- Update the settings team list.
@@ -1510,10 +1441,10 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.inviteDeclineStrangers = settings.inviteDeclineStrangers
 		AJM.db.inviteConvertToRaid = settings.inviteConvertToRaid
 		AJM.db.inviteSetAllAssistant = settings.inviteSetAllAssistant
-		AJM.db.lootSetAutomatically = settings.lootSetAutomatically 
-		AJM.db.lootSetFreeForAll = settings.lootSetFreeForAll 
-		AJM.db.lootSetGroupLoot = settings.lootSetGroupLoot 
-		AJM.db.lootSetPersLooter = settings.lootSetPersLooter 
+--		AJM.db.lootSetAutomatically = settings.lootSetAutomatically 
+--		AJM.db.lootSetFreeForAll = settings.lootSetFreeForAll 
+--		AJM.db.lootSetGroupLoot = settings.lootSetGroupLoot 
+--		AJM.db.lootSetPersLooter = settings.lootSetPersLooter 
 --		AJM.db.lootSlavesOptOutOfLoot = settings.lootSlavesOptOutOfLoot
 --		AJM.db.lootToGroupIfStrangerPresent = settings.lootToGroupIfStrangerPresent
 --		AJM.db.lootToGroupFriendsAreNotStrangers = settings.lootToGroupFriendsAreNotStrangers
@@ -1725,6 +1656,7 @@ function AJM:SettingsinviteSetAllAssistToggle( event, checked )
 	AJM.db.inviteSetAllAssistant = checked
 end
 
+--[[
 function AJM:SettingsSetLootMethodToggle( event, checked )
 	AJM.db.lootSetAutomatically = checked
 	AJM:SettingsRefresh()
@@ -1751,7 +1683,7 @@ function AJM:SettingsSetPersLooterToggle( event, checked )
 	AJM:SettingsRefresh()
 end
 
---[[
+
 function AJM:SettingsSetStrangerToGroup( event, checked )
 	AJM.db.lootToGroupIfStrangerPresent = checked
 	AJM:SettingsRefresh()
@@ -1807,7 +1739,7 @@ function AJM:JambaOnCommandReceived( sender, commandName, ... )
 			AJM:ReceiveCommandSetMaster( ... )
 		end	
 	end
-	--Ebony8
+	--Ebony
 	if commandName == AJM.COMMAND_SET_OFFLINE then
 		if IsCharacterInTeam( sender ) == true then
 			AJM.ReceivesetOffline( ... )

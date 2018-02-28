@@ -26,11 +26,10 @@ AJM.moduleName = "Jamba-Toon"
 AJM.settingsDatabaseName = "JambaToonProfileDB"
 AJM.chatCommand = "jamba-toon"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Toon"]
 AJM.parentDisplayNameToon = L["Toon"]
-AJM.parentDisplayNameMerchant = L["Merchant"]
-AJM.moduleDisplayName = L["Toon: Warnings"]
-
+AJM.parentDisplayNameMerchant = L["Vender"]
+AJM.moduleDisplayName = L["Toon"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -502,13 +501,13 @@ local function SettingsCreate()
 	)
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControlRequests, 
-		L["Toon"]..L[": "]..L["Requests"], 
+		L["Requests"],
 		AJM.parentDisplayNameToon, 
 		AJM.SettingsPushSettingsClick 
 	)
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControlMerchant, 
-		L["Toon"]..L[": "]..L["Merchant"], 
+		"[PH] "..L["Repair"], 
 		AJM.parentDisplayNameMerchant, 
 		AJM.SettingsPushSettingsClick 
 	)

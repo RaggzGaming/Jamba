@@ -106,7 +106,7 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	else
 		button:SetNormalFontObject("GameFontHighlightSmall")
 		button:SetHighlightFontObject("GameFontHighlightSmall")
-		button.text:SetPoint("LEFT", (icon and 35 or 0) + 8 * level, -4)
+		button.text:SetPoint("LEFT", (icon and 35 or 0) + 12 * level, -4)
 	end
 	
 	if disabled then
@@ -119,7 +119,11 @@ local function UpdateButton(button, treeline, selected, canExpand, isExpanded)
 	
 	if icon then
 		button.icon:SetTexture(icon)
-		button.icon:SetPoint("LEFT", 3 * level, (level == 1) and 0 or 1)
+		if ( level == 1 ) then
+			button.icon:SetPoint("LEFT", 4 * level, (level == 1) and 0 or 1)
+		else	
+			button.icon:SetPoint("LEFT", 8 * level, (level == 1) and 0 or 1)
+		end	
 	else
 		button.icon:SetTexture(nil)
 	end

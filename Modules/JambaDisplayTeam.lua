@@ -26,8 +26,9 @@ AJM.moduleName = "JmbDspTm"
 AJM.settingsDatabaseName = "JambaDisplayTeamProfileDB"
 AJM.chatCommand = "jamba-display-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Display: Team"]
+AJM.parentDisplayName = L["Display"]
+AJM.moduleDisplayName = L["Display"]
+
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

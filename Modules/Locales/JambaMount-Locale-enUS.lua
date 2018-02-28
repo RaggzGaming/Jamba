@@ -8,7 +8,7 @@ local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-Mount", "enUS", true )
 L["Settings received from A."] = function( characterName )
 	return "Settings received from "..characterName.."."
 end
-
+L["Interaction"] = true
 L["Toon"] = true
 L["Mount"] = true
 L["Mount Options"] = true

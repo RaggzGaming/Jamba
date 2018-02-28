@@ -23,8 +23,8 @@ AJM.moduleName = "Jamba-Taxi"
 AJM.settingsDatabaseName = "JambaTaxiProfileDB"
 AJM.chatCommand = "jamba-taxi"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Taxi"]
+AJM.parentDisplayName = L["Interaction"]
+AJM.moduleDisplayName = L["Interaction"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

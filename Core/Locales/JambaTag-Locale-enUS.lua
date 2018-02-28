@@ -8,6 +8,9 @@ local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-Tag", "enUS", true )
 L["Slash Commands"] = true
 L["Team"] = true
 L["Core: Tags"] = true
+
+L["Groups"] = true
+
 L["Add"] = true
 L["Add a tag to the this character."] = true
 L["Remove"] = true				

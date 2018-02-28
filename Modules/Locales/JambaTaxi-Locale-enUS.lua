@@ -6,7 +6,7 @@ License: The MIT License
 
 local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-Taxi", "enUS", true )
 L["Slash Commands"] = true
-L["Toon"] = true
+L["Interaction"] = true
 L["Taxi"] = true
 L["Taxi Options"] = true
 L["Take Teams Taxi"] = true

@@ -28,7 +28,7 @@ AJM.moduleName = "Jamba-ItemUse"
 AJM.settingsDatabaseName = "JambaItemUseProfileDB"
 AJM.chatCommand = "jamba-item-use"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Display"]
 AJM.moduleDisplayName = L["Item Use"]
 
 -- Jamba key bindings.

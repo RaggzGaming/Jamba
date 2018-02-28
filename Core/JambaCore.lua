@@ -30,7 +30,7 @@ AJM.moduleName = "Jamba-Core"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.moduleDisplayName = L["NEWS"]
 AJM.settingsDatabaseName = "JambaCoreProfileDB"
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["NEWS"]
 AJM.chatCommand = "jamba"
 AJM.teamModuleName = "Jamba-Team"
 
@@ -108,10 +108,10 @@ end
 
 local function GetTreeGroupParentJambaOrder( parentName )
 	local order = 1000
-	if parentName == L["OPTIONS"] then
+	if parentName == L["Team"] then
 		order = 1
 	end
-	if parentName == L["Team"] then
+	if parentName == L["OPTIONS"] then
 		order = 10
 	end
 	if parentName == L["Quest"] then
@@ -158,7 +158,7 @@ local function GetTreeGroupChildEmaOrder( childName )
 end	
 
 
-
+-- Now Settings icons in the modules
 --[[
 local function GetTreeGroupParentIcon( parentName )
 	local icon = "Interface\\Icons\\Temp"
@@ -196,7 +196,7 @@ local function GetTreeGroupParentIcon( parentName )
 end
 ]]
 
-
+--[[
 local function JambaAddModuleToSettings( childName, parentName, moduleIcon, moduleFrame, tabGroup )
 	local parent = JambaTreeGroupTreeGetParent( parentName )
 	if parent == nil then
@@ -214,6 +214,52 @@ local function JambaAddModuleToSettings( childName, parentName, moduleIcon, modu
 	JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
 	JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
 end
+--]]
+
+local function JambaAddModuleToSettings( childName, parentName, moduleIcon, moduleFrame, tabGroup )
+	-- 	childName is the parentName then make the child the parent.
+	if childName == parentName then
+		local parent = JambaTreeGroupTreeGetParent( parentName )
+		if parent == nil then
+			--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
+			local order = GetTreeGroupParentJambaOrder( parentName )
+			table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = childName, text = childName, jambaOrder = childOrder, icon = moduleIcon } )
+			--table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
+--			table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
+
+			parent = JambaTreeGroupTreeGetParent( parentName )
+
+			JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
+			JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
+			
+			
+		end	
+
+	else
+	
+	-- [PH] Old Core for modules not supported by the new system -- ebony! 
+	local parent = JambaTreeGroupTreeGetParent( parentName )
+	if parent == nil then
+		--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
+		local order = GetTreeGroupParentJambaOrder( parentName )
+		table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = parentName, text = parentName, jambaOrder = order } )
+		parent = JambaTreeGroupTreeGetParent( parentName )
+	end
+	if parent.children == nil then
+		parent.children = {}
+	end	
+	--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
+	local childOrder = GetTreeGroupChildEmaOrder( childName )
+	table.insert( parent.children, { value = childName, text = childName, jambaOrder = childOrder, icon = moduleIcon } )
+--	table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
+--	table.sort( parent.children, JambaSettingsTreeSort )
+	JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
+	JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
+	
+	end
+end
+
+
 
 local function JambaModuleSelected( tree, event, treeValue, selected )
 	local parentValue, value = strsplit( "\001", treeValue )
@@ -221,8 +267,12 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 		-- Came from chat command.
 		value = treeValue
 	end
+	if value == nil then
+		value = parentValue
+	end
 	JambaPrivate.SettingsFrame.Widget:Show()
 	if JambaPrivate.SettingsFrame.Tree.CurrentChild ~= nil then
+		
 		JambaPrivate.SettingsFrame.Tree.CurrentChild.frame:Hide()
 		JambaPrivate.SettingsFrame.Tree.CurrentChild = nil
 	end
@@ -235,12 +285,11 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 			moduleFrame.frame:Show()	
 			JambaPrivate.SettingsFrame.Tree.CurrentChild = moduleFrame
 			-- Hacky hack hack.
-			if JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value] ~= nil then
-				
-				JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value]:SelectTab( "options" )
+			if JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value] ~= nil then		
+				JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value]:SelectTab( "OPTIONS" )
 			else
 				-- Hacky hack hack.
-				LibStub( "AceConfigDialog-3.0" ):Open( AJM.moduleName.."-Profiles", moduleFrame )
+				LibStub( "AceConfigDialog-3.0" ):Open( AJM.moduleName.."OPTIONS", moduleFrame )
 			end			
 			return
 		end
@@ -556,14 +605,14 @@ function AJM:OnInitialize()
 	InterfaceOptions_AddCategory( frame )
 	-- Create the settings profile support.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
-		AJM.moduleName.."-Profiles",
+		AJM.moduleName.."OPTIONS",
 		LibStub( "AceDBOptions-3.0" ):GetOptionsTable( AJM.completeDatabase ) 
 	)
 	local profileContainerWidget = AceGUI:Create( "SimpleGroup" )
 	profileContainerWidget:SetLayout( "Fill" )
 	-- We need this to make it a working Module
 	local moduleIcon = "Interface\\Icons\\Temp"
-	JambaPrivate.SettingsFrame.Tree.Add( L["PROFILES"], L["OPTIONS"], moduleIcon, profileContainerWidget, nil )
+	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], moduleIcon, profileContainerWidget, nil )
 	-- Register the core as a module.
 	RegisterModule( AJM, AJM.moduleName )
 	-- Register the chat command.
@@ -807,6 +856,14 @@ function AJM:CoreSettingsCreateInfo( top )
 		movingTop,
 		L["COPYRIGHT"]
 	)
+	movingTop = movingTop - labelContinueHeight
+	AJM.settingsControl.labelInformation41 = JambaHelperSettings:CreateContinueLabel( 
+		AJM.settingsControl, 
+		headingWidth, 
+		column2Left, 
+		movingTop,
+		L["COPYRIGHTTWO"]
+	)	
 	return movingTop	
 end
 
@@ -862,7 +919,7 @@ end
 function AJM:JambaChatCommand( input )
     if not input or input:trim() == "" then
 		JambaPrivate.SettingsFrame.Widget:Show()
-		JambaPrivate.SettingsFrame.WidgetTree:SelectByValue( L["OPTIONS"] )
+		JambaPrivate.SettingsFrame.WidgetTree:SelectByValue( L["NEWS"] )
 		JambaPrivate.SettingsFrame.Tree.ButtonClick( nil, nil, AJM.moduleDisplayName, false)
     else
         LibStub( "AceConfigCmd-3.0" ):HandleCommand( AJM.chatCommand, AJM.moduleName, input )

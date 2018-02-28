@@ -7,6 +7,7 @@ License: The MIT License
 local L = LibStub("AceLocale-3.0"):NewLocale( "JmbDspTm", "enUS", true )
 L["Slash Commands"] = true
 L["Team"] = true
+L["Display"] = true
 L["Display: Team"] = true
 L["Push Settings"] = true
 L["Push the display team settings to all characters in the team."] = true

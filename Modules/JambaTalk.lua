@@ -22,7 +22,7 @@ AJM.moduleName = "Jamba-Talk"
 AJM.settingsDatabaseName = "JambaTalkProfileDB"
 AJM.chatCommand = "jamba-talk"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Toon"]
 AJM.moduleDisplayName = L["Talk"]
 
 -- Settings - the values to store and their defaults for the settings database.

@@ -22,7 +22,7 @@ AJM.moduleName = "Jamba-Follow"
 AJM.settingsDatabaseName = "JambaFollowProfileDB"
 AJM.chatCommand = "jamba-follow"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Toon"]
 AJM.moduleDisplayName = L["Follow"]
 
 -- Settings - the values to store and their defaults for the settings database.

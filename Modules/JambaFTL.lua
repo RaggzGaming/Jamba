@@ -25,7 +25,7 @@ AJM.moduleName = "Jamba-FTL"
 AJM.settingsDatabaseName = "JambaFTLProfileDB"
 AJM.chatCommand = "jamba-ftl"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = "Other"
 AJM.moduleDisplayName = L["FTL Helper"]
 
 local assistButton

@@ -26,8 +26,8 @@ AJM.moduleName = "Jamba-Tag"
 AJM.settingsDatabaseName = "JambaTagProfileDB"
 AJM.chatCommand = "jamba-tag"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Core: Tags"]
+AJM.parentDisplayName = L["Team"]
+AJM.moduleDisplayName = L["Groups"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

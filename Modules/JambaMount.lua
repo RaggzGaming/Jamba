@@ -25,8 +25,8 @@ AJM.moduleName = "Jamba-Mount"
 AJM.settingsDatabaseName = "JambaMountProfileDB"
 AJM.chatCommand = "jamba-mount"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Mount"]
+AJM.parentDisplayName = L["Interaction"]
+AJM.moduleDisplayName = "[PH] "..L["Mount"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

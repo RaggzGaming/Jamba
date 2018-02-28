@@ -26,7 +26,7 @@ AJM.moduleName = "Jamba-Trade"
 AJM.settingsDatabaseName = "JambaTradeProfileDB"
 AJM.chatCommand = "jamba-trade"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Interaction"]
 AJM.moduleDisplayName = L["Trade"]
 
 AJM.inventorySeperator = "\008"

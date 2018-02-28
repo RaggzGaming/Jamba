@@ -134,20 +134,21 @@ L["OPTIONS"] = "Options"
 L["SETUP"] = "Setup" 
 L["PROFILES"] = "Profiles"
 L["TEAM"] = "Team"
+L["COMMUNICATIONS"] = "Communications"
 
 --------------------------
 -- Core
-L["STATUSTEXT"] = "Ebony's Multiboxing Assistant"
+L["STATUSTEXT"] = "The Awesome MultiBoxing Assistant Ebony's Edition"
 L["RESET_SETTINGS_FRAME"] = "Reset Settings Frame"
 L["MODULE_NOT_LOADED"] = "Module Not Loaded Or Is Out Of Date"
-L["RELEASE_NOTES"] = "Release Notes"
-L["TEXT1"] = "Welcome To The 1st Build Of Ema!" 
+L["RELEASE_NOTES"] = "Release Notes "
+L["TEXT1"] = "Jamba Ebony's Edition v8" 
 L["TEXT2"] = ""
-L["TEXT3"] = "Thanks For Being A Beta Test Of This Build"
+L["TEXT3"] = "Thanks For Being A Beta Tester Of This Build"
 L["TEXT4"] = ""
-L["TEXT5"] = "If you Have any bugs then send them to LINK"
+L["TEXT5"] = "If you Have any bugs report them to LINK"
 L["TEXT6"] = ""
-L["TEXT7"] = "Thanks so much for Making EMA Great!"
+L["TEXT7"] = "Thanks so much for Making Jamba EE Great!"
 L["TEXT8"] = ""
 L["TEXT9"] = ""
 L["TEXT10"] = ""
@@ -167,7 +168,8 @@ L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
 
 
-L["COPYRIGHT"] = "Released Under License: The MIT License"
+L["COPYRIGHT"] = "Copyright (c) 2008-2018  Michael Jafula Miller"
+L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
 L["FRAME_RESET"] = "Frame Reset"
 
 

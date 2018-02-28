@@ -29,8 +29,8 @@ AJM.moduleName = "Jamba-AdvancedLoot"
 AJM.settingsDatabaseName = "JambaAdvancedLootProfileDB"
 AJM.chatCommand = "jamba-advancedloot"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Advanced Loot"]
+AJM.parentDisplayName = L["Interaction"]
+AJM.moduleDisplayName = L["PH"].." "..L["Advanced Loot"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

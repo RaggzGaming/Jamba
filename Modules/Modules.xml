@@ -8,20 +8,30 @@
 -->
 
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="JambaAdvancedLoot.lua" />
-	<Script file="JambaCurr.lua" />
+	<Script file="JambaSell.lua" />
+	<Script file="JambaToon.lua" />
+	
+	
 	<Script file="JambaDisplayTeam.lua" />
+	<Script file="JambaCurr.lua" />
+	
 	<Script file="JambaFollow.lua" />
-	<Script file="JambaFTL.lua" />
+
 	<Script file="JambaItemUse.lua" />
-	<Script file="JambaMount.lua" />
+	
+	
 	<Script file="JambaPurchase.lua" />
+	
 	<Script file="JambaQuest.lua" />
 	<Script file="JambaQuestWatcher.lua" />
-	<Script file="JambaSell.lua" />
-	<Script file="JambaTalk.lua" />
-	<Script file="JambaTaxi.lua" />
-	<Script file="JambaToon.lua" />
-	<Script file="JambaTrade.lua" />
 	
+	<Script file="JambaTalk.lua" />
+	
+
+	<Script file="JambaTaxi.lua" />
+	<Script file="JambaTrade.lua" />
+	<Script file="JambaMount.lua" />
+	<Script file="JambaAdvancedLoot.lua" />
+	
+	<Script file="JambaFTL.lua" />
 </Ui>

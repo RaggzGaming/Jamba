@@ -14,6 +14,8 @@ L["Settings received from A."] = function( characterName )
 	return string.format( "Settings received from %s.", characterName )
 end
 L["Toon"] = true
+L["Vender"] = true
+L["Repair"] = true
 L[": "] = true
 L["I'm Attacked!"] = true
 L["Not Targeting!"] = true

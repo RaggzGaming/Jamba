@@ -23,7 +23,7 @@ AJM.moduleName = "Jamba-Purchase"
 AJM.settingsDatabaseName = "JambaPurchaseProfileDB"
 AJM.chatCommand = "jamba-purchase"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.parentDisplayName = L["Vender"]
 AJM.moduleDisplayName = L["Purchase"]
 
 -- Settings - the values to store and their defaults for the settings database.

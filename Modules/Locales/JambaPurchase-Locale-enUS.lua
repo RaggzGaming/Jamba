@@ -6,8 +6,9 @@ License: The MIT License
 
 local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-Purchase", "enUS", true )
 L["Slash Commands"] = true
-L["Merchant"] = true
+L["Vender"] = true
 L["Purchase"] = true
+
 L["Push Settings"] = true
 L["Push the purchase settings to all characters in the team."] = true
 L["Settings received from A."] = function( characterName )
