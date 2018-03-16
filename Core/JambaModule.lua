@@ -1,8 +1,13 @@
---[[
-Jamba - Jafula's Awesome Multi-Boxer Assistant
-Copyright 2008 - 2018 Michael "Jafula" Miller
-License: The MIT License
-]]--
+-- ================================================================================ --
+--				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
+--				Current Author: Jennifer Cally (Ebony) 2016-2018 					--
+--																					--
+--																					--
+--				License: The MIT License (MIT)										--
+--				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
+--																					--
+--																					--
+-- ================================================================================ --
 
 local MAJOR, MINOR = "JambaModule-1.0", 1
 local JambaModule, oldMinor = LibStub:NewLibrary( MAJOR, MINOR )
