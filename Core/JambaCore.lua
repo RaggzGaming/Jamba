@@ -1,13 +1,12 @@
 -- ================================================================================ --
 --				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
---				Current Author: Jennifer Cally (Ebony) 2016-2018 					--
---																					--
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
 --																					--
 --				License: The MIT License (MIT)										--
---				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
 --																					--
---																					--
--- ================================================================================ -- 
+-- ================================================================================ --
 
 -- The global private table for Jamba.
 JambaPrivate = {}
@@ -27,12 +26,17 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 
 -- JambaCore is not a module, but the same naming convention for these values is convenient.
 AJM.moduleName = "Jamba-Core"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.moduleDisplayName = L["NEWS"]
 AJM.settingsDatabaseName = "JambaCoreProfileDB"
 AJM.parentDisplayName = L["NEWS"]
 AJM.chatCommand = "jamba"
 AJM.teamModuleName = "Jamba-Team"
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\NewsIcon.tga"
+-- order
+AJM.moduleOrder = 1
+
 
 -- Load libraries.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
@@ -62,12 +66,8 @@ end
 function AJM:OnDisable()
 end
 
-function AJM:ShowChangeLog()
-	JambaStartupMessageFrameTitle:SetText( L["Jamba"].." "..GetAddOnMetadata("Jamba", "version").." - "..L["Full Change Log"] )
-	JambaStartupMessageFrame:Show()
-end	
-
 local function JambaSettingsTreeSort( a, b )
+	print("test",a, b)
 	local aText = ""
 	local bText = ""
 	local aJambaOrder = 0
@@ -80,11 +80,11 @@ local function JambaSettingsTreeSort( a, b )
 		bText = b.text
 		bJambaOrder = b.jambaOrder
 	end
-	if aText == L["Jamba"] or bText == L["Jamba"] then
-		if aText == L["Jamba"] then
+	if aText == L["JAMBA"] or bText == L["JAMBA"] then
+		if aText == L["JAMBA"] then
 			return true
 		end
-		if bText == L["Jamba"] then
+		if bText == L["JAMBA"] then
 			return false
 		end
 	end
@@ -104,46 +104,6 @@ local function JambaTreeGroupTreeGetParent( parentName )
 	return parent
 end
 
--- We Don't want to update the core every time we change/add the Modules icons are support @ module Level. TODO CLEAN Up
-
-local function GetTreeGroupParentJambaOrder( parentName )
-	local order = 1000
-	if parentName == L["Team"] then
-		order = 1
-	end
-	if parentName == L["OPTIONS"] then
-		order = 10
-	end
-	if parentName == L["Quest"] then
-		order = 20
-	end
-	if parentName == L["Merchant"] then
-		order = 30
-	end
-	if parentName == L["Interaction"] then
-		order = 40
-	end
-	if parentName == L["Combat"] then
-		order = 50
-	end
-	if parentName == L["Toon"] then
-		order = 60
-	end
-	if parentName == L["Chat"] then
-		order = 70
-	end
-	if parentName == L["Macro"] then
-		order = 80
-	end
-	if parentName == L["PROFILES"] then
-		order = 90
-	end
-	if parentName == L["Advanced"] then
-		order = 100
-	end
-	return order
-end
-
 local function GetTreeGroupChildEmaOrder( childName )
 	local order = 1000
 	if childName == L["NEWS"] then
@@ -158,104 +118,32 @@ local function GetTreeGroupChildEmaOrder( childName )
 end	
 
 
--- Now Settings icons in the modules
---[[
-local function GetTreeGroupParentIcon( parentName )
-	local icon = "Interface\\Icons\\Temp"
-	if parentName == L["Team"] then
-		icon = "Interface\\Icons\\INV_Misc_FireDancer_01"
-	end
-	if parentName == L["Quest"] then
-		icon = "Interface\\Icons\\Achievement_Quests_Completed_08"
-	end
-	if parentName == L["Merchant"] then
-		icon = "Interface\\Icons\\INV_Drink_05"
-	end
-	if parentName == L["Interaction"] then
-		icon = "Interface\\Icons\\Achievement_Reputation_01"
-	end
-	if parentName == L["Combat"] then
-		icon = "Interface\\Icons\\INV_Sword_11"
-	end
-	if parentName == L["Toon"] then
-		icon = "Interface\\Icons\\Achievement_Character_Bloodelf_Female"
-	end
-	if parentName == L["Chat"] then
-		icon = "Interface\\Icons\\Ability_Warrior_RallyingCry"
-	end
-	if parentName == L["Macro"] then
-		icon = "Interface\\Icons\\Spell_Holy_Dizzy"
-	end
-	if parentName == L["PROFILES"] then
-		icon = "Interface\\Icons\\INV_Misc_Dice_01"
-	end
-	if parentName == L["Advanced"] then
-		icon = "Interface\\Icons\\Trade_Engineering"
-	end
-	return icon
-end
-]]
-
---[[
-local function JambaAddModuleToSettings( childName, parentName, moduleIcon, moduleFrame, tabGroup )
-	local parent = JambaTreeGroupTreeGetParent( parentName )
-	if parent == nil then
-		local order = GetTreeGroupParentJambaOrder( parentName )
-		table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = parentName, text = parentName, jambaOrder = order } )
-		parent = JambaTreeGroupTreeGetParent( parentName )
-	end
-	if parent.children == nil then
-		parent.children = {}
-	end	
-	local childOrder = GetTreeGroupChildEmaOrder( childName )
-	table.insert( parent.children, { value = childName, text = childName, jambaOrder = childOrder, icon = moduleIcon } )
-	table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
-	table.sort( parent.children, JambaSettingsTreeSort )
-	JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
-	JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
-end
---]]
-
-local function JambaAddModuleToSettings( childName, parentName, moduleIcon, moduleFrame, tabGroup )
+local function JambaAddModuleToSettings( childName, parentName, moduleIcon, order, moduleFrame, tabGroup )
 	-- 	childName is the parentName then make the child the parent.
 	if childName == parentName then
 		local parent = JambaTreeGroupTreeGetParent( parentName )
 		if parent == nil then
-			--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
-			local order = GetTreeGroupParentJambaOrder( parentName )
-			table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = childName, text = childName, jambaOrder = childOrder, icon = moduleIcon } )
-			--table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
---			table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
-
+			table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
 			parent = JambaTreeGroupTreeGetParent( parentName )
-
 			JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
 			JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
-			
-			
 		end	
 
 	else
-	
 	-- [PH] Old Core for modules not supported by the new system -- ebony! 
 	local parent = JambaTreeGroupTreeGetParent( parentName )
 	if parent == nil then
-		--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
-		local order = GetTreeGroupParentJambaOrder( parentName )
 		table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = parentName, text = parentName, jambaOrder = order } )
 		parent = JambaTreeGroupTreeGetParent( parentName )
 	end
 	if parent.children == nil then
 		parent.children = {}
 	end	
-	--TODO Clean up order we DO not want to update the core everytime we add a new module! -- ebony 28/2/2018
-	local childOrder = GetTreeGroupChildEmaOrder( childName )
-	table.insert( parent.children, { value = childName, text = childName, jambaOrder = childOrder, icon = moduleIcon } )
---	table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
---	table.sort( parent.children, JambaSettingsTreeSort )
+	table.insert( parent.children, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
+	table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
+	table.sort( parent.children, JambaSettingsTreeSort )
 	JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
 	JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
-	
 	end
 end
 
@@ -281,7 +169,7 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 			moduleFrame:SetParent( JambaPrivate.SettingsFrame.WidgetTree )
 			moduleFrame:SetWidth( JambaPrivate.SettingsFrame.WidgetTree.content:GetWidth() or 0 )
 			moduleFrame:SetHeight( JambaPrivate.SettingsFrame.WidgetTree.content:GetHeight() or 0 )
-			moduleFrame.frame:SetAllPoints() -- JambaPrivate.SettingsFrame.WidgetTree.content 
+			moduleFrame.frame:SetAllPoints() 
 			moduleFrame.frame:Show()	
 			JambaPrivate.SettingsFrame.Tree.CurrentChild = moduleFrame
 			-- Hacky hack hack.
@@ -311,8 +199,6 @@ table.insert( UISpecialFrames, "JambaSettingsWindowsFrame" )
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
-		showMinimapIcon = true,
-		showStartupMessage4000 = true,
 	},
 }
 
@@ -509,7 +395,7 @@ function AJM:OnProfileChanged( event, database, newProfileKey, ... )
 	-- Do the other modules.
 	for moduleName, moduleAddress in pairs( AJM.registeredModulesByName ) do
 		if AJM:CanChangeProfileForModule( moduleName ) == true then		
-			AJM:Print( "Changing profile: ", moduleName )
+			AJM:Print( L["CHANGING_PROFILE"] , moduleName )
 			moduleAddress.completeDatabase:SetProfile( newProfileKey )
 			AJM:FireOnProfileChangedEvent( moduleAddress )
 		end
@@ -521,13 +407,13 @@ function AJM:OnProfileCopied( event, database, sourceProfileKey )
 	AJM:FireBeforeProfileChangedEvent()
 	-- Do the team module before all the others.
 	local teamModuleAddress = AJM.registeredModulesByName[AJM.teamModuleName]
-	AJM:Print( "Copying profile: ", AJM.teamModuleName )
+	AJM:Print( L["COPYING_PROFILE"], AJM.teamModuleName )
 	teamModuleAddress.completeDatabase:CopyProfile( sourceProfileKey, true )
 	AJM:FireOnProfileChangedEvent( teamModuleAddress )	
 	-- Do the other modules.
 	for moduleName, moduleAddress in pairs( AJM.registeredModulesByName ) do
 		if AJM:CanChangeProfileForModule( moduleName ) == true then		
-			AJM:Print( "Copying profile: ", moduleName )
+			AJM:Print( L["COPYING_PROFILE"], moduleName )
 			moduleAddress.completeDatabase:CopyProfile( sourceProfileKey, true )
 			AJM:FireOnProfileChangedEvent( moduleAddress )
 		end
@@ -535,17 +421,17 @@ function AJM:OnProfileCopied( event, database, sourceProfileKey )
 end
 
 function AJM:OnProfileReset( event, database )
-	AJM:Print( "Profile reset - iterating all modules." )
+	AJM:Print( L["PROFILE_RESET"] )
 	AJM:FireBeforeProfileChangedEvent()
 	-- Do the team module before all the others.
 	local teamModuleAddress = AJM.registeredModulesByName[AJM.teamModuleName]
-	AJM:Print( "Resetting profile: ", AJM.teamModuleName )
+	AJM:Print( L["RESETTING_PROFILE"], AJM.teamModuleName )
 	teamModuleAddress.completeDatabase:ResetProfile()
 	AJM:FireOnProfileChangedEvent( teamModuleAddress )	
 	-- Do the other modules.	
 	for moduleName, moduleAddress in pairs( AJM.registeredModulesByName ) do
 		if AJM:CanChangeProfileForModule( moduleName ) == true then		
-			AJM:Print( "Resetting profile: ", moduleName )
+			AJM:Print( L["RESETTING_PROFILE"], moduleName )
 			moduleAddress.completeDatabase:ResetProfile()
 			AJM:FireOnProfileChangedEvent( moduleAddress )
 		end
@@ -553,17 +439,17 @@ function AJM:OnProfileReset( event, database )
 end
 
 function AJM:OnProfileDeleted( event, database, profileKey )
-	AJM:Print( "Profile deleted - iterating all modules." )
+	AJM:Print( L["PROFILE_DELETED"] )
 	AJM:FireBeforeProfileChangedEvent()
 	-- Do the team module before all the others.
 	local teamModuleAddress = AJM.registeredModulesByName[AJM.teamModuleName]
-	AJM:Print( "Deleting profile: ", AJM.teamModuleName )
+	AJM:Print( L["DELETING_PROFILE"], AJM.teamModuleName )
 	teamModuleAddress.completeDatabase:DeleteProfile( profileKey, true )
 	AJM:FireOnProfileChangedEvent( teamModuleAddress )	
 	-- Do the other modules.		
 	for moduleName, moduleAddress in pairs( AJM.registeredModulesByName ) do
 		if AJM:CanChangeProfileForModule( moduleName ) == true then		
-			AJM:Print( "Deleting profile: ", moduleName )
+			AJM:Print( L["DELETING_PROFILE"], moduleName )
 			moduleAddress.completeDatabase:DeleteProfile( profileKey, true )
 			AJM:FireOnProfileChangedEvent( moduleAddress )
 		end
@@ -597,7 +483,7 @@ function AJM:OnInitialize()
 	AJM.settingsFrame = AJM.settingsControl.widgetSettings.frame
 	-- Blizzard options frame.
 	local frame = CreateFrame( "Frame" )
-	frame.name = L["Jamba"]
+	frame.name = L["JAMBA"]
 	local button = CreateFrame( "Button", nil, frame, "OptionsButtonTemplate" )
 	button:SetPoint( "CENTER" )
 	button:SetText( "/jamba" )
@@ -611,8 +497,9 @@ function AJM:OnInitialize()
 	local profileContainerWidget = AceGUI:Create( "SimpleGroup" )
 	profileContainerWidget:SetLayout( "Fill" )
 	-- We need this to make it a working Module
-	local moduleIcon = "Interface\\Icons\\Temp"
-	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], moduleIcon, profileContainerWidget, nil )
+	local moduleIcon = "Interface\\Addons\\Jamba\\Media\\SettingsIcon.tga"
+	local order  = 10
+	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], moduleIcon, order, profileContainerWidget, nil )
 	-- Register the core as a module.
 	RegisterModule( AJM, AJM.moduleName )
 	-- Register the chat command.
@@ -646,7 +533,7 @@ function AJM:LoadJambaModule( moduleName )
 	local loaded, reason = LoadAddOn( moduleName )
 	if not loaded then
 		if reason ~= "DISABLED" and reason ~= "MISSING" then
-			AJM:Print("Failed to load Jamba Module '"..moduleName.."' ["..reason.."]." )
+			AJM:Print(L["Failed_LOAD_MODULE"]..moduleName.."' ["..reason.."]." )
 		end
 	end
 end
@@ -669,7 +556,7 @@ function AJM:CoreSettingsCreateInfo( top )
 	local indentSpecial = indentContinueLabel + 9
 	local checkBoxThirdWidth = (headingWidth - indentContinueLabel) / 3
 	local column1Left = left
-	local column2Left = column1Left + checkBoxThirdWidth + horizontalSpacing
+	local column2Left = column1Left + checkBoxThirdWidth + horizontalSpacing - 35
 	local column1LeftIndent = left + indentContinueLabel
 	local column2LeftIndent = column1LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local column3LeftIndent = column2LeftIndent + checkBoxThirdWidth + horizontalSpacing
@@ -826,7 +713,7 @@ function AJM:CoreSettingsCreateInfo( top )
 	AJM.settingsControl.labelInformation20 = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
 		headingWidth, 
-		column1Left, 
+		column2Left, 
 		movingTop,
 		L["THANKS1"]
 	)	
@@ -834,7 +721,7 @@ function AJM:CoreSettingsCreateInfo( top )
 	AJM.settingsControl.labelInformation21 = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
 		headingWidth, 
-		column1Left, 
+		column2Left, 
 		movingTop,
 		L["THANKS2"]
 		
@@ -843,7 +730,7 @@ function AJM:CoreSettingsCreateInfo( top )
 	AJM.settingsControl.labelInformation22 = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
 		headingWidth, 
-		column1Left, 
+		column2Left, 
 		movingTop,
 		L["THANKS3"]
 	)	
@@ -874,7 +761,9 @@ function AJM:CoreSettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SendSettingsAllModules 
+		AJM.SendSettingsAllModules,
+		AJM.moduleIcon,
+		AJM.moduleOrder	
 	)
 	local bottomOfInfo = AJM:CoreSettingsCreateInfo( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfInfo )
@@ -941,6 +830,4 @@ JambaPrivate.Core.OnSettingsReceived = OnSettingsReceived
 JambaPrivate.Core.SendCommandToTeam = SendCommandToTeam
 JambaPrivate.Core.SendCommandToMaster = SendCommandToMaster
 JambaPrivate.Core.SendCommandToToon = SendCommandToToon
--- TODO: Remove send command to minions?
---JambaPrivate.Core.SendCommandToMinions = SendCommandToMinions
 JambaPrivate.Core.OnCommandReceived = OnCommandReceived

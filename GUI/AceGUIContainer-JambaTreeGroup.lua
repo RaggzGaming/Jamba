@@ -1,13 +1,12 @@
 -- ================================================================================ --
 --				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
---				Current Author: Jennifer Cally (Ebony) 2016-2018 )					--
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
+--																					--
 --				License: The MIT License (MIT)										--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
 --																					--
---																					--
---				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
---																					--
---																					--
--- ================================================================================ -- 
+-- ================================================================================ --
 
 
 --[[

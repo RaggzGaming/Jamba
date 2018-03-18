@@ -83,7 +83,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
 	-- Was 'Fill', which causes lockup, started at patch 4.1 (40100).  Similar to http://forums.wowace.com/showthread.php?t=17872
 	tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )	
-	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, {text=L["Commands"], value="help"} } )
+	tabGroupWidgetSettings:SetTabs( { {text=L["OPTIONS"], value="options"}, {text=L["COMMANDS"], value="help"} } )
 	
 	containerWidgetSettings:AddChild( tabGroupWidgetSettings )
 	tabGroupWidgetSettings:AddChild( widgetSettings )
@@ -118,7 +118,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	label:SetText( displayName )
 	
 	local button = AceGUI:Create( "Button" )
-	button:SetText( L["Push Settings"] )
+	button:SetText( L["PUSH_SETTINGS"] )
 	containerWidgetSettings:AddChild( button )
 	button:SetWidth( 200 )
 	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 0 )
@@ -146,7 +146,7 @@ end
 
 function JambaHelperSettings:CreateHelp( settingsControl, help, configuration )
 	table.insert( help, {"D", ""} )
-	table.insert( help, {"H", L["Slash Commands"]} )
+	table.insert( help, {"H", L["SLASH_COMMANDS"]} )
 	for key, info in pairs( configuration.args ) do
 		if info.type == "input" then
 			table.insert( help, {"D", ""} )

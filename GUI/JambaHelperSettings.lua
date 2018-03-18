@@ -1,13 +1,12 @@
 -- ================================================================================ --
 --				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
---				Current Author: Jennifer Cally (Ebony) 2016-2018 					--
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
+--																					--
 --				License: The MIT License (MIT)										--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
 --																					--
---																					--
---				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
---																					--
---																					--
--- ================================================================================ -- 
+-- ================================================================================ --
 
 local MAJOR, MINOR = "JambaHelperSettings-1.0", 1
 local JambaHelperSettings, oldMinor = LibStub:NewLibrary( MAJOR, MINOR )
@@ -17,7 +16,7 @@ if not JambaHelperSettings then
 end
 
 -- Locale.
-local L = LibStub( "AceLocale-3.0" ):GetLocale( "Jamba-Core" )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 
 -- Get the ACE GUI Library.
 local AceGUI = LibStub( "AceGUI-3.0" )
@@ -70,10 +69,14 @@ end
 -- Settings Frame.
 -------------------------------------------------------------------------------------------------------------
 
-function JambaHelperSettings:CreateSettings( settingsControl, displayName, parentDisplayName, pushSettingsCallback, moduleIcon )
+function JambaHelperSettings:CreateSettings( settingsControl, displayName, parentDisplayName, pushSettingsCallback, moduleIcon, order )
 
 	if moduleIcon == nil then
 		moduleIcon = "Interface\\Icons\\Temp"
+	end	
+	
+	if order == nil then
+		order = 1000
 	end	
 	
 	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
@@ -86,8 +89,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	widgetSettings:SetLayout( "JambaManual" )
 	
 	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
-	-- Was 'Fill', which causes lockup, started at patch 4.1 (40100).  Similar to http://forums.wowace.com/showthread.php?t=17872
- tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )	
+	tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )	
 --	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, } ) --{text=L["Commands"], value="help"} } )
 	
 	containerWidgetSettings:AddChild( tabGroupWidgetSettings )
@@ -117,15 +119,10 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	
 
 	local lable = AceGUI:Create( "Label" )
---	icon:SetImage( moduleIcon )
---	icon:SetImageSize(40,40)
 	lable:SetText( displayName )
 	lable:SetFont( "Fonts\2002.TTF", "40" ) 
 	lable:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 50, -15 )
 	containerWidgetSettings:AddChild( lable )
---	icon:SetPoint( "TOPLEFT", 0, 5 )
---	icon:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 0, 0 )
-
 		
 	local icon = AceGUI:Create( "Label" )
 	icon:SetImage( moduleIcon )
@@ -136,7 +133,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 --	icon:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 0, 0 )	
 	
 	local button = AceGUI:Create( "Button" ) 
-	button:SetText( L["Push Settings"] )
+	button:SetText( L["PUSH_SETTINGS"] )
 	containerWidgetSettings:AddChild( button )
 	button:SetWidth( 200 )
 	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 0 )
@@ -147,7 +144,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	settingsControl.containerWidgetSettings = containerWidgetSettings
 	settingsControl.tabGroupWidgetSettings = tabGroupWidgetSettings
 	settingsControl.widgetSettings = widgetSettings
-	JambaPrivate.SettingsFrame.Tree.Add( displayName, parentDisplayName, moduleIcon, settingsControl.containerWidgetSettings, settingsControl.tabGroupWidgetSettings )
+	JambaPrivate.SettingsFrame.Tree.Add( displayName, parentDisplayName, moduleIcon, order, settingsControl.containerWidgetSettings, settingsControl.tabGroupWidgetSettings )
 end
 
 function JambaHelperSettings:TopOfSettings()
@@ -164,7 +161,7 @@ end
 
 function JambaHelperSettings:CreateHelp( settingsControl, help, configuration )
 	table.insert( help, {"D", ""} )
-	table.insert( help, {"H", L["Slash Commands"]} )
+	table.insert( help, {"H", L["SLASH_COMMANDS"]} )
 	for key, info in pairs( configuration.args ) do
 		if info.type == "input" then
 			table.insert( help, {"D", ""} )

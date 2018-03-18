@@ -1,11 +1,10 @@
 -- ================================================================================ --
 --				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
---				Current Author: Jennifer Cally (Ebony) 2016-2018 					--
---																					--
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
 --																					--
 --				License: The MIT License (MIT)										--
---				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
---																					--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
 --																					--
 -- ================================================================================ --
 
@@ -19,7 +18,7 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 )
 
 -- Get the locale for JambaCommunications.
-local L = LibStub( "AceLocale-3.0" ):GetLocale( "Jamba-Core" )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 
 -- Get libraries.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
@@ -33,6 +32,11 @@ AJM.moduleDisplayName = L["COMMUNICATIONS"]
 AJM.settingsDatabaseName = "JambaCommunicationsProfileDB"
 AJM.parentDisplayName = L["OPTIONS"]
 AJM.chatCommand = "jamba-comm"
+AJM.teamModuleName = "Jamba-Team"
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\CommsLogo.tga"
+-- order
+AJM.moduleOrder = 20
 
 -------------------------------------------------------------------------------------------------------------
 -- Constants
@@ -78,11 +82,6 @@ end
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
---		DO NOT Change lines here!
---		teamOnlineChannelName = "JambaTeamIsOnline",
---		teamOnlineChannelPassword = "JambaTeamPassword",
---		showOnlineChannel = false,
-		assumeTeamAlwaysOnline = false, -- This is a place holder And is used as backup DO NOT CHANGE assumeTeamAlwaysOnline unless you know what your doing that you probs don't ;)
 		autoSetTeamOnlineorOffline = true,
 		boostCommunication = true,
 		useGuildComms = false,
@@ -100,8 +99,8 @@ local function GetConfiguration()
 		args = {			 				
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push settings to all characters in the team list."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-comm push",
 				get = false,
 				set = "JambaSendSettings",
@@ -121,14 +120,11 @@ end
 -- Character online management.
 -------------------------------------------------------------------------------------------------------------
 local function IsCharacterOnline( characterName )
-	if AJM.db.assumeTeamAlwaysOnline == true then
-		return true
-	end
 	return JambaPrivate.Team.GetCharacterOnlineStatus( characterName )
 end
 
 local function AssumeTeamAlwaysOnline()
-	return AJM.db.assumeTeamAlwaysOnline
+	return "false"
 end
 
 
@@ -423,8 +419,7 @@ function AJM:OnInitialize()
 end
 	
 function AJM:OnEnable()
-	--local hookSecure = true
-	--AJM:RawHook( "ChatFrame_MessageEventHandler", true )
+
 	AJM:RegisterEvent("GUILD_ROSTER_UPDATE")
 	if AJM.db.boostCommunication == true then
 		AJM:BoostCommunication()
@@ -456,7 +451,6 @@ function AJM:JambaChatCommand( input )
 end
 
 function AJM:OnDisable()
-	--AJM:CancelAllTimers()
 end
 
 function AJM:GUILD_ROSTER_UPDATE(event, ... )
@@ -488,7 +482,10 @@ function AJM:SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.JambaSendSettings 
+		AJM.JambaSendSettings,
+		AJM.moduleIcon,
+		AJM.moduleOrder
+		
 	)
 	local bottomOfOptions = AJM:SettingsCreateOptions( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfOptions )
@@ -510,33 +507,17 @@ function AJM:SettingsCreateOptions( top )
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local column1Left = left
+	local column2Left = left + 10
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Team Online Check"], movingTop, false )--
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["COMMUNICATIONS"]..L[" "]..L["OPTIONS"] , movingTop, false )--
 	movingTop = movingTop - headingHeight	
-	--[[
-	AJM.settingsControl.checkBoxAssumeAlwaysOnline = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		headingWidth, 
-		column1Left, 
-		movingTop, 
-		L["Use Team List Offline Button"],
-		AJM.CheckBoxAssumeAlwaysOnline
-	)
-		movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.labelInformationAlwaysOnline = JambaHelperSettings:CreateContinueLabel( 
-		AJM.settingsControl, 
-		headingWidth, 
-		column1Left, 
-		movingTop,
-		L["**Untick this to use the WIP Set Offline team List Set offline Button"]
-	)
-	--]]
+
 	AJM.settingsControl.checkBoxAutoSetTeamOnlineorOffline = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		column1Left, 
 		movingTop, 
-		L["Auto Set Team Members On and Off Line"],
+		L["AUTO_SET_TEAM"],
 		AJM.CheckBoxAutoSetTeamOnlineorOffline
 	)
 	movingTop = movingTop - checkBoxHeight
@@ -545,43 +526,20 @@ function AJM:SettingsCreateOptions( top )
 		headingWidth, 
 		column1Left, 
 		movingTop, 
-		L["Boost Jamba to Jamba Communications**"],
-		AJM.CheckBoxBoostCommunication
+		L["BOOST_COMMUNICATIONS"],
+		AJM.CheckBoxBoostCommunication,
+		L["BOOST_COMMUNICATIONS_HELP"]
 	)
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.labelInformationBoost = JambaHelperSettings:CreateContinueLabel( 
-		AJM.settingsControl, 
-		headingWidth, 
-		column1Left, 
-		movingTop,
-		L["**reload UI to take effect, may cause disconnections"]
-	)	
-	movingTop = movingTop - buttonHeight		
+	movingTop = movingTop - checkBoxHeight		
 	AJM.settingsControl.checkBoxUseGuildComms = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		column1Left, 
 		movingTop, 
-		L["Use Guild Communications***"],
-		AJM.CheckBoxUseGuildComms
+		L["USE_GUILD_COMMS"],
+		AJM.CheckBoxUseGuildComms,
+		L["USE_GUILD_COMMS_INFO"]
 	)
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.labelInformationBNComms = JambaHelperSettings:CreateContinueLabel( 
-		AJM.settingsControl, 
-		headingWidth, 
-		column1Left, 
-		movingTop,
-		L["*** EveryToon will be classed as online and needs to be in same guild!"]
-	)
---[[	AJM.settingsControl.checkBoxShowChannel = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 		
-		headingWidth, 		
-		column1Left, 
-		movingTop, 
-		L["Show Online Channel Traffic (For Debugging Purposes)"],
-		AJM.CheckBoxShowChannelClick
-	)
-]]
 	movingTop = movingTop - checkBoxHeight		
 	return movingTop	
 end
@@ -614,7 +572,6 @@ function AJM:OnJambaProfileChanged()
 end
 
 function AJM:SettingsRefresh()	
---	AJM.settingsControl.checkBoxAssumeAlwaysOnline:SetValue( AJM.db.assumeTeamAlwaysOnline )
 	AJM.settingsControl.checkBoxAutoSetTeamOnlineorOffline:SetValue( AJM.db.autoSetTeamOnlineorOffline )
 	AJM.settingsControl.checkBoxBoostCommunication:SetValue( AJM.db.boostCommunication )
 	AJM.settingsControl.checkBoxUseGuildComms:SetValue( AJM.db.useGuildComms )
@@ -629,7 +586,6 @@ end
 function AJM:JambaOnSettingsReceived( characterName, settings )
 	if characterName ~= AJM.characterName then
 		-- Update the settings.
-		AJM.db.assumeTeamAlwaysOnline = settings.assumeTeamAlwaysOnline
 		AJM.db.autoSetTeamOnlineorOffline = settings.autoSetTeamOnlineorOffline
 		AJM.db.boostCommunication = settings.boostCommunication
 		AJM.db.useGuildComms = settings.useGuildComms

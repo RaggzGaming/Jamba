@@ -168,9 +168,8 @@ L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
 
 
-L["COPYRIGHT"] = "Copyright (c) 2008-2018  Michael Jafula Miller"
-L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
+L["COPYRIGHT"] = "Copyright 2015 - 2018 Jennifer Cally (Ebony)"
 L["FRAME_RESET"] = "Frame Reset"
 
 
-
+L["JAMBA"] = "Jamba"

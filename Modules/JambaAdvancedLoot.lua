@@ -1,12 +1,12 @@
---[[
-Jamba Advanced Loot
-*******************
-Author: Max Schilling
-Create Date: 10/16/2012
-Version: 5.1.1
-Description: Jamba extension that allows choosing which group member is able to loot a certain item. Specifically intended for Motes of Harmony.
-Credits: Built on top of the awesome JAMBA addon, most code is copied nearly directly from various Jamba addons. Only the logic for looting is original.
-]]--
+-- ================================================================================ --
+--				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
+--																					--
+--				License: The MIT License (MIT)										--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
+--																					--
+-- ================================================================================ --
 
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.

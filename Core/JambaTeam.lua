@@ -1,11 +1,10 @@
 -- ================================================================================ --
 --				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
---				Current Author: Jennifer Cally (Ebony) 2016-2018 					--
---																					--
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
 --																					--
 --				License: The MIT License (MIT)										--
---				Copyright 2008 - 2018 Michael "Jafula" Miller 			            --
---																					--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
 --																					--
 -- ================================================================================ --
 
@@ -32,6 +31,9 @@ AJM.parentDisplayName = L["Team"]
 AJM.moduleDisplayName = L["Team"]
 -- Icon 
 AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
+-- order
+AJM.moduleOrder = 20
+
 
 -- Jamba key bindings.
 BINDING_HEADER_JAMBATEAM = L["Jamba-Team"]
@@ -471,7 +473,8 @@ local function SettingsCreate()
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
 		AJM.SettingsPushSettingsClick,
-		AJM.moduleIcon
+		AJM.moduleIcon,
+		AJM.moduleOrder
 	)
 	-- Create the team list controls.
 	local bottomOfTeamList = SettingsCreateTeamList()
@@ -908,9 +911,9 @@ end
 
 -- Get a character's online status.
 local function GetCharacterOnlineStatus( characterName )
-	if JambaPrivate.Communications.AssumeTeamAlwaysOnline() == true then
-		return true
-	end
+	--if JambaPrivate.Communications.AssumeTeamAlwaysOnline() == true then
+	--	return true
+	--end
 	return AJM.db.characterOnline[characterName]
 end
 
