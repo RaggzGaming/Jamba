@@ -28,7 +28,7 @@ AJM.settingsDatabaseName = "JambaTagProfileDB"
 AJM.chatCommand = "jamba-tag"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Team"]
-AJM.moduleDisplayName = L["Groups"]
+AJM.moduleDisplayName = "[PH] "..L["Groups"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -187,12 +187,14 @@ end
 local function SettingsCreate()
 	AJM.settingsControl = {}
 	-- Create the settings panel.
+	
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
 		AJM.SettingsPushSettingsClick 
 	)
+	
 	-- Create the team list controls.
 	local bottomOfTeamList = SettingsCreateTeamList()
 	-- Create the tag list controls.
@@ -756,6 +758,8 @@ JambaPrivate.Tag.AllTagsListIterator = AllTagsListIterator
 JambaPrivate.Tag.DoesCharacterHaveTag = DoesCharacterHaveTag
 JambaPrivate.Tag.IsAValidTag = IsAValidTag
 JambaPrivate.Tag.GetCharacterWithTag = GetCharacterWithTag
+JambaPrivate.Tag.GetTagListForCharacter = GetTagListForCharacter
+JambaPrivate.Tag.GetTagListMaxPosition = GetTagListMaxPosition
 
 -- Functions available for other addons.
 JambaApi.AllTag = AllTag

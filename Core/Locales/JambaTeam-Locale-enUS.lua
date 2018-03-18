@@ -92,7 +92,7 @@ L["Move the character up a place in the team list"] = true
 L["Move the character down a place in the team list"] = true
 L["Adds a member to the team list\nYou can Use:\nCharacterName\nCharacterName-realm\n@Target\n@Mouseover"] = true
 L["Adds all Party/Raid members to the team list"] = true
-L["Removes Members from the team list"] = true
+L["Removes Selected Member from the team list"] = true
 L["Set the selected member to be the master of the group"] = true
 L["Invites all Team members online to a party or raid.\nThis can be set as a keyBinding"] = true
 L["Asks all Team members to leave a party or raid.\nThis can be set as a keyBinding"] = true
@@ -126,3 +126,10 @@ L["Party Loot Control (Instances)"] = true
 
 
 L["OPTIONS"] = "Options"
+L["Online"] = true
+L["Offline"] = true
+L["TEAM"] = "Team"
+L["GROUPS"] = "Groups"
+L[""] = true
+L[" "] = true
+
