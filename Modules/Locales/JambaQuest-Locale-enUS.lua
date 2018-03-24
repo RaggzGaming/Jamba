@@ -74,6 +74,9 @@ end
 L["Automatically Accepted Escort Quest: A"] = function( questName )
 	return string.format( "Automatically Accepted Escort Quest: %s", questName )
 end
+L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"] = function( questName )
+	return string.format( "Inventory Is Full Can Not Hand In Quest: %s", questName )
+end	
 
 L["Jamba-Quest"] = true
 

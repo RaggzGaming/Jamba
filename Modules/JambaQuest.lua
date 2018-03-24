@@ -245,6 +245,8 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "GOSSIP_SHOW" )
 	AJM:RegisterEvent( "QUEST_GREETING" )
 	AJM:RegisterEvent( "QUEST_PROGRESS" )
+	AJM:RegisterEvent( "QUEST_FINISHED" )
+	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "QUEST_FAIL" )
    -- Quest post hooks.
     AJM:SecureHook( "SelectGossipOption" )
     AJM:SecureHook( "SelectGossipActiveQuest" )
@@ -261,7 +263,7 @@ function AJM:OnEnable()
 	AJM:SecureHook( "ShowQuestComplete" )
 	AJM:SecureHook( "QuestMapQuestOptions_AbandonQuest" )
 	AJM:SecureHook( "QuestMapQuestOptions_TrackQuest" )
---	AJM:SecureHook( QuestFrame, "Hide", "DeclineQuest" )	
+	
 end
 
 -- Called when the addon is disabled.
@@ -1170,7 +1172,14 @@ end
 function AJM:QUEST_PROGRESS()
 	if AJM.db.allAutoSelectQuests == true and AJM:CanAutomateAutoSelectAndComplete() == true then
 		if IsQuestCompletable() then
-			CompleteQuest()
+			
+			if QuestFrame:IsShown() == true then
+				AJM.isInternalCommand = true
+				CompleteQuest()
+				AJM.isInternalCommand = false
+			else
+				AJM:Print( "NO QUEST PAGE CAN NOT HAND IN" ) 
+			end		
 		end
 	end
 end
@@ -1265,10 +1274,11 @@ function AJM:DoSelectAvailableQuest( sender, questIndex )
 	end
 end
 
-function AJM:DeclineQuest()
+function AJM:QUEST_FINISHED(...)
 	if AJM.db.mirrorMasterQuestSelectionAndDeclining == true then
 		if AJM.isInternalCommand == false then
-            AJM:DebugMessage( "DeclineQuest" )
+			--AJM:Print( "DeclineQuest" )           
+			AJM:DebugMessage( "DeclineQuest" )
 			AJM:ScheduleTimer("JambaSendCommandToTeam", 0.5, AJM.COMMAND_DECLINE_QUEST )
 		end
 	end		
@@ -1276,10 +1286,10 @@ end
 
 function AJM:DoDeclineQuest( sender )
 	if AJM.db.mirrorMasterQuestSelectionAndDeclining == true then
+		--AJM:Print("DoDeclineQuest", sender )
 		AJM.isInternalCommand = true
         AJM:DebugMessage( "DoDeclineQuest" )
 		HideUIPanel(QuestFrame)
-		--DeclineQuest()
 		AJM.isInternalCommand = false
 	end
 end
@@ -1323,6 +1333,15 @@ function AJM:QUEST_COMPLETE()
 			--AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["Completed Quest: A"]( GetTitleText() ), false )
 			GetQuestReward( GetNumQuestChoices() )
 		end		
+	end
+end
+
+
+function AJM:QUEST_FAIL( event, player, message )
+	AJM:Print("QUEST_FAIL", player, message,  agr2  )
+	if message == INVENTORY_FULL then
+		local questName = GetTitleText()
+		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
 	end
 end
 
@@ -1459,7 +1478,7 @@ function AJM:QUEST_ACCEPTED( ... )
 					SelectQuestLogEntry( questIndex )
 						if GetQuestLogPushable() and GetNumSubgroupMembers() > 0 then
 							AJM:JambaSendMessageToTeam( AJM.db.messageArea, "Pushing newly accepted quest.", false )
-							QuestLogPushQuest()
+							QuestLogPushQuest() -- this needed??
 						end
 				end	
 			end
@@ -1480,12 +1499,15 @@ end
 
 function AJM:DoAcceptQuest( sender )
 	if AJM.db.acceptQuests == true and AJM.db.slaveMirrorMasterAccept == true then
+	local questName = GetTitleText()
 	local questIndex = AJM:GetQuestLogIndexByName( questName )
+	
 		--Only works if the quest frame is open. Stops sending a blank quest. Tell the team a char not got the quest window open???? <<<<<< TODO
 		if QuestFrame:IsShown() == true then
+			AJM:Print( "DoAcceptQuest", questName, questIndex, sender) 
 			AJM.isInternalCommand = true
 			AJM:DebugMessage( "DoAcceptQuest" )
-			AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["Accepted Quest: A"]( GetTitleText() ), false )
+			AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["Accepted Quest: A"]( questName ), false )
 			AcceptQuest()
 			HideUIPanel( QuestFrame )
 			AJM.isInternalCommand = false

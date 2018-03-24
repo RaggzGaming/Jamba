@@ -1,0 +1,39 @@
+﻿---------------------------
+ChangeLogs:
+---------------------------
+
+Jamba Version: v8.0-Alpha(0016)
+Game Version: 7.3.5
+Release Date: TBA
+---------------------------
+## Core
+	- Changed the layout of the GUI around again.
+    - New Grouping system no longer has "blank Pages"
+	- New Layout for modules (Subject to change)
+
+-- \tons more changes not liseted\
+
+---------------------------
+Jamba Version: v8.0-Alpha(0006)
+Game Version: 7.3.5
+Release Date: TBA
+
+##CORE
+	-All Modules should now save on exit!
+
+
+
+---------------------------
+Jamba Version: v8.0-Alpha(0005)
+Game Version: 7.3.5
+Release Date: TBA
+
+##CORE
+	- Most of Jamba is now classed as one Addon "Jamba"
+	- Removed Tons Of Old code. 
+	
+##GUI
+	- New Logo now Shows on GUI
+	- Updaed GUI! does not have a endless "Tree" of modules 
+	
+Initial Alpha Release. WILL BE BUGGY!!!
