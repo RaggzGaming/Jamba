@@ -1336,9 +1336,8 @@ function AJM:QUEST_COMPLETE()
 	end
 end
 
-
 function AJM:QUEST_FAIL( event, player, message )
-	AJM:Print("QUEST_FAIL", player, message,  agr2  )
+	--AJM:Print("QUEST_FAIL", player, message )
 	if message == INVENTORY_FULL then
 		local questName = GetTitleText()
 		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
@@ -1504,7 +1503,7 @@ function AJM:DoAcceptQuest( sender )
 	
 		--Only works if the quest frame is open. Stops sending a blank quest. Tell the team a char not got the quest window open???? <<<<<< TODO
 		if QuestFrame:IsShown() == true then
-			AJM:Print( "DoAcceptQuest", questName, questIndex, sender) 
+			--AJM:Print( "DoAcceptQuest", questName, questIndex, sender) 
 			AJM.isInternalCommand = true
 			AJM:DebugMessage( "DoAcceptQuest" )
 			AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["Accepted Quest: A"]( questName ), false )
