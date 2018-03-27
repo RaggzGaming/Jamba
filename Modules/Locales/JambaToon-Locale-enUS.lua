@@ -65,6 +65,10 @@ L["I do not have enough money to repair all my items."] = true
 L["Repairing cost me: X"] = function( costString )
     return string.format( "Repairing cost me: %s", costString )
 end
+L["I_HAVE_LOOTED_A_X_ITEM: "] = function( itemRarity, itemLink )
+	return string.format( "I Have Looted A %s BoE Item: %s", itemRarity , itemLink )
+end
+
 L["Other"] = true
 L["Crowd Control Message"] = true
 L["Warn If Toon Gets Crowd Control"] = true
@@ -82,6 +86,18 @@ L["Auto Accept Role Checks"] = true
 L["Accept Ready Checks With Team"] = true
 L["LFG Teleport With Team"] = true
 L["Roll Loot With Team"] = true
+L["Warnings"] = true
+L["Enable Auto Loot"] = true
+L["Manage Auto Loot"] = true
+L["Loot Options"] = true
+
+L["Message Area"] = true
+L["Rare"] = true
+L["Epic"] = true
+L["Tell Team BoE Rare"] = true
+L["Tell Team BoE Epic"] = true
+
+
 
 --Jamba Help Tooltips
 L["Display Team Release Popups when the Team Dies"] = true
@@ -106,9 +122,16 @@ L["Automatically Accept Role Checks \n\nIf a role is already set.."] = true
 L["Accept Ready Checks With Team \n\nIf Team Member is the one that does the ready check it is Auto."] = true
 L["Teleport With Team Members LFG"] = true
 L["Roll Loot With the Team"] = true
+L["Old Jambas Advanced Loot \nBut better"] = true
+L["Manage Blizzard's Auto Loot Settings"] = true
+L["Tell The Team If i loot a BoE Rare"] = true
+L["Tell The Team If i loot a BoE Epic"] = true
+
 --PLace Holder.
 L["Bags"] = true
 L[" "] = true
 L["Jamba Bags"] = true
+
+
 
 L["OPTIONS"] = "Options"

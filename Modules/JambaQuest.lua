@@ -34,6 +34,13 @@ AJM.chatCommand = "jamba-quest"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Quest"]
 AJM.moduleDisplayName = L["Quest"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\QuestIcon.tga"
+-- order
+AJM.moduleOrder = 50
+
+
+
 
 
 -- Settings - the values to store and their defaults for the settings database.
@@ -283,7 +290,9 @@ function AJM:SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControlCompletion, 
@@ -1340,7 +1349,7 @@ function AJM:QUEST_FAIL( event, player, message )
 	--AJM:Print("QUEST_FAIL", player, message )
 	if message == INVENTORY_FULL then
 		local questName = GetTitleText()
-		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
+		AJM:JambaSendMessageToTeam( AJM.db.warningArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
 	end
 end
 
@@ -1657,126 +1666,6 @@ function AJM:QuestMapQuestOptions_TrackQuest(questID)
 		end
 	end			
 end
-
-
---Max's Menu System that was tainting like hell do like it trying quest3.0 Ebony's way.
-
---[[
-function JambaQuestMapQuestOptionsDropDown_Initialize(self)
-	local questLogIndex = GetQuestLogIndexByID(self.questID);
-	local info = UIDropDownMenu_CreateInfo();
-	info.isNotRadio = true;
-	info.notCheckable = true;
-	table.insert( UISpecialFrames, "JambaQuestMapQuestOptionsDropDown" )
-	
-	info.text = TRACK_QUEST;
-	if ( IsQuestWatched(questLogIndex) ) then
-		info.text = UNTRACK_QUEST;
-	end
-	info.func =function(_, questID) AJM:QuestMapQuestOptions_ToggleTrackQuest(questID) end;
-	info.arg1 = self.questID;
-	UIDropDownMenu_AddButton(info)
-	
-	info.text = SHARE_QUEST;
-	info.func = function(_, questID) AJM:QuestMapQuestOptions_ShareQuest(questID) end;
-	info.arg1 = self.questID;
-	if ( not GetQuestLogPushable(questLogIndex) or not IsInGroup() ) then
-		info.disabled = 1;
-	end
-	UIDropDownMenu_AddButton(info)
-	
-	info.text = ABANDON_QUEST;
-	info.func = function(_, questID) AJM:QuestMapQuestOptions_AbandonQuest(questID) end;
-	info.arg1 = self.questID;
-	info.disabled = nil;
-	UIDropDownMenu_AddButton(info)
-	
-	info.text = L["JAMBA_QUESTLOG_CONTEXT_DROPDOWNTEXT_TrackAllToons"];
-	if ( IsQuestWatched(questLogIndex) ) then
-		info.text = L["JAMBA_QUESTLOG_CONTEXT_DROPDOWNTEXT_UnTrackAllToons"];
-	end
-	info.func =function(_, questID) AJM:QuestMapQuestOptions_ToggleTrackQuestAllToons(questID) end;
-	info.arg1 = self.questID;
-	UIDropDownMenu_AddButton(info)
-	
-	info.text = L["JAMBA_QUESTLOG_CONTEXT_DROPDOWNTEXT_AbandonAllToons"];
-	info.func =function(_, questID) AJM:QuestMapQuestOptions_AbandonQuestAllToons(questID) end;
-	info.arg1 = self.questID;
-	UIDropDownMenu_AddButton(info)
-	
-	StaticPopupDialogs["JAMBAQUEST_CONFIRM_ABANDON_QUEST_NEW"] = {
-        text = L["JAMBA_QUESTLOG_CONTEXT_ALERT_AbandonAllToons"],
-        button1 = YES,
-        button2 = NO,
-       	  timeout = 0,
-			whileDead = true,
-		hideOnEscape = true,
-       OnAccept = function(self, data)
-			AJM:JambaSendCommandToTeam( AJM.COMMAND_ABANDON_QUEST, data.questID, data.title)
-		end,
-    }
-end
-
-function AJM:QuestMapQuestOptions_ToggleTrackQuest(questID)
-	local questLogIndex = GetQuestLogIndexByID(questID);
-	
-	if ( IsQuestWatched(questLogIndex) ) then
-		QuestObjectiveTracker_UntrackQuest(nil, questID);
-	else
-		AddQuestWatch(questLogIndex, true);
-		QuestSuperTracking_OnQuestTracked(questID);
-	end
-end
-
-function AJM:QuestMapQuestOptions_ShareQuest(questID)
-
-	local questLogIndex = GetQuestLogIndexByID(questID);
-	QuestLogPushQuest(questLogIndex);
-	PlaySound("igQuestLogOpen");
-end
-
- function AJM:QuestMapQuestOptions_AbandonQuest(questID)
-	local lastQuestIndex = GetQuestLogSelection();
-	SelectQuestLogEntry(GetQuestLogIndexByID(questID));
-	SetAbandonQuest();
-	local items = GetAbandonQuestItems();
-	if ( items ) then
-		StaticPopup_Hide("ABANDON_QUEST");
-		StaticPopup_Show("ABANDON_QUEST_WITH_ITEMS", GetAbandonQuestName(), items);
-	else
-		StaticPopup_Hide("ABANDON_QUEST_WITH_ITEMS");
-		StaticPopup_Show("ABANDON_QUEST", GetAbandonQuestName());
-	end
-	SelectQuestLogEntry(lastQuestIndex);
-end
-
-function AJM:QuestMapQuestOptions_ToggleTrackQuestAllToons(questID)
-
-	local questLogIndex = GetQuestLogIndexByID(questID);
-	local title = GetQuestLogTitle( questLogIndex )
-	
-	if ( IsQuestWatched(questLogIndex) ) then
-		AJM:JambaSendCommandToTeam( AJM.COMMAND_QUEST_TRACK, questID, title, false )
-	else
-		AJM:JambaSendCommandToTeam( AJM.COMMAND_QUEST_TRACK, questID, title, true )
-	end
-end
-
-function AJM:QuestMapQuestOptions_AbandonQuestAllToons(questID)
-
-	local questLogIndex = GetQuestLogIndexByID(questID);
-	local title = GetQuestLogTitle( questLogIndex )
-	
-	local data = {}
-	data.questID = questID
-	data.title = title
-
-	StaticPopup_Show("JAMBAQUEST_CONFIRM_ABANDON_QUEST_NEW", title, nil, data)
-	
-end
-
-
-]]
 
 function AJM:QuestMapQuestOptions_Jamba_DoQuestTrack( sender, questID, title, track )
 	local questLogIndex = GetQuestLogIndexByID( questID )

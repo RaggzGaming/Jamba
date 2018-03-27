@@ -34,6 +34,11 @@ AJM.parentDisplayName = L["Toon"]
 AJM.parentDisplayNameToon = L["Toon"]
 AJM.parentDisplayNameMerchant = L["Vender"]
 AJM.moduleDisplayName = L["Toon"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\Toon.tga"
+-- order
+AJM.moduleOrder = 40
+
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -69,6 +74,10 @@ AJM.settings = {
 		acceptReadyCheck = false,
 		teleportLFGWithTeam = false,
 		rollWithTeam = false,
+		autoLoot = false,
+		blizzAutoLoot = false,
+		tellBoERare = false,
+		tellBoEEpic = false,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -188,7 +197,7 @@ function AJM:OnCharactersChanged()
 	AJM:SettingsRefresh()
 end
 
-local function SettingsCreateRequests( top )
+local function SettingsCreateToon( top )
 	-- Get positions.
 	local checkBoxHeight = JambaHelperSettings:GetCheckBoxHeight()
 	local editBoxHeight = JambaHelperSettings:GetEditBoxHeight()
@@ -205,11 +214,11 @@ local function SettingsCreateRequests( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControlRequests, L["Requests"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Requests"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	AJM.settingsControlRequests.checkBoxAutoDenyDuels = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAutoDenyDuels = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Auto Deny Duels"],
@@ -217,9 +226,9 @@ local function SettingsCreateRequests( top )
 		L["Automatically Deny Duels From Players"]
 	)	
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlRequests.checkBoxAutoDenyGuildInvites = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAutoDenyGuildInvites = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Auto Deny Guild Invites"],
@@ -227,19 +236,19 @@ local function SettingsCreateRequests( top )
 		L["Automatically Deny All Guild Invites"]
 	)	
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlRequests.checkBoxAutoAcceptResurrectRequest = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequest = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Auto Accept Resurrect Request"],
-		AJM.SettingsToggleAutoAcceptResurrectRequests,
+		AJM.SettingsToggleAutoAcceptResurrectToon,
 		L["Automatically Accept Resurrect Request"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlRequests.checkBoxAcceptDeathRequests = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAcceptDeathRequests = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Display Team Release Prompts"],
@@ -247,9 +256,9 @@ local function SettingsCreateRequests( top )
 		L["Display Team Release Popup Displays when the Team Dies"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlRequests.checkBoxAutoAcceptSummonRequest = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAutoAcceptSummonRequest = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Auto Accept Summon Request"],
@@ -258,11 +267,11 @@ local function SettingsCreateRequests( top )
 	)
 	movingTop = movingTop - checkBoxHeight
 	-- Ebony Group Stuff			
-	JambaHelperSettings:CreateHeading( AJM.settingsControlRequests, L["Raid/Party Tools."], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Raid/Party Tools."], movingTop, false )
 	movingTop = movingTop - headingHeight
-	AJM.settingsControlRequests.checkBoxAutoRoleCheck = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAutoRoleCheck = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["Auto Accept Role Checks"],
@@ -270,9 +279,9 @@ local function SettingsCreateRequests( top )
 		L["Automatically Accept Role Checks \n\nIf a role is already set.."]
 	)		
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlRequests.checkBoxAcceptReadyCheck = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+	AJM.settingsControlToon.checkBoxAcceptReadyCheck = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop,
 		L["Accept Ready Checks With Team"],
@@ -280,9 +289,9 @@ local function SettingsCreateRequests( top )
 		L["Accept Ready Checks With Team \n\nIf Team Member is the one that does the ready check it is Auto."]
 	)
  	movingTop = movingTop - checkBoxHeight
- 	AJM.settingsControlRequests.checkBoxLFGTeleport = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+ 	AJM.settingsControlToon.checkBoxLFGTeleport = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop,
 		L["LFG Teleport With Team"],
@@ -290,26 +299,69 @@ local function SettingsCreateRequests( top )
 		L["Teleport With Team Members LFG"]
 	)
  	movingTop = movingTop - checkBoxHeight
- 	AJM.settingsControlRequests.checkBoxLootWithTeam = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlRequests, 
-		headingWidth, 
+ 	AJM.settingsControlToon.checkBoxLootWithTeam = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
 		left, 
 		movingTop,
 		L["Roll Loot With Team"],
 		AJM.SettingsToggleLootWithTeam,
 		L["Roll Loot With the Team"]
 	)	
+	movingTop = movingTop - checkBoxHeight
+	-- Toon Loot 
+	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Loot Options"], movingTop, false )
+ 	movingTop = movingTop - headingHeight
+	AJM.settingsControlToon.checkBoxAutoLoot = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
+		left, 
+		movingTop,
+		L["Enable Auto Loot"],
+		AJM.SettingsToggleAutoLoot,
+		L["Old Jambas Advanced Loot \nBut better"]
+	)
+	AJM.settingsControlToon.checkBoxBlizAutoLoot = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
+		column2left, 
+		movingTop,
+		L["Manage Auto Loot"],
+		AJM.SettingsToggleBlizzAutoLoot,
+		L["Manage Blizzard's Auto Loot Settings"]
+	)
+	movingTop = movingTop - checkBoxHeight
+	AJM.settingsControlToon.checkBoxTellBoERare = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
+		left, 
+		movingTop,
+		L["Tell Team BoE Rare"],
+		AJM.SettingsToggleTellBoERare,
+		L["Tell The Team If i loot a BoE Rare"]
+	)
+	AJM.settingsControlToon.checkBoxTellBoEEpic = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControlToon, 
+		halfWidth, 
+		column2left, 
+		movingTop,
+		L["Tell Team BoE Epic"],
+		AJM.SettingsToggleTellBoEEpic,
+		L["Tell The Team If i loot a BoE Epic"]
+	)
+	movingTop = movingTop - checkBoxHeight
+	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Message Area"], movingTop, false )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
- 	AJM.settingsControlRequests.dropdownRequestArea = JambaHelperSettings:CreateDropdown( 
-	AJM.settingsControlRequests, 
+ 	AJM.settingsControlToon.dropdownRequestArea = JambaHelperSettings:CreateDropdown( 
+	AJM.settingsControlToon, 
 		headingWidth, 
 		left, 
 		movingTop, 
 		L["Send Request Message Area"] ,
 		L["Pick a Message Area"]
 	)
-	AJM.settingsControlRequests.dropdownRequestArea:SetList( JambaApi.MessageAreaList() )
-	AJM.settingsControlRequests.dropdownRequestArea:SetCallback( "OnValueChanged", AJM.SettingsSetRequestArea )
+	AJM.settingsControlToon.dropdownRequestArea:SetList( JambaApi.MessageAreaList() )
+	AJM.settingsControlToon.dropdownRequestArea:SetCallback( "OnValueChanged", AJM.SettingsSetRequestArea )	
 	return movingTop	
 end
 
@@ -494,18 +546,20 @@ local function SettingsCreateWarnings( top )
 end
 
 local function SettingsCreate()
+	AJM.settingsControlToon = {}
 	AJM.settingsControlWarnings = {}
-	AJM.settingsControlRequests = {}
 	AJM.settingsControlMerchant = {}
 	JambaHelperSettings:CreateSettings( 
-		AJM.settingsControlWarnings, 
+		AJM.settingsControlToon,
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayNameToon, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder
 	)
 	JambaHelperSettings:CreateSettings( 
-		AJM.settingsControlRequests, 
-		L["Requests"],
+		AJM.settingsControlWarnings,
+		L["Warnings"],
 		AJM.parentDisplayNameToon, 
 		AJM.SettingsPushSettingsClick 
 	)
@@ -515,10 +569,10 @@ local function SettingsCreate()
 		AJM.parentDisplayNameMerchant, 
 		AJM.SettingsPushSettingsClick 
 	)
+	local bottomOfToon = SettingsCreateToon( JambaHelperSettings:TopOfSettings() )
+	AJM.settingsControlToon.widgetSettings.content:SetHeight( -bottomOfToon )
 	local bottomOfWarnings = SettingsCreateWarnings( JambaHelperSettings:TopOfSettings() )
-	AJM.settingsControlWarnings.widgetSettings.content:SetHeight( -bottomOfWarnings )
-	local bottomOfRequests = SettingsCreateRequests( JambaHelperSettings:TopOfSettings() )
-	AJM.settingsControlRequests.widgetSettings.content:SetHeight( -bottomOfRequests )
+	AJM.settingsControlWarnings.widgetSettings.content:SetHeight( -bottomOfToon )
 	local bottomOfMerchant = SettingsCreateMerchant( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControlMerchant.widgetSettings.content:SetHeight( -bottomOfMerchant )	
 	-- Help
@@ -555,16 +609,23 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWarnings.checkBoxWarnCC:SetValue( AJM.db.warnCC )
 	AJM.settingsControlWarnings.editBoxCCMessage:SetText( AJM.db.CcMessage ) 
 	AJM.settingsControlWarnings.dropdownWarningArea:SetValue( AJM.db.warningArea )
-	AJM.settingsControlRequests.checkBoxAutoAcceptResurrectRequest:SetValue( AJM.db.autoAcceptResurrectRequest )
-	AJM.settingsControlRequests.checkBoxAcceptDeathRequests:SetValue( AJM.db.acceptDeathRequests )
-	AJM.settingsControlRequests.checkBoxAutoDenyDuels:SetValue( AJM.db.autoDenyDuels )
-	AJM.settingsControlRequests.checkBoxAutoAcceptSummonRequest:SetValue( AJM.db.autoAcceptSummonRequest )
-	AJM.settingsControlRequests.checkBoxAutoDenyGuildInvites:SetValue( AJM.db.autoDenyGuildInvites )
-	AJM.settingsControlRequests.checkBoxAutoRoleCheck:SetValue( AJM.db.autoAcceptRoleCheck )
-	AJM.settingsControlRequests.checkBoxAcceptReadyCheck:SetValue( AJM.db.acceptReadyCheck )
-	AJM.settingsControlRequests.checkBoxLFGTeleport:SetValue( AJM.db.teleportLFGWithTeam )
-	AJM.settingsControlRequests.checkBoxLootWithTeam:SetValue( AJM.db.rollWithTeam )
-	AJM.settingsControlRequests.dropdownRequestArea:SetValue( AJM.db.requestArea )
+	AJM.settingsControlToon.checkBoxAutoAcceptResurrectRequest:SetValue( AJM.db.autoAcceptResurrectRequest )
+	AJM.settingsControlToon.checkBoxAcceptDeathRequests:SetValue( AJM.db.acceptDeathRequests )
+	AJM.settingsControlToon.checkBoxAutoDenyDuels:SetValue( AJM.db.autoDenyDuels )
+	AJM.settingsControlToon.checkBoxAutoAcceptSummonRequest:SetValue( AJM.db.autoAcceptSummonRequest )
+	AJM.settingsControlToon.checkBoxAutoDenyGuildInvites:SetValue( AJM.db.autoDenyGuildInvites )
+	AJM.settingsControlToon.checkBoxAutoRoleCheck:SetValue( AJM.db.autoAcceptRoleCheck )
+	AJM.settingsControlToon.checkBoxAcceptReadyCheck:SetValue( AJM.db.acceptReadyCheck )
+	AJM.settingsControlToon.checkBoxLFGTeleport:SetValue( AJM.db.teleportLFGWithTeam )
+	AJM.settingsControlToon.checkBoxLootWithTeam:SetValue( AJM.db.rollWithTeam )
+	AJM.settingsControlToon.dropdownRequestArea:SetValue( AJM.db.requestArea )
+	
+	AJM.settingsControlToon.checkBoxAutoLoot:SetValue( AJM.db.autoLoot )
+	AJM.settingsControlToon.checkBoxBlizAutoLoot:SetValue( AJM.db.blizzAutoLoot )
+	AJM.settingsControlToon.checkBoxTellBoERare:SetValue( AJM.db.tellBoERare )
+	AJM.settingsControlToon.checkBoxTellBoEEpic:SetValue( AJM.db.tellBoEEpic )
+	
+	
 	AJM.settingsControlMerchant.checkBoxAutoRepair:SetValue( AJM.db.autoRepair )
 	AJM.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( AJM.db.autoRepairUseGuildFunds )
 	AJM.settingsControlMerchant.dropdownMerchantArea:SetValue( AJM.db.merchantArea )
@@ -640,6 +701,28 @@ function AJM:SettingsToggleLootWithTeam( event, checked )
 	AJM.db.rollWithTeam = checked
 	AJM:SettingsRefresh()
 end
+
+function AJM:SettingsToggleAutoLoot( event, checked )
+	AJM.db.autoLoot = checked
+	AJM:SettingsRefresh()
+end
+
+function AJM:SettingsToggleBlizzAutoLoot( event, checked )
+	AJM.db.blizzAutoLoot = checked
+	AJM:SettingsRefresh()
+end
+
+function AJM:SettingsToggleTellBoERare( event, checked )
+	AJM.db.tellBoERare = checked
+	AJM:SettingsRefresh()
+end
+
+function AJM:SettingsToggleTellBoEEpic( event, checked )
+	AJM.db.tellBoEEpic = checked
+	AJM:SettingsRefresh()
+end
+
+-- Warnings Toggles
 
 function AJM:SettingsToggleWarnHitFirstTimeCombat( event, checked )
 	AJM.db.warnHitFirstTimeCombat = checked
@@ -740,6 +823,8 @@ function AJM:SettingsSetMerchantArea( event, value )
 	AJM:SettingsRefresh()
 end
 
+
+
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
@@ -790,6 +875,8 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "READY_CHECK" )
 	AJM:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "ITEM_PUSH" )
+	AJM:RegisterEvent( "LOOT_READY" )
+	
 -- Fail stuff??
 --	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
@@ -837,6 +924,11 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.enterLFGWithTeam = settings.enterLFGWithTeam
 		AJM.db.acceptReadyCheck = settings.acceptReadyCheck
 		AJM.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
+		AJM.db.autoLoot = settings.autoLoot
+		AJM.db.blizzAutoLoot = settings.blizzAutoLoot
+		AJM.db.tellBoERare = settings.tellBoERare
+		AJM.db.tellBoEEpic = settings.tellBoEEpic
+		
 		AJM.db.rollWithTeam = settings.rollWithTeam
 		AJM.db.autoRepair = settings.autoRepair
 		AJM.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
@@ -1195,6 +1287,61 @@ function AJM:CONFIRM_SUMMON( event, sender, location, ... )
 	end
 end
 
+
+function AJM:doLoot()
+	local tries = 0
+	local numloot = GetNumLootItems()	
+	if numloot ~= 0 then
+		while tries < 20 and numloot > 0 do
+			if LootFrame:IsShown() == false then
+				tries = tries + 20
+			end	
+			for slot = 1, numloot do
+				local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
+				--AJM:Print("items", slot, locked)
+				if locked ~= nil and not locked then
+					if AJM.db.tellBoERare == true then
+						if lootQuality == 3 then
+							AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
+						end
+					end		
+					if AJM.db.tellBoEEpic == true then
+						if lootQuality == 4 then
+							AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
+						end
+					end
+					--AJM:Print("canLoot", "slot", slot, "name", name )
+					LootSlot(slot)
+					tries = tries + 1
+					numloot = GetNumLootItems()
+					CloseLoot()	
+				end	
+			end			
+		end
+	end
+end
+
+
+function AJM:TellTeamEpicBoE( name )
+	
+	local _, itemName, itemRarity, _, _, itemType, itemSubType = GetItemInfo( name )
+	if itemName ~= nil then
+		if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
+			local _, isBop = JambaUtilities:TooltipScaner(itemName)
+			if isBop ~= ITEM_SOULBOUND then
+				local rarity = nil
+				if itemRarity == 4 then
+					rarity = L["Epic"]
+				else
+					rarity = L["Rare"]
+				end
+				--AJM:Print("I have looted a Epic BOE Item: ", rarity, itemName )
+				AJM:JambaSendMessageToTeam( AJM.db.requestArea, L["I_HAVE_LOOTED_A_X_ITEM: "]( rarity, itemName ), false )
+			end	
+		end	
+	end
+end
+
 function AJM:MERCHANT_SHOW( event, ... )	
 	-- Does the user want to auto repair?
 	if AJM.db.autoRepair == false then
@@ -1339,6 +1486,16 @@ function AJM:LOSS_OF_CONTROL_ADDED( event, ... )
 	end
 end
 
+function AJM:LOOT_READY( event, ... )
+	if AJM.db.autoLoot == true then
+		if JambaApi.UsingAvdLoot() == false then
+			AJM:Print("port to new Loot" )
+			AJM:doLoot()
+		else
+			AJM:Print("TRUN OFF JAMBA ADVANCED LOOT") 
+		end
+	end	
+end
 
 ----------------------------------------------------------------------------------------------------------------
 --Most of this is Jamba-Bag sutff that needs to be here for my notes. Ebony!

@@ -871,4 +871,10 @@ function AJM:DoAdvancedLoot()
 		
 end
 
+local function usingAvdLoot()
+	return AJM.db.advancedLoot 
 
+end
+
+-- Place holder if using "Old" loot system!
+JambaApi.UsingAvdLoot = usingAvdLoot 
