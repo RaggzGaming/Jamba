@@ -2,7 +2,7 @@
 ## Title: Jamba
 ## Notes: Jamba Ebony's_Edition
 ## Author: Ebony
-## Version: v8.0-Alpha(0025)
+## Version: v8.0-Alpha(0027)
 ## SavedVariables: JambaCoreProfileDB, JambaCommunicationsProfileDB, JambaTeamProfileDB, JambaTagProfileDB, JambaMessageProfileDB, JambaAdvancedLootProfileDB, JambaCurrProfileDB, JambaDisplayTeamProfileDB, JambaFollowProfileDB, JambaFTLProfileDB, JambaItemUseProfileDB, JambaMountProfileDB, JambaPurchaseProfileDB, JambaQuestProfileDB,  JambaQuestWatcherProfileDB, JambaSellProfileDB, JambaTalkProfileDB, JambaTaxiProfileDB, JambaToonProfileDB, JambaTradeProfileDB
 
 #Libs
