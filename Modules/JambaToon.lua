@@ -326,9 +326,9 @@ local function SettingsCreateToon( top )
 		halfWidth, 
 		column2left, 
 		movingTop,
-		L["Manage Auto Loot"],
+		L["PH"].." "..L["DO NOT USE!"],
 		AJM.SettingsToggleBlizzAutoLoot,
-		L["Manage Blizzard's Auto Loot Settings"]
+		L["PH"]
 	)
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControlToon.checkBoxTellBoERare = JambaHelperSettings:CreateCheckBox( 
@@ -848,6 +848,7 @@ function AJM:OnInitialize()
 	--Start-DB for items.
 	--AJM:scanBagsForItems()
 	AJM:AddDummyItem()
+	AJM:DisableAutoLoot()
 end
 
 -- Called when the addon is enabled.
@@ -1289,36 +1290,44 @@ end
 
 
 function AJM:doLoot()
+	AJM:DisableAutoLoot()
 	local tries = 0
-	local numloot = GetNumLootItems()	
+	local numloot = GetNumLootItems()
 	if numloot ~= 0 then
-		while tries < 20 and numloot > 0 do
-			if LootFrame:IsShown() == false then
-				tries = tries + 20
-			end	
-			for slot = 1, numloot do
-				local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
-				--AJM:Print("items", slot, locked)
-				if locked ~= nil and not locked then
-					if AJM.db.tellBoERare == true then
-						if lootQuality == 3 then
-							AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
-						end
-					end		
-					if AJM.db.tellBoEEpic == true then
-						if lootQuality == 4 then
-							AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
-						end
+		for slot = 1, numloot do
+			local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
+			--AJM:Print("items", slot, locked)
+			if locked ~= nil and not locked then
+				if AJM.db.tellBoERare == true then
+					if lootQuality == 3 then
+						AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
-					--AJM:Print("canLoot", "slot", slot, "name", name )
-					LootSlot(slot)
-					tries = tries + 1
-					numloot = GetNumLootItems()
-					CloseLoot()	
-				end	
-			end			
+				end		
+				if AJM.db.tellBoEEpic == true then
+					if lootQuality == 4 then
+						AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
+					end
+				end
+				--AJM:Print("canLoot", "slot", slot, "name", name )
+				LootSlot(slot)
+				tries = tries + 1
+				numloot = GetNumLootItems()
+				--CloseLoot()
+			end	
 		end
-	end
+		if tries <= 20 then
+			AJM:ScheduleTimer("doLoot", 0.1, true )
+		end	
+	end	
+end
+
+function AJM:DisableAutoLoot()
+	if AJM.db.autoLoot == true then	
+		if GetCVar("autoLootDefault") == "1" then	
+			--AJM:Print("testSetOFF")
+			SetCVar( "autoLootDefault", 0 )
+		end	
+	end	
 end
 
 
@@ -1489,7 +1498,7 @@ end
 function AJM:LOOT_READY( event, ... )
 	if AJM.db.autoLoot == true then
 		if JambaApi.UsingAvdLoot() == false then
-			AJM:Print("port to new Loot" )
+			--AJM:Print("port to new Loot" )
 			AJM:doLoot()
 		else
 			AJM:Print("TRUN OFF JAMBA ADVANCED LOOT") 

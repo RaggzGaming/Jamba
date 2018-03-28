@@ -131,7 +131,8 @@ L["Tell The Team If i loot a BoE Epic"] = true
 L["Bags"] = true
 L[" "] = true
 L["Jamba Bags"] = true
-
+L["PH"] = true
+L["DO NOT USE!"] = true
 
 
 L["OPTIONS"] = "Options"
