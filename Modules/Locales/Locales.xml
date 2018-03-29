@@ -14,13 +14,13 @@
 	<Script file="JambaFollow-Locale-enUS.lua" />
 	<Script file="JambaFTL-Locale-enUS.lua" />
 	<Script file="JambaItemUse-Locale-enUS.lua" />
-	<Script file="JambaMount-Locale-enUS.lua" />
+
 	<Script file="JambaPurchase-Locale-enUS.lua" />
 	<Script file="JambaQuest-Locale-enUS.lua" />
 	<Script file="JambaQuestWatcher-Locale-enUS.lua" />
 	<Script file="JambaSell-Locale-enUS.lua" />
 	<Script file="JambaTalk-Locale-enUS.lua" />
-	<Script file="JambaTaxi-Locale-enUS.lua" />
+	<Script file="JambaInteraction-Locale-enUS.lua" />
 	<Script file="JambaToon-Locale-enUS.lua" />
 	<Script file="JambaTrade-Locale-enUS.lua" />	
 </Ui>

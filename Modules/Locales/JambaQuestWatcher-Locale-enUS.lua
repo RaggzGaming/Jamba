@@ -1,8 +1,12 @@
---[[
-Jamba - Jafula's Awesome Multi-Boxer Assistant
-Copyright 2008 - 2018 Michael "Jafula" Miller
-License: The MIT License
-]]--
+-- ================================================================================ --
+--				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
+--				Current Author: Jennifer Cally (Ebony)								--
+--				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
+--																					--
+--				License: The MIT License (MIT)										--
+--				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
+--																					--
+-- ================================================================================ --
 
 local L = LibStub("AceLocale-3.0"):NewLocale( "Jamba-QuestWatcher", "enUS", true )
 L["Slash Commands"] = true

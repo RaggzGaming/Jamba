@@ -28,9 +28,9 @@
 	<Script file="JambaTalk.lua" />
 	
 
-	<Script file="JambaTaxi.lua" />
+	<Script file="JambaInteraction.lua" />
 	<Script file="JambaTrade.lua" />
-	<Script file="JambaMount.lua" />
+
 	<Script file="JambaAdvancedLoot.lua" />
 	
 	<Script file="JambaFTL.lua" />

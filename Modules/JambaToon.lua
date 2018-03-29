@@ -74,10 +74,6 @@ AJM.settings = {
 		acceptReadyCheck = false,
 		teleportLFGWithTeam = false,
 		rollWithTeam = false,
-		autoLoot = false,
-		blizzAutoLoot = false,
-		tellBoERare = false,
-		tellBoEEpic = false,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -307,47 +303,6 @@ local function SettingsCreateToon( top )
 		L["Roll Loot With Team"],
 		AJM.SettingsToggleLootWithTeam,
 		L["Roll Loot With the Team"]
-	)	
-	movingTop = movingTop - checkBoxHeight
-	-- Toon Loot 
-	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Loot Options"], movingTop, false )
- 	movingTop = movingTop - headingHeight
-	AJM.settingsControlToon.checkBoxAutoLoot = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop,
-		L["Enable Auto Loot"],
-		AJM.SettingsToggleAutoLoot,
-		L["Old Jambas Advanced Loot \nBut better"]
-	)
-	AJM.settingsControlToon.checkBoxBlizAutoLoot = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlToon, 
-		halfWidth, 
-		column2left, 
-		movingTop,
-		L["PH"].." "..L["DO NOT USE!"],
-		AJM.SettingsToggleBlizzAutoLoot,
-		L["PH"]
-	)
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlToon.checkBoxTellBoERare = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop,
-		L["Tell Team BoE Rare"],
-		AJM.SettingsToggleTellBoERare,
-		L["Tell The Team If i loot a BoE Rare"]
-	)
-	AJM.settingsControlToon.checkBoxTellBoEEpic = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlToon, 
-		halfWidth, 
-		column2left, 
-		movingTop,
-		L["Tell Team BoE Epic"],
-		AJM.SettingsToggleTellBoEEpic,
-		L["Tell The Team If i loot a BoE Epic"]
 	)
 	movingTop = movingTop - checkBoxHeight
 	JambaHelperSettings:CreateHeading( AJM.settingsControlToon, L["Message Area"], movingTop, false )
@@ -619,17 +574,10 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlToon.checkBoxLFGTeleport:SetValue( AJM.db.teleportLFGWithTeam )
 	AJM.settingsControlToon.checkBoxLootWithTeam:SetValue( AJM.db.rollWithTeam )
 	AJM.settingsControlToon.dropdownRequestArea:SetValue( AJM.db.requestArea )
-	
-	AJM.settingsControlToon.checkBoxAutoLoot:SetValue( AJM.db.autoLoot )
-	AJM.settingsControlToon.checkBoxBlizAutoLoot:SetValue( AJM.db.blizzAutoLoot )
-	AJM.settingsControlToon.checkBoxTellBoERare:SetValue( AJM.db.tellBoERare )
-	AJM.settingsControlToon.checkBoxTellBoEEpic:SetValue( AJM.db.tellBoEEpic )
-	
-	
 	AJM.settingsControlMerchant.checkBoxAutoRepair:SetValue( AJM.db.autoRepair )
 	AJM.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( AJM.db.autoRepairUseGuildFunds )
 	AJM.settingsControlMerchant.dropdownMerchantArea:SetValue( AJM.db.merchantArea )
-	
+	-- Set state.
 	AJM.settingsControlWarnings.editBoxHitFirstTimeMessage:SetDisabled( not AJM.db.warnHitFirstTimeCombat )
 	AJM.settingsControlWarnings.editBoxWarnTargetNotMasterMessage:SetDisabled( not AJM.db.warnTargetNotMasterEnterCombat )
 	AJM.settingsControlWarnings.editBoxWarnFocusNotMasterMessage:SetDisabled( not AJM.db.warnFocusNotMasterEnterCombat )
@@ -699,26 +647,6 @@ end
 
 function AJM:SettingsToggleLootWithTeam( event, checked )
 	AJM.db.rollWithTeam = checked
-	AJM:SettingsRefresh()
-end
-
-function AJM:SettingsToggleAutoLoot( event, checked )
-	AJM.db.autoLoot = checked
-	AJM:SettingsRefresh()
-end
-
-function AJM:SettingsToggleBlizzAutoLoot( event, checked )
-	AJM.db.blizzAutoLoot = checked
-	AJM:SettingsRefresh()
-end
-
-function AJM:SettingsToggleTellBoERare( event, checked )
-	AJM.db.tellBoERare = checked
-	AJM:SettingsRefresh()
-end
-
-function AJM:SettingsToggleTellBoEEpic( event, checked )
-	AJM.db.tellBoEEpic = checked
 	AJM:SettingsRefresh()
 end
 
@@ -823,8 +751,6 @@ function AJM:SettingsSetMerchantArea( event, value )
 	AJM:SettingsRefresh()
 end
 
-
-
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
@@ -848,7 +774,6 @@ function AJM:OnInitialize()
 	--Start-DB for items.
 	--AJM:scanBagsForItems()
 	AJM:AddDummyItem()
-	AJM:DisableAutoLoot()
 end
 
 -- Called when the addon is enabled.
@@ -876,9 +801,7 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "READY_CHECK" )
 	AJM:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "ITEM_PUSH" )
-	AJM:RegisterEvent( "LOOT_READY" )
-	
--- Fail stuff??
+
 --	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
@@ -888,8 +811,6 @@ function AJM:OnEnable()
 	AJM:SecureHook( "LFGTeleport" )
 	AJM:SecureHook( "RollOnLoot" )
 	
--- fail tooltip scan keep for now
---	AJM:SecureHook( GameTooltip , "SetBagItem", "AddTooltipInfo" )
 end
 
 -- Called when the addon is disabled.
@@ -925,11 +846,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.enterLFGWithTeam = settings.enterLFGWithTeam
 		AJM.db.acceptReadyCheck = settings.acceptReadyCheck
 		AJM.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
-		AJM.db.autoLoot = settings.autoLoot
-		AJM.db.blizzAutoLoot = settings.blizzAutoLoot
-		AJM.db.tellBoERare = settings.tellBoERare
-		AJM.db.tellBoEEpic = settings.tellBoEEpic
-		
 		AJM.db.rollWithTeam = settings.rollWithTeam
 		AJM.db.autoRepair = settings.autoRepair
 		AJM.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
@@ -1289,67 +1205,6 @@ function AJM:CONFIRM_SUMMON( event, sender, location, ... )
 end
 
 
-function AJM:doLoot()
-	AJM:DisableAutoLoot()
-	local tries = 0
-	local numloot = GetNumLootItems()
-	if numloot ~= 0 then
-		for slot = 1, numloot do
-			local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
-			--AJM:Print("items", slot, locked)
-			if locked ~= nil and not locked then
-				if AJM.db.tellBoERare == true then
-					if lootQuality == 3 then
-						AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
-					end
-				end		
-				if AJM.db.tellBoEEpic == true then
-					if lootQuality == 4 then
-						AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
-					end
-				end
-				--AJM:Print("canLoot", "slot", slot, "name", name )
-				LootSlot(slot)
-				tries = tries + 1
-				numloot = GetNumLootItems()
-				--CloseLoot()
-			end	
-		end
-		if tries <= 20 then
-			AJM:ScheduleTimer("doLoot", 0.1, true )
-		end	
-	end	
-end
-
-function AJM:DisableAutoLoot()
-	if AJM.db.autoLoot == true then	
-		if GetCVar("autoLootDefault") == "1" then	
-			--AJM:Print("testSetOFF")
-			SetCVar( "autoLootDefault", 0 )
-		end	
-	end	
-end
-
-
-function AJM:TellTeamEpicBoE( name )
-	
-	local _, itemName, itemRarity, _, _, itemType, itemSubType = GetItemInfo( name )
-	if itemName ~= nil then
-		if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
-			local _, isBop = JambaUtilities:TooltipScaner(itemName)
-			if isBop ~= ITEM_SOULBOUND then
-				local rarity = nil
-				if itemRarity == 4 then
-					rarity = L["Epic"]
-				else
-					rarity = L["Rare"]
-				end
-				--AJM:Print("I have looted a Epic BOE Item: ", rarity, itemName )
-				AJM:JambaSendMessageToTeam( AJM.db.requestArea, L["I_HAVE_LOOTED_A_X_ITEM: "]( rarity, itemName ), false )
-			end	
-		end	
-	end
-end
 
 function AJM:MERCHANT_SHOW( event, ... )	
 	-- Does the user want to auto repair?
@@ -1495,16 +1350,7 @@ function AJM:LOSS_OF_CONTROL_ADDED( event, ... )
 	end
 end
 
-function AJM:LOOT_READY( event, ... )
-	if AJM.db.autoLoot == true then
-		if JambaApi.UsingAvdLoot() == false then
-			--AJM:Print("port to new Loot" )
-			AJM:doLoot()
-		else
-			AJM:Print("TRUN OFF JAMBA ADVANCED LOOT") 
-		end
-	end	
-end
+
 
 ----------------------------------------------------------------------------------------------------------------
 --Most of this is Jamba-Bag sutff that needs to be here for my notes. Ebony!

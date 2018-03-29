@@ -395,6 +395,27 @@ function JambaHelperSettings:CreateDropdown( settingsControl, width, left, top, 
 end
 
 -------------------------------------------------------------------------------------------------------------
+-- Icon.
+-------------------------------------------------------------------------------------------------------------
+
+function JambaHelperSettings:GetIconHeight()
+	return 32
+end
+
+
+function JambaHelperSettings:CreateIcon( settingsControl, width, left, top, iconName )
+	--print("testGUI", text, icon, iconSize )
+	local icon = AceGUI:Create( "Label" )
+	icon:SetImage( iconName )
+	icon:SetImageSize( 32, 32 )
+	settingsControl.widgetSettings:AddChild( icon )
+	icon:SetWidth( width )
+	icon:SetPoint( "TOPLEFT", settingsControl.widgetSettings.content, "TOPLEFT", left, top )
+	return icon
+end
+
+
+-------------------------------------------------------------------------------------------------------------
 -- Label.
 -------------------------------------------------------------------------------------------------------------
 
@@ -411,6 +432,7 @@ function JambaHelperSettings:CreateLabel( settingsControl, width, left, top, tex
 	label:SetPoint( "TOPLEFT", settingsControl.widgetSettings.content, "TOPLEFT", left, top )
 	return label
 end
+
 
 -------------------------------------------------------------------------------------------------------------
 -- Label continue.
