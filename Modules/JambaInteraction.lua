@@ -648,7 +648,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:LOOT_READY( event, ... )
-	if AJM.db.autoLoot == true then
+	if AJM.db.autoLoot == true then -- PH Ebony todo Clean UP
 		if JambaApi.UsingAvdLoot() == false then
 			--AJM:Print("port to new Loot" )
 			AJM:doLoot()
@@ -699,18 +699,6 @@ function AJM:DisableAutoLoot()
 	end	
 end
 
-
-
-function AJM:LOOT_READY( event, ... )
-	if AJM.db.autoLoot == true then
-		if JambaApi.UsingAvdLoot() == false then -- PH Ebony todo Clean UP
-			--AJM:Print("port to new Loot" )
-			AJM:doLoot()
-		else
-			AJM:Print("[PH] TRUN OFF JAMBA ADVANCED LOOT") 
-		end
-	end	
-end
 
 function AJM:TellTeamEpicBoE( name )
 	local _, itemName, itemRarity, _, _, itemType, itemSubType = GetItemInfo( name )
