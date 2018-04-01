@@ -8,7 +8,6 @@
 -->
 
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="JambaAdvancedLoot-Locale-enUS.lua" />
 	<Script file="JambaCurr-Locale-enUS.lua" />
 	<Script file="JambaDisplayTeam-Locale-enUS.lua" />
 	<Script file="JambaFollow-Locale-enUS.lua" />
@@ -22,5 +21,6 @@
 	<Script file="JambaTalk-Locale-enUS.lua" />
 	<Script file="JambaInteraction-Locale-enUS.lua" />
 	<Script file="JambaToon-Locale-enUS.lua" />
-	<Script file="JambaTrade-Locale-enUS.lua" />	
+	<Script file="JambaTrade-Locale-enUS.lua" />
+	<Script file="JambaSync-Locale-enUS.lua" />	
 </Ui>

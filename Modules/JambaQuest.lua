@@ -253,7 +253,8 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "QUEST_GREETING" )
 	AJM:RegisterEvent( "QUEST_PROGRESS" )
 	AJM:RegisterEvent( "QUEST_FINISHED" )
-	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "QUEST_FAIL" )
+	--AJM:RegisterEvent( "UI_ERROR_MESSAGE", "QUEST_FAIL" )
+	AJM:RegisterEvent( "CHAT_MSG_SYSTEM", "QUEST_FAIL" )
    -- Quest post hooks.
     AJM:SecureHook( "SelectGossipOption" )
     AJM:SecureHook( "SelectGossipActiveQuest" )
@@ -1345,12 +1346,18 @@ function AJM:QUEST_COMPLETE()
 	end
 end
 
-function AJM:QUEST_FAIL( event, player, message )
-	--AJM:Print("QUEST_FAIL", player, message )
-	if message == INVENTORY_FULL then
-		local questName = GetTitleText()
-		AJM:JambaSendMessageToTeam( AJM.db.warningArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
-	end
+
+function AJM:QUEST_FAIL( event, message, ... )
+	--AJM:Print("QUEST_FAIL", message )
+	local questName = GetTitleText()
+	if questName ~= nil then
+		local questInvFull = string.format( ERR_QUEST_FAILED_BAG_FULL_S, questName ) 
+		--AJM:Print("A", questInvFull )
+		if  message == questInvFull  then
+			--AJM:Print("test")
+			AJM:JambaSendMessageToTeam( AJM.db.warningArea, L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST: A"]( questName ), false )
+		end
+	end	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1632,7 +1639,6 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- JAMBA QUEST CONTEXT MENU
 -------------------------------------------------------------------------------------------------------------
-
 
 
 function AJM:QuestMapQuestOptions_AbandonQuest(questID)                       

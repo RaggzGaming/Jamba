@@ -527,7 +527,7 @@ local function SettingsCreate()
 	local bottomOfToon = SettingsCreateToon( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControlToon.widgetSettings.content:SetHeight( -bottomOfToon )
 	local bottomOfWarnings = SettingsCreateWarnings( JambaHelperSettings:TopOfSettings() )
-	AJM.settingsControlWarnings.widgetSettings.content:SetHeight( -bottomOfToon )
+	AJM.settingsControlWarnings.widgetSettings.content:SetHeight( -bottomOfWarnings)
 	local bottomOfMerchant = SettingsCreateMerchant( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControlMerchant.widgetSettings.content:SetHeight( -bottomOfMerchant )	
 	-- Help
@@ -770,7 +770,7 @@ function AJM:OnInitialize()
 	-- Have been hit flag.
 	AJM.haveBeenHit = false
 	-- Bags full changed count.
-	AJM.previousFreeBagSlotsCount = -1
+	AJM.previousFreeBagSlotsCount = -0
 	--Start-DB for items.
 	--AJM:scanBagsForItems()
 	AJM:AddDummyItem()
@@ -1320,14 +1320,22 @@ function AJM:PLAYER_REGEN_DISABLED( event, ... )
 	end
 end
 
-function AJM:ITEM_PUSH( event, ... )
-    if AJM.db.warnBagsFull == true then
-		if UnitIsGhost( "player" ) then
-			return
+function AJM:ITEM_PUSH( event, Type, message, ... )
+	--AJM:Print("test", message )
+   if AJM.db.warnBagsFull == true then
+		if UnitIsGhost( "player" ) then return end
+		if UnitIsDead( "player" ) then return end
+		
+		if message == ERR_INV_FULL then	
+			---AJM:Print("Inventory is full.", "one")
+			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
+			end	
+
+		elseif message == INVENTORY_FULL then
+			--AJM:Print("Inventory is full.", "two")
+			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
 		end
-		if UnitIsDead( "player" ) then
-			return
-		end
+	--[[
 	local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
 		if numberFreeSlots == 0 then
 			if AJM.previousFreeBagSlotsCount ~= numberFreeSlots then
@@ -1336,6 +1344,7 @@ function AJM:ITEM_PUSH( event, ... )
 		end
 	AJM.previousFreeBagSlotsCount = numberFreeSlots
 	end
+	--]]
 end
 
 --Ebony CCed

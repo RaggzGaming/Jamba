@@ -46,9 +46,8 @@ L["TELL_TEAM_BOE_RARE"] = "Tell Team BoE Rare"
 L["TELL_TEAM_BOE_RARE_HELP"] = "Tell The Team If I Loot A Boe Rare"
 L["TELL_TEAM_BOE_EPIC"] = "Tell Team Boe Epic"
 L["TELL_TEAM_BOE_EPIC_HELP"] = "Tell The Team If I Loot A Boe Epic"
-
-L["I_HAVE_LOOTED_A_X_ITEM: "] = function( itemRarity, itemLink )
-	return string.format( "I Have Looted A %s BoE Item: %s", itemRarity , itemLink )
+L["I_HAVE_LOOTED_X_Y_ITEM"] = function( rarity, itemName )
+	return string.format( "I Have Looted A %q BoE Item: %s .", rarity, itemName )
 end
 L["EPIC"] = "Epic"
 L["RARE"] = "Rare"

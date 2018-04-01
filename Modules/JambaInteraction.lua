@@ -648,24 +648,21 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:LOOT_READY( event, ... )
-	if AJM.db.autoLoot == true then -- PH Ebony todo Clean UP
-		if JambaApi.UsingAvdLoot() == false then
-			--AJM:Print("port to new Loot" )
+	if AJM.db.autoLoot == true then
 			AJM:doLoot()
-		else
-			AJM:Print("TRUN OFF JAMBA ADVANCED LOOT") 
-		end
 	end	
 end
 
-function AJM:doLoot()
+function AJM:doLoot( tries )
 	AJM:DisableAutoLoot()
-	local tries = 0
+	if tries == nil then
+		tries = 0
+	end
 	local numloot = GetNumLootItems()
 	if numloot ~= 0 then
 		for slot = 1, numloot do
 			local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
-			--AJM:Print("items", slot, locked)
+			--AJM:Print("items", slot, locked, name, tries)
 			if locked ~= nil and not locked then
 				if AJM.db.tellBoERare == true then
 					if lootQuality == 3 then
@@ -679,15 +676,23 @@ function AJM:doLoot()
 				end
 				--AJM:Print("canLoot", "slot", slot, "name", name )
 				LootSlot(slot)
-				tries = tries + 1
+				
 				numloot = GetNumLootItems()
 				--CloseLoot()
 			end	
 		end
-		if tries <= 20 then
-			AJM:ScheduleTimer("doLoot", 0.1, true )
+		tries = tries + 1
+		if tries < 5 then
+			AJM:doLootLoop( tries )
+		else	
+			CloseLoot()
 		end	
 	end	
+end
+
+function AJM:doLootLoop( tries )
+	--AJM:Print("loop", tries)
+	AJM:ScheduleTimer("doLoot", 0.5, tries )
 end
 
 function AJM:DisableAutoLoot()
@@ -702,6 +707,7 @@ end
 
 function AJM:TellTeamEpicBoE( name )
 	local _, itemName, itemRarity, _, _, itemType, itemSubType = GetItemInfo( name )
+	--AJM:Print("loottest", itemName, itemRarity , itemType , itemSubType )
 	if itemName ~= nil then
 		if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
 			local _, isBop = JambaUtilities:TooltipScaner(itemName)
@@ -713,7 +719,7 @@ function AJM:TellTeamEpicBoE( name )
 					rarity = L["RARE"]
 				end
 				--AJM:Print("I have looted a Epic BOE Item: ", rarity, itemName )
-				AJM:JambaSendMessageToTeam( AJM.db.requestArea, L["I_HAVE_LOOTED_A_X_ITEM: "]( rarity, itemName ), false )
+				AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemName ), false )
 			end	
 		end	
 	end

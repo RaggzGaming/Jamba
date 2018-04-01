@@ -27,11 +27,11 @@
 	
 	<Script file="JambaTalk.lua" />
 	
-	
+
 	<Script file="JambaInteraction.lua" />
 	<Script file="JambaTrade.lua" />
 	
-	<Script file="JambaAdvancedLoot.lua" />
+	<Script file="JambaSync.lua" /> 
 	
 	<Script file="JambaFTL.lua" />
 </Ui>
