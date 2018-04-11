@@ -26,9 +26,9 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 AJM.moduleName = "Jamba-Team"
 AJM.settingsDatabaseName = "JambaTeamProfileDB"
 AJM.chatCommand = "jamba-team"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Team"]
-AJM.moduleDisplayName = L["Team"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["TEAM"]
+AJM.moduleDisplayName = L["TEAM"]
 -- Icon 
 AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
 -- order
@@ -36,9 +36,9 @@ AJM.moduleOrder = 20
 
 
 -- Jamba key bindings.
-BINDING_HEADER_JAMBATEAM = L["Jamba-Team"]
-BINDING_NAME_JAMBATEAMINVITE = L["Invite Team To Group"]
-BINDING_NAME_JAMBATEAMDISBAND = L["Disband Group"]
+BINDING_HEADER_JAMBATEAM = L["JAMBA-TEAM"]
+BINDING_NAME_JAMBATEAMINVITE = L["INVITE_GROUP"]
+BINDING_NAME_JAMBATEAMDISBAND = L["DISBAND_GROUP"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -47,11 +47,9 @@ AJM.settings = {
         teamList = {},
 		characterOnline = {},
 		characterClass = {},
-		focusChangeSetMaster = false,
 		masterChangePromoteLeader = false,
 		inviteAcceptTeam = true,
 		inviteAcceptFriends = false,
-		inviteAcceptBNFriends = false,
 		inviteAcceptGuild = false,
 		inviteDeclineStrangers = false,
 		inviteConvertToRaid = true,
@@ -72,96 +70,88 @@ function AJM:GetConfiguration()
 		args = {	
 			add = {
 				type = "input",
-				name = L["Add"],
-				desc = L["Add a member to the team list."],
+				name = L["ADD"],
+				desc = L["ADD_HELP"],
 				usage = "/jamba-team add <name>",
 				get = false,
 				set = "AddMemberCommand",
 			},			
 			remove = {
 				type = "input",
-				name = L["Remove"],
-				desc = L["Remove a member from the team list."],
+				name = L["REMOVE"],
+				desc = L["REMOVE_REMOVE"],
 				usage = "/jamba-team remove <name>",
 				get = false,
 				set = "RemoveMemberCommand",
 			},						
 			master = {
 				type = "input",
-				name = L["Master"],
-				desc = L["Set the master character."],
+				name = L["MASTER"],
+				desc = L["MASTER_HELP"],
 				usage = "/jamba-team master <name> <tag>",
 				get = false,
 				set = "CommandSetMaster",
 			},						
 			iammaster = {
 				type = "input",
-				name = L["I Am Master"],
-				desc = L["Set this character to be the master character."],
+				name = L["I_AM_MASTER"],
+				desc = L["I_AM_MASTER_HELP"],
 				usage = "/jamba-team iammaster <tag>",
 				get = false,
 				set = "CommandIAmMaster",
 			},	
 			invite = {
 				type = "input",
-				name = L["Invite"],
-				desc = L["Invite team members to a party with or without a <tag>."],
+				name = L["INVITE"],
+				desc = L["INVITE_HELP"],
 				usage = "/jamba-team invite",
 				get = false,
 				set = "InviteTeamToParty",
-			},
-			inviteTag = {
-				type = "input",
-				name = L["Invites"],
-				desc = L["Invite team members to a <tag> party."],
-				usage = "/jamba-team inviteTag <tag>",
-				get = false,
-				set = "InviteTeamToPartys",
 			},				
 			disband = {
 				type = "input",
-				name = L["Disband"],
-				desc = L["Disband all team members from their parties."],
+				name = L["DISBAND"],
+				desc = L["DISBAND_HELP"],
 				usage = "/jamba-team disband",
 				get = false,
 				set = "DisbandTeamFromParty",
 			},
 			addparty = {
 				type = "input",
-				name = L["Add Party Members"],
-				desc = L["Add members in the current party to the team."],
+				name = L["ADD_GROUPS_MEMBERS"],
+				desc = L["ADD_GROUPS_MEMBERS_HELP"],
 				usage = "/jamba-team addparty",
 				get = false,
 				set = "AddPartyMembers",
 			},
 			removeall = {
 				type = "input",
-				name = L["Remove All Members"],
-				desc = L["Remove all members from the team."],
+				name = L["REMOVE_ALL_MEMBERS"],
+				desc = L["REMOVE_ALL_MEMBERS_HELP"],
 				usage = "/jamba-team removeall",
 				get = false,
 				set = "DoRemoveAllMembersFromTeam",
 			},
 			setalloffline = {
 				type = "input",
-				name = L["Set Team OffLine"],
-				desc = L["Set All Team Members OffLine"],
+				name = L["SET_TEAM_OFFLINE"],
+				desc = L["SET_TEAM_OFFLINE_HELP"] ,
 				usage = "/jamba-team setalloffline",
 				get = false,
 				set = "setAllMembersOffline",
 			},
 			setallonline = {
 				type = "input",
-				name = L["Set Team OnLine"],
-				desc = L["Set All Team Members OnLine"],
+				name = L["SET_TEAM_ONLINE"],
+				desc = L["SET_TEAM_ONLINE_HELP"],
 				usage = "/jamba-team setallonline",
 				get = false,
 				set = "setAllMembersOnline",
 			},
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the team settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-team push",
 				get = false,
 				set = "JambaSendSettings",
@@ -249,7 +239,7 @@ local function SettingsCreateTeamList()
 
 		teamListButtonControlWidth / 2 + iconSize, 
 		leftOfList,
-		L["TEAM"]
+		L["TEAM_HEADER"]
 	)
 	AJM.settingsControl.labelTwo = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
@@ -257,7 +247,7 @@ local function SettingsCreateTeamList()
 
 		teamListButtonControlWidth + iconSize + groupListWidth, 
 		leftOfList,
-		L["GROUPS"]
+		L["GROUPS_HEADER"]
 	)
 	-- Create a team list frame.
 	local list = {}
@@ -314,7 +304,7 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing, 
 		L[""], 
 		AJM.SettingsAddClick,
-		L["Adds a member to the team list\nYou can Use:\nCharacterName\nCharacterName-realm\n@Target\n@Mouseover"]
+		L["BUTTON_ADD_HELP"]
 	)
 	AJM.settingsControl.teamListButtonParty = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -325,7 +315,7 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight, 
 		L[""], 
 		AJM.SettingsAddPartyClick,
-		L["Adds all Party/Raid members to the team list"]
+		L["BUTTON_ADDALL_HELP"]
 	)
 	AJM.settingsControl.teamListButtonMoveUp = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -336,7 +326,7 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight * 2, 
 		L[""], 
 		AJM.SettingsMoveUpClick,
-		L["Move the character up a place in the team list"]
+		L["BUTTON_UP_HELP"]
 	)
 	AJM.settingsControl.teamListButtonMoveDown = JambaHelperSettings:Icon(
 		AJM.settingsControl, 
@@ -347,7 +337,7 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight * 3,
 		L[""],
 		AJM.SettingsMoveDownClick,
-		L["Move the character down a place in the team list"]		
+		L["BUTTON_DOWN_HELP"]		
 	)
 	AJM.settingsControl.teamListButtonRemove = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -358,7 +348,7 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight * 4,
 		L[""], 
 		AJM.SettingsRemoveClick,
-		L["Removes Selected Member from the team list"]
+		L["BUTTON_REMOVE_HELP"]
 	)
 	AJM.settingsControl.teamListButtonSetMaster = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -369,27 +359,8 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight * 5,
 		L[""], 
 		AJM.SettingsSetMasterClick,
-		L["Set the selected member to be the master of the group"]
-	)	
-	-- Create buttons. -- PH!
-	AJM.settingsControl.teamListButtonInvite = JambaHelperSettings:CreateButton(
-		AJM.settingsControl, 
-		inviteDisbandButtonWidth, 
-		left + 35, 
-		bottomOfList, 
-		"PH "..L["Invite"],
-		AJM.SettingsInviteClick,
-		L["Invites all Team members online to a party or raid.\nThis can be set as a keyBinding"]
+		L["BUTTON_MASTER_HELP"]
 	)
-	AJM.settingsControl.teamListButtonDisband = JambaHelperSettings:CreateButton( 
-		AJM.settingsControl, 
-		inviteDisbandButtonWidth,
-		left + 35 + inviteDisbandButtonWidth + horizontalSpacing,
-		bottomOfList, 
-		"PH "..L["Disband"],
-		AJM.SettingsDisbandClick,
-		L["Asks all Team members to leave a party or raid.\nThis can be set as a keyBinding"]
-	)		
 	return bottomOfSection
 end
 
@@ -405,38 +376,30 @@ local function SettingsCreateMasterControl( top )
 	local checkBoxWidth = (headingWidth - horizontalSpacing) / 2
 	local column1Left = left
 	local column2Left = left + checkBoxWidth + horizontalSpacing
-	local bottomOfSection = top - headingHeight - (checkBoxHeight * 2) - (verticalSpacing * 2)
+	local bottomOfSection = top - headingHeight - (checkBoxHeight * 1) - (verticalSpacing * 3)
 	-- Create a heading.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Master Control"], top, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MASTER_CONTROL"], top, false )
 	-- Create checkboxes.
-	AJM.settingsControl.masterControlCheckBoxFocusChange = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		checkBoxWidth, 
-		column1Left, 
-		top - headingHeight, 
-		L["Focus will set master toon."],
-		AJM.SettingsFocusChangeToggle,
-		L["The master will be the set from the focus target if a team member \n\nNote: All team members must be setting the focus."]
-	)	
+	
 	AJM.settingsControl.masterControlCheckBoxMasterChange = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
-		column2Left, 
+		column1Left, 
 		top - headingHeight,
-		L["Promote Master to party leader."],
+		L["CHECKBOX_MASTER_LEADER"],
 		AJM.SettingsMasterChangeToggle,
-		L["Master will always be the party leader."]
+		L["CHECKBOX_MASTER_LEADER_HELP"]
 	)
 	AJM.settingsControl.masterControlCheckBoxMasterChangeClickToMove = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
-		column1Left, 
-		top - headingHeight - checkBoxHeight, 
-		L["Sets click-to-move on Minions"],
+		column2Left, 
+		top - headingHeight, 
+		L["CHECKBOX_CTM"],
 		AJM.SettingsMasterChangeClickToMoveToggle,
-		L["Auto activate click-to-move on Minions and deactivate on Master."]
+		L["CHECKBOX_CTM_HELP"]
 	)	
-	return bottomOfSection	
+	return bottomOfSection
 end
 
 local function SettingsCreatePartyInvitationsControl( top )
@@ -450,72 +413,63 @@ local function SettingsCreatePartyInvitationsControl( top )
 	local checkBoxWidth = (headingWidth - horizontalSpacing) / 2
 	local column1Left = left
 	local column2Left = left + checkBoxWidth + horizontalSpacing
-	local bottomOfSection = top - headingHeight - (checkBoxHeight * 4) - (verticalSpacing * 2)
+	local bottomOfSection = top - headingHeight - (checkBoxHeight * 3) - (verticalSpacing * 2)
 	-- Create a heading.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Party Invitations Control"], top, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["PARTY_CONTROLS"], top, false )
 	-- Create checkboxes.
 	AJM.settingsControl.partyInviteControlCheckBoxConvertToRaid = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
 		column1Left, 
 		top - headingHeight,
-		L["Auto Convert To Raid"],
+		L["CHECKBOX_CONVERT_RAID"],
 		AJM.SettingsinviteConvertToRaidToggle,
-		L["Auto Convert To Raid if team is over five character's"]
+		L["CHECKBOX_CONVERT_RAID_HELP"]
 	)
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
 		column2Left, 
 		top - headingHeight,
-		L["Auto Set All Assistant"],
+		L["CHECKBOX_ASSISTANT"],
 		AJM.SettingsinviteSetAllAssistToggle,
-		L["Auto Set all raid Member's to Assistant"]
+		L["CHECKBOX_ASSISTANT_HELP"]
 	)
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptMembers = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
 		column1Left, 
 		top - headingHeight - checkBoxHeight, 
-		L["Accept from team."],
+		L["CHECKBOX_TEAM"],
 		AJM.SettingsAcceptInviteMembersToggle,
-		L["Auto Accept invites from the team."]
+		L["CHECKBOX_TEAM_HELP"]
 	)
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptFriends = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
 		column2Left, 
 		top - headingHeight - checkBoxHeight, 
-		L["Accept from friends."],
+		L["CHECKBOX_ACCEPT_FROM_FRIENDS"],
 		AJM.SettingsAcceptInviteFriendsToggle,
-		L["Auto Accept invites from your friends list."]
+		L["CHECKBOX_ACCEPT_FROM_FRIENDS_HELP"]
 	)
-	AJM.settingsControl.partyInviteControlCheckBoxAcceptBNFriends = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		checkBoxWidth, 
-		column1Left, 
-		top - headingHeight - checkBoxHeight - checkBoxHeight, 
-		L["Accept From BattleTag Friends."],
-		AJM.SettingsAcceptInviteBNFriendsToggle,
-		L["Auto Accept invites from your BatteTag or RealID Friends list."]
-	)	
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptGuild = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
-		column2Left, 
+		column1Left, 
 		top - headingHeight - checkBoxHeight - checkBoxHeight,
-		L["Accept from guild."],
+		L["CHECKBOX_ACCEPT_FROM_GUILD"],
 		AJM.SettingsAcceptInviteGuildToggle,
-		L["Auto Accept invites from your Guild."]
+		L["CHECKBOX_ACCEPT_FROM_GUILD_HELP"]
 	)	
 	AJM.settingsControl.partyInviteControlCheckBoxDeclineStrangers = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		checkBoxWidth, 
 		column1Left, 
 		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight,
-		L["Decline from strangers."],
+		L["CHECKBOX_DECLINE_STRANGERS"],
 		AJM.SettingsDeclineInviteStrangersToggle,
-		L["Decline invites from anyone else."]
+		L["CHECKBOX_DECLINE_STRANGERS_HELP"]
 	)
 	return bottomOfSection	
 end
@@ -552,7 +506,7 @@ end
 local function InitializePopupDialogs()
    -- Ask the name of the character to add as a new member.
    StaticPopupDialogs["JAMBATEAM_ASK_CHARACTER_NAME"] = {
-        text = L["Enter character to add in name-server format:"],
+        text = L["STATICPOPUP_ADD"],
         button1 = ACCEPT,
         button2 = CANCEL,
         hasEditBox = 1,
@@ -583,7 +537,7 @@ local function InitializePopupDialogs()
     }
    -- Confirm removing characters from member list.
    StaticPopupDialogs["JAMBATEAM_CONFIRM_REMOVE_CHARACTER"] = {
-        text = L["Are you sure you wish to remove %s from the team list?"],
+        text = L["STATICPOPUP_REMOVE"],
         button1 = ACCEPT,
         button2 = CANCEL,
         timeout = 0,
@@ -592,14 +546,6 @@ local function InitializePopupDialogs()
         OnAccept = function( self )
 			AJM:RemoveMemberGUI()
 		end,
-    }
-	-- Master can not be set offline PopUp Box.
-	   StaticPopupDialogs["MasterCanNotBeSetOffline"] = {
-        text = L["Master Can not be Set OffLine"],
-        button1 = OKAY,
-		timeout = 0,
-		whileDead = 1,
-		hideOnEscape = 1,
     }
 end
 
@@ -706,7 +652,7 @@ local function SetMaster( master )
 			AJM:SendMessage( AJM.MESSAGE_TEAM_MASTER_CHANGED, character )
 		else
 			-- Character not in team.  Tell the team.
-			AJM:JambaSendMessageToTeam( AJM.characterName, L["A is not in my team list.  I can not set them to be my master."]( character ), false )
+			AJM:JambaSendMessageToTeam( AJM.characterName, L["A_IS_NOT_IN_TEAM"]( character ), false )
 		end
 	end
 end
@@ -721,7 +667,7 @@ local function AddMember( characterName )
 			--AJM:Print("Target", unitName)
 			name = unitName
 		else
-			AJM:Print(L["No Target Or Target is not a Player"])
+			AJM:Print(L["TEAM_NO_TARGET"])
 			return
 		end	
 	elseif characterName == "@Mouseover" or characterName == "@mouseover" or characterName == "@MOUSEOVER" then
@@ -731,7 +677,7 @@ local function AddMember( characterName )
 			--AJM:Print("mouseover", unitName)
 			name = unitName
 		else
-			AJM:Print(L["No Target Or Target is not a Player"])
+			AJM:Print(L["TEAM_NO_TARGET"])
 			return
 		end
 	end
@@ -1127,27 +1073,9 @@ function AJM:InviteTeamToParty( info, tag )
 		AJM.currentInviteCount = 0
 		AJM:ScheduleTimer( "DoTeamPartyInvite", 0.5 )
 	else
-	AJM:Print (L["Unknown Tag "]..tag )
+	AJM:Print (L["UNKNOWN_GROUP"]..tag )
 	end	
 end
-
-
-function AJM:PLAYER_FOCUS_CHANGED()
-	-- Change master on focus change option enabled?
-	if AJM.db.focusChangeSetMaster == true then
-		-- Get the name of the focused unit.
-		local targetName, targetRealm = UnitName( "focus" )
-		local name = JambaUtilities:AddRealmToNameIfNotNil( targetName, targetRealm )
-		--AJM:Print("test", name)
-		-- Attempt to set this target as the master if the target is in the team.
-		if IsCharacterInTeam( name ) == true then
-			if (name ~= nil) and (name:trim() ~= "") then
-				SetMaster( name )
-			end
-		end
-	end
-end
-
 
 
 function AJM:PARTY_INVITE_REQUEST( event, inviter, ... )
@@ -1176,7 +1104,7 @@ function AJM:PARTY_INVITE_REQUEST( event, inviter, ... )
 			end	
 		end
 		-- Accept an invite from BNET/RealD?
-		if AJM.db.inviteAcceptBNFriends and BNFeaturesEnabledAndConnected() == true then
+		if AJM.db.inviteAcceptFriends == true and BNFeaturesEnabledAndConnected() == true then
 			-- Iterate each friend; searching for the inviter in the friends list.
 			local _, numFriends = BNGetNumFriends()
 			for bnIndex = 1, numFriends do
@@ -1322,8 +1250,7 @@ function AJM:OnEnable()
 	AJM:SettingsTeamListScrollRefresh()
 	--AJM.SettingsGroupListScrollRefresh()
 	-- Click the first row in the team list table to populate the tag list table.
-	--AJM:SettingsTeamListRowClick( 1, 1 )
-	AJM:RegisterEvent( "PLAYER_FOCUS_CHANGED" )
+	--AJM:SettingsTeamListRowClick( 1, 1 )F
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	-- Initialise key bindings.
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
@@ -1359,13 +1286,11 @@ end
 
 function AJM:SettingsRefresh()
 	-- Master Control.
-	AJM.settingsControl.masterControlCheckBoxFocusChange:SetValue( AJM.db.focusChangeSetMaster )
 	AJM.settingsControl.masterControlCheckBoxMasterChange:SetValue( AJM.db.masterChangePromoteLeader )
 	AJM.settingsControl.masterControlCheckBoxMasterChangeClickToMove:SetValue( AJM.db.masterChangeClickToMove )
 	-- Party Invitiation Control.
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptMembers:SetValue( AJM.db.inviteAcceptTeam )
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptFriends:SetValue( AJM.db.inviteAcceptFriends )
-	AJM.settingsControl.partyInviteControlCheckBoxAcceptBNFriends:SetValue( AJM.db.inviteAcceptBNFriends )
 	AJM.settingsControl.partyInviteControlCheckBoxAcceptGuild:SetValue( AJM.db.inviteAcceptGuild )
 	AJM.settingsControl.partyInviteControlCheckBoxDeclineStrangers:SetValue( AJM.db.inviteDeclineStrangers )
 	AJM.settingsControl.partyInviteControlCheckBoxConvertToRaid:SetValue( AJM.db.inviteConvertToRaid )
@@ -1383,11 +1308,9 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	if characterName ~= AJM.characterName then	
 	-- Update the settings.
 		AJM.db.teamList = JambaUtilities:CopyTable( settings.teamList )
-		AJM.db.focusChangeSetMaster = settings.focusChangeSetMaster 
 		AJM.db.masterChangePromoteLeader = settings.masterChangePromoteLeader 
 		AJM.db.inviteAcceptTeam = settings.inviteAcceptTeam 
 		AJM.db.inviteAcceptFriends = settings.inviteAcceptFriends 
-		AJM.db.inviteAcceptBNFriends = settings.inviteBNAcceptFriends
 		AJM.db.inviteAcceptGuild = settings.inviteAcceptGuild 
 		AJM.db.inviteDeclineStrangers = settings.inviteDeclineStrangers
 		AJM.db.inviteConvertToRaid = settings.inviteConvertToRaid
@@ -1400,7 +1323,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		--AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -1436,17 +1359,7 @@ function AJM:SettingsTeamListScrollRefresh()
 		if dataRowNumber <= GetTeamListMaximumOrder() then
 			-- Put character name and type into columns.
 			local characterName = GetCharacterNameAtOrderPosition( dataRowNumber )
-
-
-			--	local displayCharacterName = characterName
-		--	local isOnline = GetCharacterOnlineStatus( characterName )
-		--	if isOnline == false then
-		--		displayCharacterName = characterName.." "..L["(Offline)"]
-		--	end
-		
-
-
-
+			
 		local class = AJM.db.characterClass[characterName]
 			--AJM:Print("Test", class)
 			-- Set Class Color
@@ -1459,17 +1372,17 @@ function AJM:SettingsTeamListScrollRefresh()
 				end
 			end
 			local isMaster = false
-			local characterType = L["Minion"]
+			local characterType = L["MINION"]
 			if IsCharacterTheMaster( characterName ) == true then
-				characterType = L["Master"]
+				characterType = L["MASTER"]
 				isMaster = true
 			end
 			local displayCharacterName , displayCharacterRleam = strsplit( "-", characterName, 2 )
 			
 			local isOnline = GetCharacterOnlineStatus( characterName )
-			local displayOnline = L["Online"]
+			local displayOnline = L["ONLINE"]
 			if isOnline == false then
-				displayOnline = L["Offline"]
+				displayOnline = L["OFFLINE"]
 			end
 			
 			-- Master is a yellow colour.
@@ -1492,14 +1405,20 @@ function AJM:SettingsTeamListScrollRefresh()
 	end
 end
 
+
 local function DisplayGroupsForCharacterInGroupsList( characterName )
-	AJM.characterGroupList = JambaPrivate.Tag.GetTagListForCharacter( characterName )
+	--AJM.characterGroupList = JambaPrivate.Tag.GetTagListForCharacter( characterName )
+	AJM.characterGroupList = JambaApi.GetGroupListForCharacter( characterName )
 	table.sort( AJM.characterGroupList )
 	AJM:SettingsGroupListScrollRefresh()
 end
 
 local function GetGroupAtPosition( position )
 	return AJM.characterGroupList[position]
+end
+
+local function GetTagListMaxPosition()
+	return #AJM.characterGroupList
 end
 
 function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )		
@@ -1511,14 +1430,21 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 		AJM.settingsControl.groupListHighlightRow = 1
 		local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
 		DisplayGroupsForCharacterInGroupsList( characterName )
+		--JambaApi.GetGroupListForCharacter( characterName )
 		
 	end
 end
 
+-- For Api Update for Privte.tag
+local function RefreshGroupList()
+	AJM:SettingsGroupListScrollRefresh()
+end	
+
 function AJM:SettingsGroupListScrollRefresh()
 	FauxScrollFrame_Update(
 		AJM.settingsControl.groupList.listScrollFrame, 
-		JambaPrivate.Tag.GetTagListMaxPosition(),
+		--JambaPrivate.Tag.GetTagListMaxPosition(),
+		JambaApi.CharacterMaxGroups(),
 		AJM.settingsControl.groupList.rowsToDisplay, 
 		AJM.settingsControl.groupList.rowHeight
 	)
@@ -1529,10 +1455,11 @@ function AJM:SettingsGroupListScrollRefresh()
 		AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		AJM.settingsControl.groupList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		local dataRowNumber = iterateDisplayRows + AJM.settingsControl.groupListOffset
-		if dataRowNumber <= JambaPrivate.Tag.GetTagListMaxPosition() then
-		local characterName = AJM.CharGroupListName
+		if dataRowNumber <= JambaApi.CharacterMaxGroups() then
+		--local characterName = JambaApi.GetGroupListForCharacter --AJM.CharGroupListName
 		--local group = GetGroupAtPosition(characterName,dataRowNumber)
 		local group = GetGroupAtPosition( dataRowNumber )
+		--local group = JambaApi.GetGroupAtPosition( dataRowNumber )
 			AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetText( group ) 
 			--AJM:Print("test", dataRowNumber, group, characterName ) 
 			if dataRowNumber == AJM.settingsControl.groupListHighlightRow then
@@ -1544,7 +1471,7 @@ function AJM:SettingsGroupListScrollRefresh()
 end	
 
 function AJM:SettingsGroupListRowClick( rowNumber, columnNumber )		
-	if AJM.settingsControl.groupListOffset + rowNumber <= JambaPrivate.Tag.GetTagListMaxPosition() then
+	if AJM.settingsControl.groupListOffset + rowNumber <= GetTagListMaxPosition() then
 		AJM.settingsControl.groupListHighlightRow = AJM.settingsControl.groupListOffset + rowNumber
 		AJM:SettingsGroupListScrollRefresh()
 	end
@@ -1617,10 +1544,6 @@ function AJM:SettingsSetMasterClick( event )
 	--AJM:SettingsGroupListScrollRefresh()
 end
 
-function AJM:SettingsFocusChangeToggle( event, checked )
-	AJM.db.focusChangeSetMaster = checked
-	AJM:SettingsRefresh()
-end
 
 function AJM:SettingsMasterChangeToggle( event, checked )
 	AJM.db.masterChangePromoteLeader = checked
@@ -1642,10 +1565,6 @@ function AJM:SettingsAcceptInviteFriendsToggle( event, checked )
 	AJM:SettingsRefresh()
 end
 
-function AJM:SettingsAcceptInviteBNFriendsToggle( event, checked )
-	AJM.db.inviteAcceptBNFriends = checked
-	AJM:SettingsRefresh()
-end
 function AJM:SettingsAcceptInviteGuildToggle( event, checked )
 	AJM.db.inviteAcceptGuild = checked
 	AJM:SettingsRefresh()
@@ -1740,6 +1659,7 @@ JambaPrivate.Team.GetTeamListMaximumOrder = GetTeamListMaximumOrder
 JambaPrivate.Team.RemoveAllMembersFromTeam = RemoveAllMembersFromTeam
 JambaPrivate.Team.setOffline = setOffline
 JambaPrivate.Team.setOnline = setOline
+JambaPrivate.Team.RefreshGroupList = RefreshGroupList
 
 -- Functions available for other addons.
 JambaApi.MESSAGE_TEAM_MASTER_CHANGED = AJM.MESSAGE_TEAM_MASTER_CHANGED

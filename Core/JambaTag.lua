@@ -26,14 +26,15 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 AJM.moduleName = "Jamba-Tag"
 AJM.settingsDatabaseName = "JambaTagProfileDB"
 AJM.chatCommand = "jamba-tag"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["Team"]
-AJM.moduleDisplayName = "[PH] "..L["Groups"]
+AJM.moduleDisplayName = "[WIP] "..L["Group List"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
         tagList = {},
+		groupList = {}
 	},
 }
 
@@ -49,7 +50,7 @@ function AJM:GetConfiguration()
 			add = {
 				type = "input",
 				name = L["Add"],
-				desc = L["Add a tag to the this character."],
+				desc = L["ADD_TAG_HELP"],
 				usage = "/jamba-tag add <name|existing-tag> <tag>",
 				get = false,
 				set = "AddTagCommand",
@@ -57,7 +58,7 @@ function AJM:GetConfiguration()
 			remove = {
 				type = "input",
 				name = L["Remove"],
-				desc = L["Remove a tag from this character."],
+				desc = L["REMMOVE_TAG_HELP"],
 				usage = "/jamba-tag remove <name|existing-tag> <tag>",
 				get = false,
 				set = "RemoveTagCommand",
@@ -91,96 +92,62 @@ end
 -- Settings Dialogs.
 -------------------------------------------------------------------------------------------------------------
 
-local function SettingsCreateTeamList()
+local function SettingsCreateGroupList()
 	-- Position and size constants.
 	local top = JambaHelperSettings:TopOfSettings()
 	local left = JambaHelperSettings:LeftOfSettings()
+	local button = 35
+	local buttonHeight = JambaHelperSettings:GetButtonHeight()
 	local headingHeight = JambaHelperSettings:HeadingHeight()
 	local headingWidth = JambaHelperSettings:HeadingWidth( false )
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
-	local teamListWidth = headingWidth
+	local teamListWidth = headingWidth - 90
 	local topOfList = top - headingHeight
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.teamListHighlightRow = 1
 	AJM.settingsControl.teamListOffset = 1
 	-- Create a heading.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Team List"], top, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["GROUP_LIST"], top, false )
 	-- Create a team list frame.
 	local list = {}
-	list.listFrameName = "JambaTagSettingsTeamListFrame"
+	list.listFrameName = "JambaTagSettingsGroupListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
 	list.listTop = topOfList
-	list.listLeft = left
+	list.listLeft = left + button
 	list.listWidth = teamListWidth
 	list.rowHeight = 20
-	list.rowsToDisplay = 5
+	list.rowsToDisplay = 15
 	list.columnsToDisplay = 1
 	list.columnInformation = {}
 	list.columnInformation[1] = {}
 	list.columnInformation[1].width = 100
 	list.columnInformation[1].alignment = "LEFT"
-	list.scrollRefreshCallback = AJM.SettingsTeamListScrollRefresh
-	list.rowClickCallback = AJM.SettingsTeamListRowClick
-	AJM.settingsControl.teamList = list
-	JambaHelperSettings:CreateScrollList( AJM.settingsControl.teamList )
-	local bottomOfList = topOfList - list.listHeight - verticalSpacing	
-	return bottomOfList
-end
-
-local function SettingsCreateTagList( top )
-	-- Position and size constants.
-	local tagListButtonControlWidth = 105
-	local buttonHeight = JambaHelperSettings:GetButtonHeight()
-	local left = JambaHelperSettings:LeftOfSettings()
-	local headingHeight = JambaHelperSettings:HeadingHeight()
-	local headingWidth = JambaHelperSettings:HeadingWidth( false )
-	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
-	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
-	local tagListWidth = headingWidth
-	local topOfList = top - headingHeight
-	-- Tag list internal variables (do not change).
-	AJM.settingsControl.tagListHighlightRow = 1
-	AJM.settingsControl.tagListOffset = 1
-	-- Create a heading.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Tag List"], top, false )
-	-- Create a tag list frame.
-	local list = {}
-	list.listFrameName = "JambaTagSettingsTagListFrame"
-	list.parentFrame = AJM.settingsControl.widgetSettings.content
-	list.listTop = topOfList
-	list.listLeft = left
-	list.listWidth = tagListWidth
-	list.rowHeight = 20
-	list.rowsToDisplay = 10
-	list.columnsToDisplay = 1
-	list.columnInformation = {}
-	list.columnInformation[1] = {}
-	list.columnInformation[1].width = 100
-	list.columnInformation[1].alignment = "LEFT"
-	list.scrollRefreshCallback = AJM.SettingsTagListScrollRefresh
-	list.rowClickCallback = AJM.SettingsTagListRowClick
-	AJM.settingsControl.tagList = list
-	JambaHelperSettings:CreateScrollList( AJM.settingsControl.tagList )
+	list.scrollRefreshCallback = AJM.SettingsGroupListScrollRefresh
+	list.rowClickCallback = AJM.SettingsGroupListRowClick
+	AJM.settingsControl.groupList = list
+	JambaHelperSettings:CreateScrollList( AJM.settingsControl.groupList )
 	-- Position and size constants (once list height is known).
 	local bottomOfList = topOfList - list.listHeight - verticalSpacing
+	-- Turn me into sexy buttons -- ebony!
 	AJM.settingsControl.tagListButtonAdd = JambaHelperSettings:CreateButton(
 		AJM.settingsControl,
-		tagListButtonControlWidth,
-		left,
+		105,
+		left + 35,
 		bottomOfList,
-		L["Add"],
+		"PH "..L["ADD"],
 		AJM.SettingsAddClick
 	)
-	AJM.settingsControl.teamListButtonRemove = JambaHelperSettings:CreateButton(
+	AJM.settingsControl.groupListButtonRemove = JambaHelperSettings:CreateButton(
 		AJM.settingsControl,
-		tagListButtonControlWidth,
-		left + tagListButtonControlWidth + horizontalSpacing,
-		bottomOfList,
-		L["Remove"],
+		105,
+		left + 35 + 110 , --+ tagListButtonControlWidth + horizontalSpacing,
+		bottomOfList, -- buttonHeight,
+		"PH "..L["REMOVE"],
 		AJM.SettingsRemoveClick
 	)
 	local bottomOfSection = bottomOfList -  buttonHeight - verticalSpacing
+
 	return bottomOfSection
 end
 
@@ -196,10 +163,10 @@ local function SettingsCreate()
 	)
 	
 	-- Create the team list controls.
-	local bottomOfTeamList = SettingsCreateTeamList()
+	local bottomOfGroupList = SettingsCreateGroupList()
 	-- Create the tag list controls.
-	local bottomOfTagList = SettingsCreateTagList( bottomOfTeamList )
-	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfTagList )
+	--local bottomOfTagList = SettingsCreateTagList( bottomOfTeamList )
+	--AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfTagList )
 	-- Help
 	local helpTable = {}
 	JambaHelperSettings:CreateHelp( AJM.settingsControl, helpTable, AJM:GetConfiguration() )		
@@ -218,8 +185,8 @@ end
 
 function AJM:SettingsRefresh()
 	-- Update the settings team list.
-	AJM:SettingsTeamListScrollRefresh()
-	AJM:SettingsTagListScrollRefresh()
+	AJM:SettingsGroupListScrollRefresh()
+	--AJM:SettingsTagListScrollRefresh()
 end
 
 -- Settings received.
@@ -230,15 +197,13 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.tagList = JambaUtilities:CopyTable( settings.tagList )
 		AJM:InitializeAllTagsList()
 		-- New team and tag lists coming up, highlight first item in each list.
-		AJM.settingsControl.teamListHighlightRow = 1
-		AJM.settingsControl.tagListHighlightRow = 1
+		AJM.settingsControl.groupListHighlightRow = 1
+		--AJM.settingsControl.tagListHighlightRow = 1
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
-		AJM:SettingsTeamListRowClick( 1, 1 )
+		AJM:SettingsGroupListRowClick( 1, 1 )
 		-- Tell the player.
 		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
 	end
 end
 
@@ -281,7 +246,7 @@ local function InitializePopupDialogs()
     }
    -- Confirm removing characters from member list.
    StaticPopupDialogs["JAMBATAG_CONFIRM_REMOVE_TAG"] = {
-        text = L["Are you sure you wish to remove %s from the tag list for %s?"],
+        text = L["Are you sure you wish to remove %s from the tag list?"],
         button1 = ACCEPT,
         button2 = CANCEL,
         timeout = 0,
@@ -294,7 +259,7 @@ local function InitializePopupDialogs()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- Tag management.
+-- Group Management.
 -------------------------------------------------------------------------------------------------------------
 
 local function AllTag()
@@ -309,14 +274,16 @@ local function MinionTag()
 	return L["minion"]
 end
 
-local function JustMeTag()
-	return L["justme"]
-end
+local function GroupList()
+	return AJM.db.groupList
+end	
 
--- Does this tag list have this tag?
-local function DoesTagListHaveTag( tagList, tag )
+-- Does the Group list have this tag?
+local function DoesGroupExist( group )
+	local tag = JambaUtilities:Lowercase(group)
 	local haveTag = false
-	for index, findTag in ipairs( tagList ) do
+	for index, findTag in ipairs( AJM.db.groupList ) do
+		--AJM:Print("find", findTag, index )
 		if findTag == tag then
 			haveTag = true
 			break
@@ -325,14 +292,49 @@ local function DoesTagListHaveTag( tagList, tag )
 	return haveTag
 end
 
-local function GetTagAtPosition( position )
-	return AJM.characterTagList[position]
+local function AddGroup( group )
+	if group ~= nil then
+		if DoesGroupExist( group ) == false then
+			table.insert( AJM.db.groupList, group )
+			table.sort( AJM.db.groupList )
+		end
+	end	
 end
 
-local function IsTagASystemTag( tag )
-	if tag == MasterTag() or tag == MinionTag() or tag == AllTag() or tag == JustMeTag() then
+-- If Calling to Remove a group we should Use JambaApi.RemoveGroup( Groupname ) or RemoveGroup then using This
+local function RemoveFromGroupList( tag )
+	if DoesGroupExist( tag ) == true then
+		for index, group in pairs( AJM.db.groupList ) do
+			if group == tag then
+			--AJM:Print("removeGroup")
+			table.remove( AJM.db.groupList, index )
+			table.sort( AJM.db.groupList )
+			end	
+		end
+	end	
+end
+
+local function RemoveGroup( tag )
+	--  We don't Want to Tag to be part of the character Groups as it has been removed!
+	for characterName, tagList in pairs( AJM.db.tagList ) do
+		for index, tagIterated in ipairs( tagList ) do
+			if tagIterated == tag then
+				--AJM:Print("Remove tag:", tag, "from character:", characterName )
+				JambaApi.RemoveGroupFromCharacter( characterName, tag )	
+			end
+		end
+	end	
+	RemoveFromGroupList( tag )
+	AJM:SettingsGroupListScrollRefresh()
+	JambaPrivate.Team.RefreshGroupList()	
+end
+
+-- We Do Not Want To Remove "System" Groups!
+local function IsASystemGroup( tag )
+	if tag == MasterTag() or tag == MinionTag() or tag == AllTag() then
 		return true
 	end
+	--[[
 	for token, localizedName in pairs( AJM.tagClassesFemale ) do
 		if tag == JambaUtilities:Lowercase( localizedName ) then
 			return true
@@ -342,254 +344,239 @@ local function IsTagASystemTag( tag )
 		if tag == JambaUtilities:Lowercase( localizedName ) then
 			return true
 		end	
-	end	
+	end
+	--]]
 	return false
 end
 
-local function GetTagListForCharacter( characterName )
+local function GetGroupListMaximumOrder()
+	local largestPosition = 0 
+	for groupId, tag in pairs( AJM.db.groupList ) do
+		if groupId > largestPosition then
+			largestPosition = groupId
+		end	
+	end
+	return largestPosition
+end 
+
+local function GetGroupAtPosition( position )
+	--AJM:Print("test", position )
+	groupAtPosition = nil
+		for groupId, groupName in pairs( AJM.db.groupList ) do
+			if groupId == position then
+				--AJM:Print("cptest",characterName, groupId, groupName)
+				groupAtPosition = groupName
+			end
+		end
+	return groupAtPosition	
+end	
+
+-------------------------------------------------------------------------------------------------------------
+-- Team Group Management.
+-------------------------------------------------------------------------------------------------------------
+
+local function TeamGroupList()
+	return AJM.db.groupList
+end
+
+local function IsCharacterInGroup( characterName, tag )
+	local DoesCharacterHaveTag = false
+	for name, tagList in pairs( AJM.db.tagList ) do
+		if characterName == name then
+			for index, tagIterated in pairs( tagList ) do
+				if tag == tagIterated then
+					DoesCharacterHaveTag = true
+				end
+			end
+		end	
+	end	
+	return DoesCharacterHaveTag
+end
+
+local function GetGroupListForCharacter( characterName )
+	--AJM:Print("getList", characterName)
 	characterName = JambaUtilities:AddRealmToNameIfMissing( characterName )
-	if AJM.db.tagList[characterName] == nil then
-		AJM.db.tagList[characterName] = {}
-	end
-	return AJM.db.tagList[characterName]
+	if AJM.db.tagList[characterName] ~= nil then
+		return AJM.db.tagList[characterName]
+	end	
 end
 
--- Add a tag to the all tags list.
-local function AddTagToAllTagsList( tag )
-	if DoesTagListHaveTag( AJM.allTagsList, tag ) == false then
-		table.insert( AJM.allTagsList, tag )
-		table.sort( AJM.allTagsList )
-	end
-end
-
--- Initialise the all tags list.
-function AJM:InitializeAllTagsList()
-	-- Clear the tag list table.
-	JambaUtilities:ClearTable( AJM.allTagsList )
-	-- Add system tags to the list.
-	AddTagToAllTagsList( AllTag() )
-	AddTagToAllTagsList( MasterTag() )
-	AddTagToAllTagsList( MinionTag() )
-	AddTagToAllTagsList( JustMeTag() )
-	-- Add class tags to the list.
-	AJM.tagClassesFemale = {}
-	FillLocalizedClassList( AJM.tagClassesFemale, true )
-	for token, localizedName in pairs( AJM.tagClassesFemale ) do
-		AddTagToAllTagsList( JambaUtilities:Lowercase( localizedName ) )
-	end	
-	AJM.tagClassesMale = {}
-	FillLocalizedClassList( AJM.tagClassesMale, false )
-	for token, localizedName in pairs( AJM.tagClassesMale ) do
-		AddTagToAllTagsList( JambaUtilities:Lowercase( localizedName ) )
-	end	
-	-- Add the tags the characters have to the list.
+local function CharacterMaxGroups()
+	--return AJM.characterTagList
+	local maxOrder = 0
 	for characterName, tagList in pairs( AJM.db.tagList ) do
-		for index, tag in ipairs( tagList ) do
-			AddTagToAllTagsList( tag )
+		for index, tag in pairs( tagList ) do
+			if index >= maxOrder then
+				maxOrder = index
+			end
+		end	
+	end
+	return maxOrder
+end	
+
+local function DisplayGroupsForCharacter( characterName )
+	AJM.characterTagList = GetGroupListForCharacter( characterName )
+	table.sort( AJM.characterTagList )
+	AJM:SettingsGroupListScrollRefresh()
+end
+
+local function AddCharacterToGroup( characterName, tag )
+	if characterName == nil or tag == nil then
+		return
+	end	
+	-- We Add The GroupName To The characterName in the list!
+	for name, tagList in pairs( AJM.db.tagList ) do
+		if characterName == name then
+			--AJM:Print("hereWeAddTOTagList", characterName)
+			table.insert(  tagList, tag )
+			table.sort ( tagList )
 		end
 	end
-end
+end	
 
--- Return an iterator for the all tags list.
-local function AllTagsList()
-	return AJM.allTagsList
-end
-
--- Return an iterator for the all tags list.
-local function AllTagsListIterator()
-	return pairs( AJM.allTagsList )
-end
-
-local function IsAValidTag( tag )
-	return DoesTagListHaveTag( AJM.allTagsList, tag )
-end
-
-local function GetCharacterWithTag( tagToGet )
-	if IsAValidTag( tagToGet ) == false then
-		return ""
-	end
-	for characterName, tagList in pairs( AJM.db.tagList ) do
-		for index, tag in ipairs( tagList ) do
-			if tag == tagToGet then
-				return characterName
+local function RemoveGroupFromCharacter( characterName, tag )
+	if characterName == nil or tag == nil then
+		return
+	end	
+	-- We Remove a GroupName From the characterName in the list!
+	for name, tagList in pairs( AJM.db.tagList ) do
+		if characterName == name then
+			for index, tagIterated in pairs( tagList ) do
+				if tag == tagIterated then
+					--AJM:Print("timetoRemovetag")
+					table.remove( tagList, index )
+					table.sort( tagList )
+				end	
 			end
 		end
 	end
-	return ""
-end
+end	
 
+-- This should abeble to be removed now.
+-- this can be used to add a character that you already know the name of the table. [characterTable] [GroupName/Tag]
 local function AddTag( tagList, tag )
 	table.insert( tagList, tag )	
-	AddTagToAllTagsList( tag )
+	AddGroup( tag )
+	AJM:SettingsGroupListScrollRefresh()
+	JambaPrivate.Team.RefreshGroupList()
 end
 
-local function RemoveTag( tagList, tag )
-	local removeIndex = 0
-	for index, findTag in ipairs( tagList ) do
-		if tag == findTag then
-			removeIndex = index
+-- This needs a Clean UP!
+local function CheckSystemTagsAreCorrect()
+	for characterName, characterPosition in JambaPrivate.Team.TeamList() do
+		--AJM:Print("CHeckTags", characterName)
+		local characterTagList = GetGroupListForCharacter( characterName )
+		-- Do we have a tagList for this character? if not make one!
+		if characterTagList == nil then
+			AJM.db.tagList[characterName] = {}
+		end	
+		-- Make sure all characters have the "all" tag.
+		if IsCharacterInGroup ( characterName, AllTag() ) == false then
+			--AJM:Print("all")
+			--AddTag( characterTagList, AllTag() )
+			AddCharacterToGroup( characterName, AllTag() )
 		end
-	end
-	if removeIndex ~= 0 then
-		table.remove( tagList, removeIndex )
-	end
-end
-
-local function InternalAddTagToCharacter( characterName, tag )
-	local characterTagList = GetTagListForCharacter( characterName )
-	-- Cannot add a tag that already exists.
-	if DoesTagListHaveTag( characterTagList, tag ) == false then
-		-- Add tag.
-		AddTag( characterTagList, tag )
-		table.sort( characterTagList )
-		AJM:SettingsTagListScrollRefresh()	
-	end
-end
-
-local function AddTagToCharacter( characterNameOrExistingTag, tag )
-	if IsTagASystemTag( tag ) == true then
-		return
-	end
-	if JambaPrivate.Team.IsCharacterInTeam( characterNameOrExistingTag ) == true then
-		-- Is a character, add the tag to that character.
-		InternalAddTagToCharacter( characterNameOrExistingTag, tag )
-	else
-		-- Assume characterNameOrTag is a tag.  Add the tag to all characters with this existing tag.		
-		-- Find all characters with this tag (characterNameOrExistingTag)
-		for characterName, tagList in pairs( AJM.db.tagList ) do
-			for index, tagIterated in ipairs( tagList ) do
-				if tagIterated == characterNameOrExistingTag then
-					-- Add tag: tag to character: characterName
-					InternalAddTagToCharacter( characterName, tag )
-				end
+		-- Make sure all characters have the "justme" tag.
+	--	if DoesTagListHaveTag( JustMeTag() ) == false then
+	--		AddTag( characterTagList, JustMeTag() )
+	--	end
+		
+		local localizedName, token = UnitClass( Ambiguate( characterName, "none") )
+		if localizedName ~= nil then
+			--AJM:Print("Class", characterName, localizedName, token )
+			--InternalAddTagToCharacter( characterName, JambaUtilities:Lowercase( localizedName ))
+			--AddCharacterToGroup( characterName, JambaUtilities:Lowercase( localizedName ) )
+		end	
+		-- Master or minion?
+		if JambaPrivate.Team.IsCharacterTheMaster( characterName ) == true then
+			--AJM:Print("Master", characterName, characterTagList)
+			-- Make sure the master has the master tag and not a minion tag.
+			--if DoesTagListHaveTag( MasterTag() ) == false then
+			if IsCharacterInGroup ( characterName, MasterTag() ) == false then	
+				--5AddTag( characterTagList, MasterTag() )
+				AddCharacterToGroup( characterName, MasterTag() )
+			end
+			--if DoesTagListHaveTag( MinionTag() ) == true then
+			if IsCharacterInGroup ( characterName, MinionTag() ) == true then	
+				--RemoveTag( characterTagList, MinionTag() )
+				RemoveGroupFromCharacter( characterName, MinionTag() )
+			end
+		else
+			-- Make sure minions have the minion tag and not the master tag.
+			--if DoesTagListHaveTag(  MasterTag() ) == true then
+			if IsCharacterInGroup ( characterName, MasterTag() ) == true then	
+				--RemoveTag( characterTagList, MasterTag() )
+				RemoveGroupFromCharacter( characterName, MasterTag() )
+			end
+			if IsCharacterInGroup ( characterName, MinionTag() ) == false then
+				--AddTag( characterTagList, MinionTag() )
+				AddCharacterToGroup( characterName, MinionTag() )
 			end
 		end
 	end
 end
 
-local function InternalRemoveTagFromCharacter( characterName, tag )
-	local characterTagList = GetTagListForCharacter( characterName )
-	RemoveTag( characterTagList, tag )
-	table.sort( characterTagList )
-	AJM:SettingsTagListScrollRefresh()
-end
-
-local function RemoveTagFromCharacter( characterNameOrExistingTag, tag )
-	if IsTagASystemTag( tag ) == true then
-		return
-	end
-	if JambaPrivate.Team.IsCharacterInTeam( characterNameOrExistingTag ) == true then
-		-- Is a character, remove the tag from that character.	
-		InternalRemoveTagFromCharacter( characterNameOrExistingTag, tag )
-	else
-		-- Assume characterNameOrTag is a tag.  Remove the tag from all characters with this existing tag.
-		-- Find all characters with this tag (characterNameOrExistingTag)
-		for characterName, tagList in pairs( AJM.db.tagList ) do
-			for index, tagIterated in ipairs( tagList ) do
-				if tagIterated == characterNameOrExistingTag then
-					-- Remove tag: tag from character: characterName
-					InternalRemoveTagFromCharacter( characterName, tag )
-				end
-			end
-		end		
+-- Initialise the The Group list.
+function AJM:InitializeAllTagsList()
+	-- Add system tags to the list.
+	AddGroup( AllTag() )
+	AddGroup( MasterTag() )
+	AddGroup( MinionTag() )
+	for id, class in pairs( CLASS_SORT_ORDER ) do
+		AddGroup( JambaUtilities:Lowercase(class) )
 	end
 end
 
--- Add tag to character from the command line.
-function AJM:AddTagCommand( info, parameters )
-	local characterNameOrExistingTag, tag = strsplit( " ", parameters )
-	local characterName = characterNameOrExistingTag
-	local finalCharacterNameOrExistingTag = characterNameOrExistingTag
-	if JambaPrivate.Team.IsCharacterInTeam( characterName ) == true then
-		finalCharacterNameOrExistingTag = characterName
-	end
-	AddTagToCharacter( finalCharacterNameOrExistingTag, tag )
-end
+-------------------------------------------------------------------------------------------------------------
+-- GUI & Command Lines & Other Addons Acess.
+-------------------------------------------------------------------------------------------------------------
 
--- Remove tag from character from the command line.
-function AJM:RemoveTagCommand( info, parameters )
-	local characterNameOrExistingTag, tag = strsplit( " ", parameters )
-	local characterName = characterNameOrExistingTag
-	local finalCharacterNameOrExistingTag = characterNameOrExistingTag
-	if JambaPrivate.Team.IsCharacterInTeam( characterName ) == true then
-		finalCharacterNameOrExistingTag = characterName
-	end	
-	RemoveTagFromCharacter( finalCharacterNameOrExistingTag, tag )
-end
-
-function AJM:AddTagGUI( tag )
+function AJM:AddTagGUI( group )
+	local tag = JambaUtilities:Lowercase( group )
 	-- Cannot add a system tag.
-	if IsTagASystemTag( tag ) == false then
+	if IsASystemGroup( tag ) == false then
 		-- Cannot add a tag that already exists.
-		if DoesTagListHaveTag( AJM.characterTagList, tag ) == false then
+		if DoesGroupExist( tag ) == false then
 			-- Add tag, resort and display.
-			AddTag( AJM.characterTagList, tag )
-			table.sort( AJM.characterTagList )
-			AJM:SettingsTagListScrollRefresh()	
+			--AJM:Print("addtoGroupList")
+			AddGroup( group ) 
+			AJM:SettingsGroupListScrollRefresh()	
 		end
 	end
 end
 
 function AJM:RemoveTagGUI()
-	local tag = GetTagAtPosition( AJM.settingsControl.tagListHighlightRow )
+	--local tag = GetTagAtPosition( AJM.settingsControl.groupListHighlightRow )
+	local tag = GetGroupAtPosition( AJM.settingsControl.groupListHighlightRow )
 	-- Cannot remove a system tag.
-	if IsTagASystemTag( tag ) == false then
-		RemoveTag( AJM.characterTagList, tag )
-		table.sort( AJM.characterTagList )
-		AJM:SettingsTagListScrollRefresh()	
+	if IsASystemGroup( tag ) == false then
+		RemoveGroup( tag )	
 	end
 end
 
-local function GetTagListMaxPosition()
-	return #AJM.characterTagList
-end
-
-local function DisplayTagsForCharacterInTagList( characterName )
-	AJM.characterTagList = GetTagListForCharacter( characterName )
-	table.sort( AJM.characterTagList )
-	AJM:SettingsTagListScrollRefresh()
-end
-
-local function CheckSystemTagsAreCorrect()
-	for characterName, characterPosition in JambaPrivate.Team.TeamList() do
-		local characterTagList = GetTagListForCharacter( characterName )
-		-- Make sure all characters have the "all" tag.
-		if DoesTagListHaveTag( characterTagList, AllTag() ) == false then
-			AddTag( characterTagList, AllTag() )
-		end
-		-- Make sure all characters have the "justme" tag.
-		if DoesTagListHaveTag( characterTagList, JustMeTag() ) == false then
-			AddTag( characterTagList, JustMeTag() )
-		end
-		local localizedName, token = UnitClass( characterName )
-		if localizedName ~= nil then
-			InternalAddTagToCharacter( characterName, JambaUtilities:Lowercase( localizedName ))
-		end	
-		-- Master or minion?
-		if JambaPrivate.Team.IsCharacterTheMaster( characterName ) == true then
-			-- Make sure the master has the master tag and not a minion tag.
-			if DoesTagListHaveTag( characterTagList, MasterTag() ) == false then
-				AddTag( characterTagList, MasterTag() )
-			end
-			if DoesTagListHaveTag( characterTagList, MinionTag() ) == true then
-				RemoveTag( characterTagList, MinionTag() )
-			end
-		else
-			-- Make sure minions have the minion tag and not the master tag.
-			if DoesTagListHaveTag( characterTagList, MasterTag() ) == true then
-				RemoveTag( characterTagList, MasterTag() )
-			end
-			if DoesTagListHaveTag( characterTagList, MinionTag() ) == false then
-				AddTag( characterTagList, MinionTag() )
-			end
-		end
+-- Add tag to character from the command line.
+function AJM:AddTagCommand( info, parameters )
+	local inputText = JambaUtilities:Lowercase( parameters )
+	local characterName, tag = strsplit( " ", inputText )
+	--local characterName = characterNameOrExistingTag
+	--local finalCharacterNameOrExistingTag = characterNameOrExistingTag
+	if JambaPrivate.Team.IsCharacterInTeam( characterName ) == true then
+		--finalCharacterNameOrExistingTag = characterName
+		AddCharacterToGroup( characterName, tag )
 	end
 end
 
-local function DoesCharacterHaveTag( characterName, tag )
-	--characterName = JambaUtilities:AddRealmToNameIfMissing( characterName )
-	local characterTagList = GetTagListForCharacter( characterName )
-	return DoesTagListHaveTag( characterTagList, tag )
+-- Remove tag from character from the command line.
+function AJM:RemoveTagCommand( info, parameters )
+	local inputText = JambaUtilities:Lowercase( parameters )
+	local characterName, tag = strsplit( " ", inputText )
+	--local characterName = characterNameOrExistingTag
+	--local finalCharacterNameOrExistingTag = characterNameOrExistingTag
+	if JambaPrivate.Team.IsCharacterInTeam( characterName ) == true then
+		--finalCharacterNameOrExistingTag = characterName
+		RemoveGroupFromCharacter( characterName, tag )
+	end	
+	--RemoveTagFromCharacter( finalCharacterNameOrExistingTag, tag )
 end
 
 function AJM:OnMasterChanged( message, characterName )
@@ -598,6 +585,7 @@ function AJM:OnMasterChanged( message, characterName )
 end
 
 function AJM:OnCharacterAdded( message, characterName )
+	--AJM:Print("test", characterName )
 	CheckSystemTagsAreCorrect()
 	AJM:SettingsRefresh()
 end
@@ -611,79 +599,47 @@ end
 -- Settings Callbacks.
 -------------------------------------------------------------------------------------------------------------
 
-function AJM:SettingsTeamListScrollRefresh()
+function AJM:SettingsGroupListScrollRefresh()
 	FauxScrollFrame_Update(
-		AJM.settingsControl.teamList.listScrollFrame, 
-		JambaPrivate.Team.GetTeamListMaximumOrder(),
-		AJM.settingsControl.teamList.rowsToDisplay, 
-		AJM.settingsControl.teamList.rowHeight
+		AJM.settingsControl.groupList.listScrollFrame, 
+		--JambaPrivate.Team.GetTeamListMaximumOrder(),
+		GetGroupListMaximumOrder(),
+		AJM.settingsControl.groupList.rowsToDisplay, 
+		AJM.settingsControl.groupList.rowHeight
 	)
-	AJM.settingsControl.teamListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.teamList.listScrollFrame )
-	for iterateDisplayRows = 1, AJM.settingsControl.teamList.rowsToDisplay do
+	AJM.settingsControl.groupListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.groupList.listScrollFrame )
+	for iterateDisplayRows = 1, AJM.settingsControl.groupList.rowsToDisplay do
+		--AJM:Print("test", AJM.settingsControl.groupList.rowsToDisplay )
 		-- Reset.
-		AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
-		AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
-		AJM.settingsControl.teamList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
+		AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
+		AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
+		AJM.settingsControl.groupList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
-		local dataRowNumber = iterateDisplayRows + AJM.settingsControl.teamListOffset
-		if dataRowNumber <= JambaPrivate.Team.GetTeamListMaximumOrder() then
+		local dataRowNumber = iterateDisplayRows + AJM.settingsControl.groupListOffset
+		--if dataRowNumber <= JambaPrivate.Team.GetTeamListMaximumOrder() then
+		if dataRowNumber <= GetGroupListMaximumOrder() then
 			-- Put character name into columns.
-			local characterName = JambaPrivate.Team.GetCharacterNameAtOrderPosition( dataRowNumber )
-			AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetText( characterName )
+			--local characterName = JambaPrivate.Team.GetCharacterNameAtOrderPosition( dataRowNumber )
+			local group = GetGroupAtPosition( dataRowNumber )
+			local groupName = JambaUtilities:Capitalise( group )
+			AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetText( groupName )
+			-- System tags are Red.
+			if IsASystemGroup( group ) == true then
+				AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.0, 0.0, 1.0 )
+			end
+			
 			-- Highlight the selected row.
-			if dataRowNumber == AJM.settingsControl.teamListHighlightRow then
-				AJM.settingsControl.teamList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
+			if dataRowNumber == AJM.settingsControl.groupListHighlightRow then
+				AJM.settingsControl.groupList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
 			end
 		end
 	end
 end
 
-function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )		
-	if AJM.settingsControl.teamListOffset + rowNumber <= JambaPrivate.Team.GetTeamListMaximumOrder() then
-		AJM.settingsControl.teamListHighlightRow = AJM.settingsControl.teamListOffset + rowNumber
-		AJM:SettingsTeamListScrollRefresh()
-		-- New tag list coming up, highlight first item in list.
-		AJM.settingsControl.tagListHighlightRow = 1
-		local characterName = JambaPrivate.Team.GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
-		DisplayTagsForCharacterInTagList( characterName )
-	end
-end
-
-function AJM:SettingsTagListScrollRefresh()
-	FauxScrollFrame_Update(
-		AJM.settingsControl.tagList.listScrollFrame, 
-		GetTagListMaxPosition(),
-		AJM.settingsControl.tagList.rowsToDisplay, 
-		AJM.settingsControl.tagList.rowHeight
-	)
-	AJM.settingsControl.tagListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.tagList.listScrollFrame )
-	for iterateDisplayRows = 1, AJM.settingsControl.tagList.rowsToDisplay do
-		-- Reset.
-		AJM.settingsControl.tagList.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
-		AJM.settingsControl.tagList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
-		AJM.settingsControl.tagList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
-		-- Get data.
-		local dataRowNumber = iterateDisplayRows + AJM.settingsControl.tagListOffset
-		if dataRowNumber <= GetTagListMaxPosition() then
-			-- Put tag into column.
-			local tag = GetTagAtPosition( dataRowNumber )
-			AJM.settingsControl.tagList.rows[iterateDisplayRows].columns[1].textString:SetText( tag )
-			-- System tags are yellow.
-			if IsTagASystemTag( tag ) == true then
-				AJM.settingsControl.tagList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
-			end
-			-- Highlight the selected row.
-			if dataRowNumber == AJM.settingsControl.tagListHighlightRow then
-				AJM.settingsControl.tagList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
-			end
-		end
-	end
-end
-
-function AJM:SettingsTagListRowClick( rowNumber, columnNumber )		
-	if AJM.settingsControl.tagListOffset + rowNumber <= GetTagListMaxPosition() then
-		AJM.settingsControl.tagListHighlightRow = AJM.settingsControl.tagListOffset + rowNumber
-		AJM:SettingsTagListScrollRefresh()
+function AJM:SettingsGroupListRowClick( rowNumber, columnNumber )		
+	if AJM.settingsControl.groupListOffset + rowNumber <= GetGroupListMaximumOrder() then
+		AJM.settingsControl.groupListHighlightRow = AJM.settingsControl.groupListOffset + rowNumber
+		AJM:SettingsGroupListScrollRefresh()
 	end
 end
 
@@ -696,9 +652,8 @@ function AJM:SettingsAddClick( event )
 end
 
 function AJM:SettingsRemoveClick( event )
-	local tag = GetTagAtPosition( AJM.settingsControl.tagListHighlightRow )
-	local characterName = JambaPrivate.Team.GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
-	StaticPopup_Show( "JAMBATAG_CONFIRM_REMOVE_TAG", tag, characterName )
+	local group = GetGroupAtPosition( AJM.settingsControl.groupListHighlightRow )
+	StaticPopup_Show( "JAMBATAG_CONFIRM_REMOVE_TAG", group )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -709,8 +664,6 @@ end
 function AJM:OnInitialize()
 	-- Current character tag list. 
 	AJM.characterTagList = {}
-	-- Unique list of all tags.
-	AJM.allTagsList = {}
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the JambaModule part of this module.
@@ -731,10 +684,10 @@ function AJM:OnEnable()
 	AJM:RegisterMessage( JambaPrivate.Team.MESSAGE_TEAM_CHARACTER_ADDED, "OnCharacterAdded" )
 	AJM:RegisterMessage( JambaPrivate.Team.MESSAGE_TEAM_CHARACTER_REMOVED, "OnCharacterRemoved" )
 	-- Kickstart the settings team and tag list scroll frame.
-	AJM:SettingsTeamListScrollRefresh()
-	AJM:SettingsTagListScrollRefresh()
+	AJM:SettingsGroupListScrollRefresh()
+	--AJM:SettingsTagListScrollRefresh()
 	-- Click the first row in the team list table to populate the tag list table.
-	AJM:SettingsTeamListRowClick( 1, 1 )
+	AJM:SettingsGroupListRowClick( 1, 1 )
 end
 
 -- Called when the addon is disabled.
@@ -748,26 +701,34 @@ end
 function AJM:JambaOnCommandReceived( sender, commandName, ... )
 end
 
--- Functions available from Jamba Tag for other Jamba internal objects.
-JambaPrivate.Tag.AllTag = AllTag
+-- Functions available for other addons Jamba-EE > v8 
+-- Group List API
+JambaApi.GroupList = GroupList
+JambaApi.DoesGroupExist = DoesGroupExist
+JambaApi.IsASystemGroup = IsASystemGroup
+JambaApi.GetGroupListMaximumOrder = GetGroupListMaximumOrder
+JambaApi.GetGroupAtPosition = GetGroupAtPosition
+JambaApi.AddGroup = AddGroup
+JambaApi.RemoveGroup = RemoveGroup
+
+--Character Group API
+JambaApi.TeamGroupList = TeamGroupList
+JambaApi.IsCharacterInGroup = IsCharacterInGroup
+JambaApi.GetGroupListForCharacter = GetGroupListForCharacter
+JambaApi.CharacterMaxGroups = CharacterMaxGroups
+JambaApi.AddCharacterToGroup = AddCharacterToGroup
+JambaApi.RemoveGroupFromCharacter = RemoveGroupFromCharacter
+
+-- SystemTags API
+JambaApi.AllGroup = AllTag
+JambaApi.MasterGroup = MasterTag 
+JambaApi.MinionGroup = MinionTag
+
+-- Old Way, most modules need to be rewiren/udated to support the new API 
+-- but for now we should keep this here incase we Mass Up Somewhere -- Ebony
 JambaPrivate.Tag.MasterTag = MasterTag
 JambaPrivate.Tag.MinionTag = MinionTag
-JambaPrivate.Tag.JustMeTag = JustMeTag
-JambaPrivate.Tag.AllTagsList = AllTagsList
-JambaPrivate.Tag.AllTagsListIterator = AllTagsListIterator
-JambaPrivate.Tag.DoesCharacterHaveTag = DoesCharacterHaveTag
-JambaPrivate.Tag.IsAValidTag = IsAValidTag
-JambaPrivate.Tag.GetCharacterWithTag = GetCharacterWithTag
-JambaPrivate.Tag.GetTagListForCharacter = GetTagListForCharacter
-JambaPrivate.Tag.GetTagListMaxPosition = GetTagListMaxPosition
-
--- Functions available for other addons.
+JambaPrivate.Tag.AllTag = AllTag
+JambaPrivate.Tag.DoesCharacterHaveTag = IsCharacterInGroup
+JambaApi.DoesCharacterHaveTag = IsCharacterInGroup
 JambaApi.AllTag = AllTag
-JambaApi.MasterTag = MasterTag
-JambaApi.MinionTag = MinionTag
-JambaApi.JustMeTag = JustMeTag
-JambaApi.AllTagsList = AllTagsList
-JambaApi.AllTagsListIterator = AllTagsListIterator
-JambaApi.DoesCharacterHaveTag = DoesCharacterHaveTag
-JambaApi.IsAValidTag = IsAValidTag
-JambaApi.GetCharacterWithTag = GetCharacterWithTag

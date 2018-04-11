@@ -10,7 +10,7 @@ JambaEmbeds.xml
 JambaUtilities.lua
 
 #Locales
-Core\Locales\Locales.xml
+Locales\Locales.xml
 Modules\Locales\Locales.xml
 
 #GUI

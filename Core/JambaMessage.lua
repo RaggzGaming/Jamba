@@ -30,9 +30,9 @@ Media:Register("sound", "Jamba: RaidWarning", "Sound\\interface\\RaidWarning.ogg
 AJM.moduleName = "Jamba-Message"
 AJM.settingsDatabaseName = "JambaMessageProfileDB"
 AJM.chatCommand = "jamba-message"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["OPTIONS"]
-AJM.moduleDisplayName = L["Message Display"]
+AJM.moduleDisplayName = L["MESSAGE_DISPLAY"]
 
 -------------------------------------------------------------------------------------------------------------
 -- Message area management.
@@ -57,15 +57,15 @@ AJM.AREA_TYPE_GUILD_OFFICER = 6
 AJM.AREA_TYPE_RAID = 7
 AJM.AREA_TYPE_RAID_WARNING = 8
 --AJM.AREA_TYPE_CHANNEL = 9
-AJM.AREA_TYPE_PARROT = 10
-AJM.AREA_TYPE_MSBT = 11
+--AJM.AREA_TYPE_PARROT = 10
+--AJM.AREA_TYPE_MSBT = 11
 AJM.AREA_TYPE_MUTE = 12
 
 -- Message area types names and uses information.
 AJM.areaTypes = {}
 -- Default chat window.
 AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT] = {}
-AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT].name = L["Default Chat Window"]
+AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT].name = L["DEFAULT_CHAT_WINDOW"]
 AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT].usesTag = true
 AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_DEFAULT_CHAT].usesChatWindowName = false
@@ -85,7 +85,7 @@ AJM.areaTypes[AJM.AREA_TYPE_SPECIFIC_CHAT].usesSound = true
 ]]--
 -- Whisper.
 AJM.areaTypes[AJM.AREA_TYPE_WHISPER] = {}
-AJM.areaTypes[AJM.AREA_TYPE_WHISPER].name = L["Whisper"]
+AJM.areaTypes[AJM.AREA_TYPE_WHISPER].name = L["WHISPER"]
 AJM.areaTypes[AJM.AREA_TYPE_WHISPER].usesTag = true
 AJM.areaTypes[AJM.AREA_TYPE_WHISPER].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_WHISPER].usesChatWindowName = false
@@ -94,7 +94,7 @@ AJM.areaTypes[AJM.AREA_TYPE_WHISPER].mustBeWired = true
 AJM.areaTypes[AJM.AREA_TYPE_WHISPER].usesSound = true
 -- Party.
 AJM.areaTypes[AJM.AREA_TYPE_PARTY] = {}
-AJM.areaTypes[AJM.AREA_TYPE_PARTY].name = L["Party"]
+AJM.areaTypes[AJM.AREA_TYPE_PARTY].name = L["PARTY"]
 AJM.areaTypes[AJM.AREA_TYPE_PARTY].usesTag = false
 AJM.areaTypes[AJM.AREA_TYPE_PARTY].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_PARTY].usesChatWindowName = false
@@ -103,7 +103,7 @@ AJM.areaTypes[AJM.AREA_TYPE_PARTY].mustBeWired = false
 AJM.areaTypes[AJM.AREA_TYPE_PARTY].usesSound = true
 -- Guild.
 AJM.areaTypes[AJM.AREA_TYPE_GUILD] = {}
-AJM.areaTypes[AJM.AREA_TYPE_GUILD].name = L["Guild"]
+AJM.areaTypes[AJM.AREA_TYPE_GUILD].name = L["GUILD"]
 AJM.areaTypes[AJM.AREA_TYPE_GUILD].usesTag = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD].usesChatWindowName = false
@@ -112,7 +112,7 @@ AJM.areaTypes[AJM.AREA_TYPE_GUILD].mustBeWired = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD].usesSound = true
 -- Guild Officer.
 AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER] = {}
-AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].name = L["Guild Officer"]
+AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].name = L["GUILD_OFFICER"]
 AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].usesTag = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].usesChatWindowName = false
@@ -121,7 +121,7 @@ AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].mustBeWired = false
 AJM.areaTypes[AJM.AREA_TYPE_GUILD_OFFICER].usesSound = true
 -- Raid.
 AJM.areaTypes[AJM.AREA_TYPE_RAID] = {}
-AJM.areaTypes[AJM.AREA_TYPE_RAID].name = L["Raid"]
+AJM.areaTypes[AJM.AREA_TYPE_RAID].name = L["RAID"]
 AJM.areaTypes[AJM.AREA_TYPE_RAID].usesTag = false
 AJM.areaTypes[AJM.AREA_TYPE_RAID].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_RAID].usesChatWindowName = false
@@ -130,7 +130,7 @@ AJM.areaTypes[AJM.AREA_TYPE_RAID].mustBeWired = false
 AJM.areaTypes[AJM.AREA_TYPE_RAID].usesSound = true
 -- Raid Warning.
 AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING] = {}
-AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING].name = L["Raid Warning"]
+AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING].name = L["RAID_WARNING"]
 AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING].usesTag = true
 AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_RAID_WARNING].usesChatWindowName = false
@@ -147,28 +147,10 @@ AJM.areaTypes[AJM.AREA_TYPE_CHANNEL].usesChatWindowName = false
 AJM.areaTypes[AJM.AREA_TYPE_CHANNEL].usesScreen = false
 AJM.areaTypes[AJM.AREA_TYPE_CHANNEL].mustBeWired = false
 AJM.areaTypes[AJM.AREA_TYPE_CHANNEL].usesSound = true
-]]--
--- Area On Screen Via Parrot.
-AJM.areaTypes[AJM.AREA_TYPE_PARROT] = {}
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].name = L["Parrot"]
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].usesTag = true
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].usesChannel = false
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].usesChatWindowName = false
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].usesScreen = true
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].mustBeWired = true
-AJM.areaTypes[AJM.AREA_TYPE_PARROT].usesSound = true
--- Area On Screen Via MSBT.
-AJM.areaTypes[AJM.AREA_TYPE_MSBT] = {}
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].name = L["MikScrollingBattleText"]
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].usesTag = true
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].usesChannel = false
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].usesChatWindowName = false
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].usesScreen = true
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].mustBeWired = true
-AJM.areaTypes[AJM.AREA_TYPE_MSBT].usesSound = true
+--]]
 -- Mute.
 AJM.areaTypes[AJM.AREA_TYPE_MUTE] = {}
-AJM.areaTypes[AJM.AREA_TYPE_MUTE].name = L["Mute"]
+AJM.areaTypes[AJM.AREA_TYPE_MUTE].name = L["MUTE"]
 AJM.areaTypes[AJM.AREA_TYPE_MUTE].usesTag = false
 AJM.areaTypes[AJM.AREA_TYPE_MUTE].usesChannel = false
 AJM.areaTypes[AJM.AREA_TYPE_MUTE].usesChatWindowName = false
@@ -182,18 +164,18 @@ AJM.settings = {
 		["areas"] = {
 			{
 				["type"] = 1,
-				["name"] = L["Default Message"],
+				["name"] = L["DEFAULT_MESSAGE"],
 				["tag"] = JambaPrivate.Tag.MasterTag(),
 			},
 			{
 				["type"] = 8,
-				["name"] = L["Default Warning"],
+				["name"] = L["DEFAULT_WARNING"],
 				["tag"] = JambaPrivate.Tag.MasterTag(),
 				["soundToPlay"] = "Jamba: RaidWarning",
 			},
 			{
 				["type"] = 12,
-				["name"] = L["Mute (Default)"],
+				["name"] = L["MUTE_POFILE"],
 			},			
 		},
 	},
@@ -212,8 +194,8 @@ function AJM:GetConfiguration()
 		args = {	
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the message settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-message push",
 				get = false,
 				set = "JambaSendSettings",
@@ -264,9 +246,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -376,7 +356,7 @@ local function SettingsCreateAreaList()
 	AJM.settingsControl.areaListHighlightRow = 1
 	AJM.settingsControl.areaListOffset = 1
 	-- Create a heading.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Message Area List"], top, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGE_AREA_LIST"], top, false )
 	-- Create an area list frame.
 	local list = {}
 	list.listFrameName = "JambaMessageSettingsAreaListFrame"
@@ -407,16 +387,18 @@ local function SettingsCreateAreaList()
 		areaListButtonControlWidth, 
 		left, 
 		bottomOfList, 
-		L["Add"],
-		AJM.SettingsAddClick
+		L["ADD"],
+		AJM.SettingsAddClick,
+		L["ADD_MSG_HELP"]
 	)
 	AJM.settingsControl.areaListButtonRemove = JambaHelperSettings:CreateButton(
 		AJM.settingsControl, 
 		areaListButtonControlWidth, 
 		left + horizontalSpacing + areaListButtonControlWidth, 
 		bottomOfList, 
-		L["Remove"],
-		AJM.SettingsRemoveClick
+		L["REMOVE"],
+		AJM.SettingsRemoveClick,
+		L["REMOVE_MSG_HELP"]
 	)	
 	return bottomOfSection
 end
@@ -434,13 +416,13 @@ local function SettingsCreateAreaTypes( top )
 	local column1Left = left
 	local column2Left = left + halfWidth + (horizontalSpacing * 3)
 	local areaConfigurationTop = top - headingHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Message Area Configuration"], top, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGE_AREA_CONFIGURATION"], top, false )
 	AJM.settingsControl.areaTypeDropdown = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
 		headingWidth, 
 		column1Left, 
 		areaConfigurationTop, 
-		L["Message Area Type"] 
+		L["MESSAGE_AREA"]
 	)
 	areaConfigurationTop = areaConfigurationTop - dropdownHeight
 	local areaList = {}
@@ -453,7 +435,7 @@ local function SettingsCreateAreaTypes( top )
 		headingWidth,
 		column1Left,
 		areaConfigurationTop,
-		L["Tag"]
+		L["GROUP"]
 	)
 	AJM.settingsControl.areaEditBoxTag:SetCallback( "OnEnterPressed", AJM.EditBoxTagChanged )
 	areaConfigurationTop = areaConfigurationTop - dropdownHeight	
@@ -461,7 +443,7 @@ local function SettingsCreateAreaTypes( top )
 		headingWidth,
 		column1Left,
 		areaConfigurationTop,
-		L["Name"]
+		L["NAME"]
 	)
 	AJM.settingsControl.areaEditBoxName:SetCallback( "OnEnterPressed", AJM.EditBoxNameChanged )
 	areaConfigurationTop = areaConfigurationTop - dropdownHeight	
@@ -469,7 +451,7 @@ local function SettingsCreateAreaTypes( top )
 		headingWidth,
 		column1Left,
 		areaConfigurationTop,
-		L["Password"]
+		L["PASSWORD"]
 	)	
 	AJM.settingsControl.areaEditBoxPassword:SetCallback( "OnEnterPressed", AJM.EditBoxPasswordChanged )
 	areaConfigurationTop = areaConfigurationTop - dropdownHeight	
@@ -478,19 +460,17 @@ local function SettingsCreateAreaTypes( top )
 		headingWidth, 
 		column1Left, 
 		areaConfigurationTop, 
-		L["Area On Screen"] 
+		L["AREA"]
 	)
 	AJM.settingsControl.areaOnScreenDropdown:SetCallback( "OnValueChanged", AJM.UpdateAreaOnScreenControls )
 	areaConfigurationTop = areaConfigurationTop - dropdownHeight
-	areaConfigurationTop = areaConfigurationTop - verticalSpacing - verticalSpacing		
---TODO add back in!
-
+	areaConfigurationTop = areaConfigurationTop - verticalSpacing - verticalSpacing
 	AJM.settingsControl.areaSoundDropdown = JambaHelperSettings:CreateMediaSound( 
 		AJM.settingsControl, 
 		headingWidth, 
 		column1Left, 
 		areaConfigurationTop,
-		L["Sound To Play"]
+		L["SOUND_TO_PLAY"]
 	)
 	AJM.settingsControl.areaSoundDropdown:SetCallback( "OnValueChanged", AJM.UpdateSoundControls )
 
@@ -501,7 +481,7 @@ local function SettingsCreateAreaTypes( top )
 		areaListButtonControlWidth, 
 		column1Left, 
 		areaConfigurationTop, 
-		L["Save"],
+		L["SAVE"],
 		AJM.SettingsUpdateClick
 	)		
 	areaConfigurationTop = areaConfigurationTop - buttonHeight	
@@ -595,28 +575,8 @@ function AJM:UpdateAreaTypeControls( event, areaTypeIdentifier )
 		AJM.settingsControl.areaEditBoxName:SetDisabled( false )
 	end
 	if areaType.usesScreen == true then
-		-- Parrot.
-		if areaTypeIdentifier == AJM.AREA_TYPE_PARROT then
-			if Parrot ~= nil then
-				AJM.settingsControl.areaOnScreenDropdown:SetList( Parrot.GetScrollAreasChoices() )
-				AJM.settingsControl.areaOnScreenDropdown:SetDisabled( false )
-			else
-				AJM.settingsControl.areaOnScreenDropdown:SetText( L["ERROR: Parrot Missing"] )
-			end
-		end
-		-- MSBT.
-		if areaTypeIdentifier == AJM.AREA_TYPE_MSBT then
-			if MikSBT ~= nil then
-				local scrollAreas = {}
-				for scrollAreaKey, scrollAreaName in MikSBT.IterateScrollAreas() do
-					scrollAreas[scrollAreaKey] = scrollAreaName
-				end 
-				AJM.settingsControl.areaOnScreenDropdown:SetList( scrollAreas )
-				AJM.settingsControl.areaOnScreenDropdown:SetDisabled( false )
-			else
-				AJM.settingsControl.areaOnScreenDropdown:SetText( L["ERROR: MikScrollingBattleText Missing"] )
-			end
-		end
+		-- Nothing here anymore!
+		
 	end
 	if areaType.usesSound == true then
 		AJM.settingsControl.areaSoundDropdown:SetDisabled( false )
@@ -742,7 +702,7 @@ end
 -- Initialize Popup Dialogs.
 local function InitializePopupDialogs()
    StaticPopupDialogs["JAMBAMESSAGE_ASK_AREA_NAME"] = {
-        text = L["Enter name of the message area to add:"],
+        text = L["STATICPOPUP_ADD_MSG"],
         button1 = ACCEPT,
         button2 = CANCEL,
         hasEditBox = 1,
@@ -823,11 +783,11 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 local function DefaultMessageArea()
-	return L["Default Message"]
+	return L["DEFAULT_MESSAGE"]
 end
 
 local function DefaultWarningArea()
-	return L["Default Warning"]
+	return L["DEFAULT_WARNING"]
 end
 
 local function DisplayMessageDefaultChat( sender, message, suppressSender )
@@ -887,44 +847,8 @@ local function DisplayMessageRaidWarning( sender, message, suppressSender )
 	end
 	completeMessage = completeMessage..message
 	RaidNotice_AddMessage( RaidWarningFrame, completeMessage, ChatTypeInfo["RAID_WARNING"] )
-	-- This is now registerd though Shared Media so it can be truned off if the user choices. *ebony
-	--PlaySound( "RaidWarning" )
 end
 		
-local function DisplayMessageParrot( sender, message, areaOnScreenName, suppressSender )
-	local completeMessage = ""
-	local senderName = Ambiguate(sender, "none")
-	if suppressSender == false then
-		completeMessage = completeMessage..senderName..L[": "]
-	end
-	completeMessage = completeMessage..message
-	if Parrot ~= nil then
-		Parrot:ShowMessage( completeMessage, areaOnScreenName, true )
-	else
-		AJM:Print( L["ERROR: Parrot Missing"] )
-		AJM:Print( completeMessage )
-	end		
-end
-
-local function DisplayMessageMikSBT( sender, message, areaOnScreenName, suppressSender )
-	local completeMessage = ""
-	local senderName = Ambiguate(sender, "none")
-	if suppressSender == false then
-		completeMessage = completeMessage..senderName..L[": "]
-	end
-	completeMessage = completeMessage..message
-	if MikSBT ~= nil then
-		if MikSBT.IsModDisabled() == true then
-			AJM:Print( L["ERROR: MikScrollingBattleText Disabled"] )
-			AJM:Print( completeMessage )
-		else
-			MikSBT.DisplayMessage( completeMessage, areaOnScreenName, true )
-		end
-	else
-		AJM:Print( L["ERROR: MikScrollingBattleText Missing"] )
-		AJM:Print( completeMessage )
-	end		
-end
 
 local function PlayMessageSound( soundToPlay )	
 	PlaySoundFile( Media:Fetch( 'sound', soundToPlay ), "Ambience" )
@@ -1002,9 +926,9 @@ local function SendMessage( areaName, message, suppressSender, ... )
 	-- Does this area type use tags?  If so, find out if the message needs to be sent over the wire.
 	local sendToJustMe = false
 	if areaType.usesTag == true then
-		if area.tag == JambaPrivate.Tag.JustMeTag() then
-			sendToJustMe = true
-		end
+		--if area.tag == JambaPrivate.Tag.JustMeTag() then
+		--	sendToJustMe = true
+		--end
 		if area.tag == JambaPrivate.Tag.MasterTag() and JambaPrivate.Team.IsCharacterTheMaster( AJM.characterName ) == true then
 			sendToJustMe = true
 		end

@@ -12,11 +12,20 @@ Release Date: TBA
 	- New Layout for modules
 	- Most of Jamba is now classed as one Addon "Jamba"
 	- Removed Tons Of Old code.
-	
+
+#Team
+	- Now Shows Groups on the teamList.
+	- Updated Gui to be more User Frindly.
+
+#Group (Tag)
+	- A full Rewrite of [Tag] Now named Group Use the Grouo List Page to add new groups/remove Groups that you can add to character's In The TeamGUI
+
 #GUI
 	- New Logo'a now Shows on GUI
+#API
+	Tons of JambaApi Changes. !LINKTOPAGE!
 	
-# Modules changed 	
+### Modules changed 	
 	- Removed Taxi and Mount Modules
 	- Added new Module "Interaction"	
 	- Removed JambaAdvancedLoot 
@@ -39,5 +48,4 @@ Release Date: TBA
 		-- No Longer runs a Endless Loop (WOWAPI DOES NOT LIKE LUA: "while!! .. do ")
 		
 ## Toon
-	
-		
+			

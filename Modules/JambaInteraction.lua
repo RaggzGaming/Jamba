@@ -682,7 +682,7 @@ function AJM:doLoot( tries )
 			end	
 		end
 		tries = tries + 1
-		if tries < 5 then
+		if tries < 8 then
 			AJM:doLootLoop( tries )
 		else	
 			CloseLoot()
@@ -692,7 +692,7 @@ end
 
 function AJM:doLootLoop( tries )
 	--AJM:Print("loop", tries)
-	AJM:ScheduleTimer("doLoot", 0.5, tries )
+	AJM:ScheduleTimer("doLoot", 0.2, tries )
 end
 
 function AJM:DisableAutoLoot()
@@ -711,7 +711,8 @@ function AJM:TellTeamEpicBoE( name )
 	if itemName ~= nil then
 		if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
 			local _, isBop = JambaUtilities:TooltipScaner(itemName)
-			if isBop ~= ITEM_SOULBOUND then
+			if isBop == ITEM_BIND_ON_EQUIP then
+				AJM:Print("test", isBop )
 				local rarity = nil
 				if itemRarity == 4 then
 					rarity = L["EPIC"]

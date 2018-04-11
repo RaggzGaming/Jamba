@@ -252,8 +252,7 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "GOSSIP_SHOW" )
 	AJM:RegisterEvent( "QUEST_GREETING" )
 	AJM:RegisterEvent( "QUEST_PROGRESS" )
-	AJM:RegisterEvent( "QUEST_FINISHED" )
-	--AJM:RegisterEvent( "UI_ERROR_MESSAGE", "QUEST_FAIL" )
+	--AJM:RegisterEvent( "QUEST_FINISHED" )
 	AJM:RegisterEvent( "CHAT_MSG_SYSTEM", "QUEST_FAIL" )
    -- Quest post hooks.
     AJM:SecureHook( "SelectGossipOption" )
@@ -1493,7 +1492,7 @@ function AJM:QUEST_ACCEPTED( ... )
 					SelectQuestLogEntry( questIndex )
 						if GetQuestLogPushable() and GetNumSubgroupMembers() > 0 then
 							AJM:JambaSendMessageToTeam( AJM.db.messageArea, "Pushing newly accepted quest.", false )
-							QuestLogPushQuest() -- this needed??
+							QuestLogPushQuest()
 						end
 				end	
 			end
@@ -1525,6 +1524,7 @@ function AJM:DoAcceptQuest( sender )
 			AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["Accepted Quest: A"]( questName ), false )
 			AcceptQuest()
 			HideUIPanel( QuestFrame )
+			AcceptQuest()
 			AJM.isInternalCommand = false
 		end		
 	end
@@ -2050,7 +2050,8 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 		AJM:DoSelectAvailableQuest( characterName, ... )
 	end
 	if commandName == AJM.COMMAND_DECLINE_QUEST then		
-		AJM:DoDeclineQuest( characterName, ...  )
+		--AJM:DoDeclineQuest( characterName, ...  )
+		AJM:ScheduleTimer("DoDeclineQuest" , 1, characterName, ... ) 
 	end
 	if commandName == AJM.COMMAND_COMPLETE_QUEST then		
 		AJM:DoCompleteQuest( characterName, ... )
