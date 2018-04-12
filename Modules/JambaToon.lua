@@ -185,7 +185,7 @@ end
 
 function AJM:OnMessageAreasChanged( message )
 	AJM.settingsControlMerchant.dropdownMerchantArea:SetList( JambaApi.MessageAreaList() )
-	AJM.settingsControlRequests.dropdownRequestArea:SetList( JambaApi.MessageAreaList() )
+	AJM.settingsControlToon.dropdownRequestArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControlWarnings.dropdownWarningArea:SetList( JambaApi.MessageAreaList() )
 end
 

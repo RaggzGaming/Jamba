@@ -29,6 +29,10 @@ AJM.chatCommand = "jamba-tag"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["Team"]
 AJM.moduleDisplayName = "[WIP] "..L["Group List"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\GroupIcon.tga"
+-- order
+AJM.moduleOrder = 10
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -87,6 +91,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- Constants used by module.
 -------------------------------------------------------------------------------------------------------------
+AJM.simpleAreaList = {}
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -159,7 +164,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder
 	)
 	
 	-- Create the team list controls.
@@ -195,6 +202,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	if characterName ~= AJM.characterName then
 		-- Update the settings.
 		AJM.db.tagList = JambaUtilities:CopyTable( settings.tagList )
+		AJM.db.groupList = JambaUtilities:CopyTable( settings.groupList )
 		AJM:InitializeAllTagsList()
 		-- New team and tag lists coming up, highlight first item in each list.
 		AJM.settingsControl.groupListHighlightRow = 1

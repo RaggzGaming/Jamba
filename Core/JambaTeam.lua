@@ -201,6 +201,7 @@ AJM.MESSAGE_CHARACTER_OFFLINE = "JmbTmChrOf"
 -- Constants used by module.
 -------------------------------------------------------------------------------------------------------------
 
+AJM.simpleAreaList = {}
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -219,11 +220,16 @@ local function SettingsCreateTeamList()
 	local buttonHeight = JambaHelperSettings:GetButtonHeight()
 	local top = JambaHelperSettings:TopOfSettings()
 	local left = JambaHelperSettings:LeftOfSettings()
+	local dropdownHeight = JambaHelperSettings:GetDropdownHeight()
+	
 	local lefticon =  left + 35
 	local headingHeight = JambaHelperSettings:HeadingHeight()
 	local headingWidth = JambaHelperSettings:HeadingWidth( false )
+
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
+
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
+	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
 	local iconHight = iconSize + 10
 	local teamListWidth = headingWidth - teamListButtonControlWidth - horizontalSpacing
 	local leftOfList = left + horizontalSpacing
@@ -293,7 +299,7 @@ local function SettingsCreateTeamList()
 	JambaHelperSettings:CreateScrollList( AJM.settingsControl.groupList )
 	-- Position and size constants (once list height is known).
 	local bottomOfList = topOfList - list.listHeight - verticalSpacing
-	local bottomOfSection = bottomOfList -  buttonHeight - verticalSpacing		
+	local bottomOfSection = bottomOfList -  dropdownHeight - verticalSpacing		
 	--Create Icons
 	AJM.settingsControl.teamListButtonAdd = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -361,6 +367,29 @@ local function SettingsCreateTeamList()
 		AJM.SettingsSetMasterClick,
 		L["BUTTON_MASTER_HELP"]
 	)
+	AJM.settingsControl.teamListButtonRemoveFromGroup = JambaHelperSettings:Icon( 
+		AJM.settingsControl, 
+		iconSize,
+		iconSize,
+		"Interface\\Addons\\Jamba\\Media\\RemoveGroup.tga", --icon Image
+		rightOfList + dropBoxWidth + 11 , 
+		bottomOfList ,
+		L[""], 
+		AJM.SettingsRemoveGroupClick,
+		L["BUTTON_GROUP_REMOVE_HELP"]
+	)	
+	-- Group Mangent
+	AJM.settingsControl.teamListDropDownList = JambaHelperSettings:CreateDropdown(
+		AJM.settingsControl, 
+		dropBoxWidth,	
+		rightOfList + extaSpacing, -- horizontalSpacing,
+		bottomOfList + 11, 
+		L["GROUP_LIST"]
+	)
+	AJM.settingsControl.teamListDropDownList:SetList( AJM.GroupAreaList() )
+	AJM.settingsControl.teamListDropDownList:SetCallback( "OnValueChanged",  AJM.TeamListDropDownList )
+	
+	
 	return bottomOfSection
 end
 
@@ -552,6 +581,25 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- Team management.
 -------------------------------------------------------------------------------------------------------------
+
+function AJM:GroupAreaList()
+	return pairs( AJM.simpleAreaList )
+end
+
+local function refreshDropDownList()
+	JambaUtilities:ClearTable( AJM.simpleAreaList )
+	AJM.simpleAreaList[" "] = " "
+	for id, tag in pairs( JambaApi.GroupList() ) do
+		local groupName =  JambaUtilities:Capitalise( tag )
+		AJM.simpleAreaList[groupName] = groupName	
+	end
+	table.sort( AJM.simpleAreaList )
+	AJM.settingsControl.teamListDropDownList:SetList( AJM.simpleAreaList )
+end
+
+local function Test()
+	return pairs( AJM.simpleAreaList )
+end	
 
 local function TeamList()
 	return pairs( AJM.db.teamList )
@@ -1256,6 +1304,8 @@ function AJM:OnEnable()
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	AJM:RegisterEvent( "UPDATE_BINDINGS" )		
 	AJM:UPDATE_BINDINGS()
+	-- Update DropDownList
+	refreshDropDownList()
 end
 
 -- Called when the addon is disabled.
@@ -1285,6 +1335,10 @@ function AJM:OnJambaProfileChanged()
 end
 
 function AJM:SettingsRefresh()
+	-- Team/Group Control
+	local test = " "
+	
+
 	-- Master Control.
 	AJM.settingsControl.masterControlCheckBoxMasterChange:SetValue( AJM.db.masterChangePromoteLeader )
 	AJM.settingsControl.masterControlCheckBoxMasterChangeClickToMove:SetValue( AJM.db.masterChangeClickToMove )
@@ -1407,7 +1461,6 @@ end
 
 
 local function DisplayGroupsForCharacterInGroupsList( characterName )
-	--AJM.characterGroupList = JambaPrivate.Tag.GetTagListForCharacter( characterName )
 	AJM.characterGroupList = JambaApi.GetGroupListForCharacter( characterName )
 	table.sort( AJM.characterGroupList )
 	AJM:SettingsGroupListScrollRefresh()
@@ -1415,6 +1468,7 @@ end
 
 local function GetGroupAtPosition( position )
 	return AJM.characterGroupList[position]
+	
 end
 
 local function GetTagListMaxPosition()
@@ -1430,15 +1484,9 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 		AJM.settingsControl.groupListHighlightRow = 1
 		local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
 		DisplayGroupsForCharacterInGroupsList( characterName )
-		--JambaApi.GetGroupListForCharacter( characterName )
-		
 	end
 end
-
--- For Api Update for Privte.tag
-local function RefreshGroupList()
-	AJM:SettingsGroupListScrollRefresh()
-end	
+	
 
 function AJM:SettingsGroupListScrollRefresh()
 	FauxScrollFrame_Update(
@@ -1459,9 +1507,14 @@ function AJM:SettingsGroupListScrollRefresh()
 		--local characterName = JambaApi.GetGroupListForCharacter --AJM.CharGroupListName
 		--local group = GetGroupAtPosition(characterName,dataRowNumber)
 		local group = GetGroupAtPosition( dataRowNumber )
+		local groupName = JambaUtilities:Capitalise( group )
 		--local group = JambaApi.GetGroupAtPosition( dataRowNumber )
-			AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetText( group ) 
+			AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetText( groupName ) 
 			--AJM:Print("test", dataRowNumber, group, characterName ) 
+			local systemGroup = JambaApi.IsASystemGroup( group )
+			if systemGroup == true then
+				AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+			end
 			if dataRowNumber == AJM.settingsControl.groupListHighlightRow then
 				AJM.settingsControl.groupList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )	
 			end
@@ -1470,11 +1523,52 @@ function AJM:SettingsGroupListScrollRefresh()
 
 end	
 
+
 function AJM:SettingsGroupListRowClick( rowNumber, columnNumber )		
 	if AJM.settingsControl.groupListOffset + rowNumber <= GetTagListMaxPosition() then
 		AJM.settingsControl.groupListHighlightRow = AJM.settingsControl.groupListOffset + rowNumber
 		AJM:SettingsGroupListScrollRefresh()
 	end
+end
+
+-- For Api Update For anywhere you add a Group. ( mosty Tag.lua )
+local function RefreshGroupList()
+	AJM:SettingsGroupListScrollRefresh()
+end
+
+function AJM:TeamListDropDownList(event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
+	end
+	local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
+	local groupName = JambaUtilities:Lowercase( value )
+	--AJM:Print("test", characterName, groupName )
+	-- We Have a group and characterName Lets Add it to the groupList
+	JambaApi.AddCharacterToGroup( characterName, groupName )
+	-- Reset the groupList Back to "Nothing"
+	AJM.settingsControl.teamListDropDownList:SetValue( " " )
+	-- update Lists
+	AJM:SettingsRefresh()
+	AJM:SettingsGroupListScrollRefresh()
+end
+
+function AJM.SettingsRemoveGroupClick(event, value )
+	local tag = GetGroupAtPosition( AJM.settingsControl.groupListHighlightRow )
+	local systemGroup = JambaApi.IsASystemGroup( tag )
+	local groupName = JambaUtilities:Lowercase( tag )
+	local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
+	local systemGroup = JambaApi.IsASystemGroup( tag )
+	-- Remove From Tag List
+	if systemGroup == false then
+		JambaApi.RemoveGroupFromCharacter( characterName, groupName )
+	else
+		--TODO: Update
+		AJM:Print("[PH] CAN NOT REMOVE FORM THIS GROUP!")
+	end
+	-- update Lists
+	AJM:SettingsRefresh()
+	AJM:SettingsGroupListScrollRefresh()
 end
 
 function AJM:SettingsPushSettingsClick( event )
@@ -1543,7 +1637,6 @@ function AJM:SettingsSetMasterClick( event )
 	AJM:SettingsTeamListScrollRefresh()
 	--AJM:SettingsGroupListScrollRefresh()
 end
-
 
 function AJM:SettingsMasterChangeToggle( event, checked )
 	AJM.db.masterChangePromoteLeader = checked
@@ -1686,3 +1779,4 @@ JambaApi.TeamListOrderedOnline = TeamListOrderedOnline
 JambaApi.GetPositionForCharacterNameOnline = GetPositionForCharacterNameOnline
 JambaApi.GetClass = characterClass
 JambaApi.SetClass = setClass
+JambaApi.GroupAreaList = GroupAreaList

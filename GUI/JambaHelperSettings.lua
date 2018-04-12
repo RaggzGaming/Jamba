@@ -133,7 +133,11 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 --	icon:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 0, 0 )	
 	
 	local button = AceGUI:Create( "Button" ) 
-	button:SetText( L["PUSH_SETTINGS"] )
+	if displayName == "News" then
+		button:SetText( L["PUSH_ALL_SETTINGS"] )
+	else	
+		button:SetText( L["PUSH_SETTINGS"] )
+	end
 	containerWidgetSettings:AddChild( button )
 	button:SetWidth( 200 )
 	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 0 )

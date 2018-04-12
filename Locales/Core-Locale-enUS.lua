@@ -17,6 +17,7 @@ L["JAMBA EE"] = "Jamba EE"
 L[""] = true
 L[" "] = true
 L["PUSH_SETTINGS"] = "Push Settings"
+L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
 L["MINION"] = "Minion"
 L["MASTER"] = "Master"
@@ -134,6 +135,7 @@ L["BUTTON_UP_HELP"] = "Move The Character Up A Place In The Team List"
 L["BUTTON_DOWN_HELP"] = "Move The Character Down A Place In The Team List"
 L["BUTTON_REMOVE_HELP"] = "Removes Selected Member From The Team List"
 L["BUTTON_MASTER_HELP"] = "Set The Selected Member To Be The Master Of The Group"
+L["BUTTON_GROUP_REMOVE_HELP"] = "Removes The Group From The Selected Character"
 L["MASTER_CONTROL"] = "Master Control"
 L["CHECKBOX_MASTER_LEADER"] = "Promote Master To Party Leader."
 L["CHECKBOX_MASTER_LEADER_HELP"] = "Master Will Always Be The Party Leader."
@@ -192,7 +194,6 @@ L["ADD_TAG_HELP"]= "Add a tag to the this character."
 L["REMMOVE_TAG_HELP"] = "Remove a tag from this character."
 L["GROUP"] =  "Group"
 L["GROUP_LIST"] = "Group List"
-
 
 
 -- TEMP

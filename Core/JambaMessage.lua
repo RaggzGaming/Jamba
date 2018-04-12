@@ -899,12 +899,14 @@ local function ProcessReceivedMessage( sender, areaName, message, suppressSender
 	if area.type == AJM.AREA_TYPE_CHANNEL then
 		-- TODO
 	end
+--[[
 	if area.type == AJM.AREA_TYPE_PARROT then
 		DisplayMessageParrot( sender, message, area.areaOnScreenName, suppressSender )
 	end
 	if area.type == AJM.AREA_TYPE_MSBT then
 		DisplayMessageMikSBT( sender, message, area.areaOnScreenName, suppressSender )
 	end
+]]	
 	if area.type == AJM.AREA_TYPE_MUTE then
 		-- Do nothing! Mute means eat the message.
 	end
