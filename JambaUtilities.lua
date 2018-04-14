@@ -47,22 +47,11 @@ function JambaUtilities:ClearTable( object )
 end
 
 function JambaUtilities:Lowercase( name )
-	return string.utf8lower( name )
+	if name ~= nil then
+		return string.utf8lower( name )
+	end	
 end
---[[
-function JambaUtilities:AddRealmToNameIfMissing( name )
-	--local fullName = name
-	Fullname = name:gsub("^%l", string.upper)
-	local matchDash = Fullname:find( "-" )
-	if not matchDash then
-		local realmName = GetRealmName()
-		Fullname = Fullname.."-"..realmName
-		end
-	return Fullname
-end
---]]
 
---AddRealmToNameIfMissing Blizzard Code does not like spaces in the realm name GetRealmName() pulls back the name with a Space Unwanted for most of the stuff we need to do.
 function JambaUtilities:AddRealmToNameIfMissing( name )
 	if name == nil then
 		return
@@ -78,8 +67,6 @@ function JambaUtilities:AddRealmToNameIfMissing( name )
 	return fullName
 end
 
-
-
 --if not string.find(name, "-") then
 --	local _, realm = UnitFullName("player")
 --	name = name.."-"..realm
@@ -87,8 +74,10 @@ end
 
 -- Capitalise the name.	
 function JambaUtilities:Capitalise( name )
-    return string.utf8upper( string.utf8sub( name, 1, 1 ) )..string.utf8lower( string.utf8sub( name, 2 ) )
-end
+    if name ~= nil then
+		return string.utf8upper( string.utf8sub( name, 1, 1 ) )..string.utf8lower( string.utf8sub( name, 2 ) )
+	end
+end	
 
 function JambaUtilities:AddRealmToNameIfNotNil( name, realm )
 	local fullName = name
@@ -224,8 +213,7 @@ function JambaUtilities:CheckIsFromMyRealm( name )
 		end	
 	end
 	return sameRealm
-end		
-	
+end	
 	
 function JambaUtilities:InTagList( tag )
 	local isInTagList = false

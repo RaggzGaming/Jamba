@@ -385,7 +385,7 @@ function AJM:FireOnProfileChangedEvent( moduleAddress )
 end
 
 function AJM:OnProfileChanged( event, database, newProfileKey, ... )
-	AJM:Print( "Profile changed - iterating all modules." )
+	AJM:Print( "Profile changed - iterating all modules.")	
 	AJM:FireBeforeProfileChangedEvent()
 	-- Do the team module before all the others.
 	local teamModuleAddress = AJM.registeredModulesByName[AJM.teamModuleName]
@@ -472,6 +472,7 @@ function AJM:OnInitialize()
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileCopied", "OnProfileCopied" )
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileReset", "OnProfileReset" )	
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileDeleted", "OnProfileDeleted" )	
+	
 	AJM.db = AJM.completeDatabase.profile
 	-- Create the settings.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 

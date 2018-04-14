@@ -16,11 +16,13 @@ L["JAMBA"] = "Jamba"
 L["JAMBA EE"] = "Jamba EE"
 L[""] = true
 L[" "] = true
+L[": "] = true
 L["PUSH_SETTINGS"] = "Push Settings"
 L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
 L["MINION"] = "Minion"
 L["MASTER"] = "Master"
+L["ALL"] = "All"
 
 --------------------------
 -- Modules Locale
@@ -31,7 +33,7 @@ L["PROFILES"] = "Profiles"
 L["TEAM"] = "Team"
 L["COMMUNICATIONS"] = "Communications"
 L["MESSAGE_DISPLAY"] = "Message Display"
-
+L["GROUP_LIST"] = "Group List"
 
 --------------------------
 -- ALL String_Formats
@@ -58,7 +60,7 @@ L["DELETING_PROFILE"] = "Deleting profile: "
 L["Failed_LOAD_MODULE"] =  "Failed to load Jamba Module: "
 L["TEXT1"] = "Jamba Ebony's Edition v8" 
 L["TEXT2"] = ""
-L["TEXT3"] = "Thanks For Being A Beta Tester Of This Build"
+L["TEXT3"] = "Thanks For Being A Alpha Tester Of This Build"
 L["TEXT4"] = ""
 L["TEXT5"] = "If you Have any bugs report them to LINK"
 L["TEXT6"] = ""
@@ -68,7 +70,7 @@ L["TEXT9"] = ""
 L["TEXT10"] = ""
 
 L["SPECIAL_THANKS"] = "Special Thanks:"
-L["THANKS1"] = "Michael Jafula Miller -2015"
+L["THANKS1"] = "Michael Jafula Miller Untill 2015"
 L["THANKS2"] = ""
 L["THANKS3"] = ""
 
@@ -136,6 +138,8 @@ L["BUTTON_DOWN_HELP"] = "Move The Character Down A Place In The Team List"
 L["BUTTON_REMOVE_HELP"] = "Removes Selected Member From The Team List"
 L["BUTTON_MASTER_HELP"] = "Set The Selected Member To Be The Master Of The Group"
 L["BUTTON_GROUP_REMOVE_HELP"] = "Removes The Group From The Selected Character"
+L["CHECKBOX_ISBOXER_SYNC"] = "Sync With Isboxer"
+L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With Isboxer TeamList \nAdd/Remove Character's No Longer In Isboxer Team"
 L["MASTER_CONTROL"] = "Master Control"
 L["CHECKBOX_MASTER_LEADER"] = "Promote Master To Party Leader."
 L["CHECKBOX_MASTER_LEADER_HELP"] = "Master Will Always Be The Party Leader."
@@ -154,7 +158,7 @@ L["CHECKBOX_ACCEPT_FROM_GUILD"] = "Accept From Guild."
 L["CHECKBOX_ACCEPT_FROM_GUILD_HELP"] = "Auto Accept Invites From Your Guild."
 L["CHECKBOX_DECLINE_STRANGERS"] = "Decline from strangers."
 L["CHECKBOX_DECLINE_STRANGERS_HELP"] = "Decline Invites From Anyone Else"
-
+L["NOT_LINKED"] = "(Not Linked)"
 L["TEAM_NO_TARGET"] = "No Target Or Target Is Not A Player"
 L["UNKNOWN_GROUP"] = "Unknown Group"
 L["ONLINE"] = "Online"
@@ -190,44 +194,26 @@ L["MESSAGE_AREA_CONFIGURATION"] = "Message Area Configuration"
 
 --------------------------
 -- Tag/Group Locale
-L["ADD_TAG_HELP"]= "Add a tag to the this character."
-L["REMMOVE_TAG_HELP"] = "Remove a tag from this character."
+L["ADD_TAG_HELP"]= "Add a Group To This Character."
+L["REMMOVE_TAG_HELP"] = "Remove A Tag From This Character."
 L["GROUP"] =  "Group"
-L["GROUP_LIST"] = "Group List"
+L["BUTTON_TAG_ADD_HELP"] = "Adds A New Group To The List"
+L["BUTTON_TAG_REMOVE_HELP"] = "Removes A Group From The List"
+L["ADD_TO_GROUP"] = "Add To Group"
+L["ADD_TO_GROUP_HELP"] = "Add Character To Group"
+L["REMOVE_FROM_GROUP"] = "Remove From Group"
+L["REMOVE_FROM_GROUP_HELP"] = "Remove Character From Group"
+L["WRONG_TEXT_INPUT_GROUP"] = "Needs To Be In <Character-realm> <Group> Format"
+L["NEW_GROUP_NAME"] = "Adds A New Group:"
+L["Are You Sure You Wish To Remove %s From The Tag List?"] = true
+--Note This need to be lowercase! 
+--If translated Make Sure you keep them as a the lowercase words or you Will breck Group/Tag
+--It be a headache i don't need -- Ebony
+L["ALL_LOWER"] = "all"
+L["MASTER_LOWER"] = "master"
+L["MINION_LOWER"] = "minion"
 
-
--- TEMP
-
-
-L["Slash Commands"] = true
-L["Team"] = true
-L["Core: Tags"] = true
-
-L["Groups"] = true
-L["Group List"] = true
-
-L["Add"] = true
-L["Add a tag to the this character."] = true
-L["Remove"] = true				
-L["Remove a tag from this character."] = true
-L["Push Settings"] = true
-L["Push the tag settings to all characters in the team."] = true
-L["Team List"] = true
-L["Tag List"] = true
-L["Enter a tag to add:"] = true
-L["Are you sure you wish to remove %s from the tag list?"] = true
-L["Settings received from A."] = function( characterName )
-	return "Settings received from "..characterName.."."
-end
-L["master"] = true
-L["minion"] = true
-L["all"] = true
-L["justme"] = true
-
-
-
-
-
-
+--------------------------
+-- X Locale
 
 

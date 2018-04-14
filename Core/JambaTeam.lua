@@ -45,8 +45,10 @@ AJM.settings = {
 	profile = {
 		master = "",
         teamList = {},
-		characterOnline = {},
-		characterClass = {},
+		newTeamList = {},
+		isboxerSync = true,
+		--characterOnline = {},
+		--characterClass = {},
 		masterChangePromoteLeader = false,
 		inviteAcceptTeam = true,
 		inviteAcceptFriends = false,
@@ -138,7 +140,7 @@ function AJM:GetConfiguration()
 				desc = L["SET_TEAM_OFFLINE_HELP"] ,
 				usage = "/jamba-team setalloffline",
 				get = false,
-				set = "setAllMembersOffline",
+				set = "SetAllMembersOffline",
 			},
 			setallonline = {
 				type = "input",
@@ -146,7 +148,7 @@ function AJM:GetConfiguration()
 				desc = L["SET_TEAM_ONLINE_HELP"],
 				usage = "/jamba-team setallonline",
 				get = false,
-				set = "setAllMembersOnline",
+				set = "SetAllMembersOnline",
 			},
 			push = {
 				type = "input",
@@ -234,6 +236,7 @@ local function SettingsCreateTeamList()
 	local teamListWidth = headingWidth - teamListButtonControlWidth - horizontalSpacing
 	local leftOfList = left + horizontalSpacing
 	local rightOfList = teamListWidth + horizontalSpacing
+	local checkBoxWidth = (headingWidth - horizontalSpacing) / 2
 	local topOfList = top - headingHeight
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.teamListHighlightRow = 1
@@ -241,9 +244,8 @@ local function SettingsCreateTeamList()
 	-- Create a heading.
 	AJM.settingsControl.labelOne = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
-		teamListButtonControlWidth,  
-
-		teamListButtonControlWidth / 2 + iconSize, 
+		teamListButtonControlWidth,
+		teamListWidth / 2, 
 		leftOfList,
 		L["TEAM_HEADER"]
 	)
@@ -270,10 +272,10 @@ local function SettingsCreateTeamList()
 	list.columnInformation[1].width = 30
 	list.columnInformation[1].alignment = "LEFT"
 	list.columnInformation[2] = {}
-	list.columnInformation[2].width = 30
+	list.columnInformation[2].width = 50
 	list.columnInformation[2].alignment = "LEFT"
 	list.columnInformation[3] = {}
-	list.columnInformation[3].width = 30
+	list.columnInformation[3].width = 20
 	list.columnInformation[3].alignment = "LEFT"	
 	list.scrollRefreshCallback = AJM.SettingsTeamListScrollRefresh
 	list.rowClickCallback = AJM.SettingsTeamListRowClick
@@ -371,7 +373,7 @@ local function SettingsCreateTeamList()
 		AJM.settingsControl, 
 		iconSize,
 		iconSize,
-		"Interface\\Addons\\Jamba\\Media\\RemoveGroup.tga", --icon Image
+		"Interface\\Addons\\Jamba\\Media\\CharRemoveParty.tga", --icon Image
 		rightOfList + dropBoxWidth + 11 , 
 		bottomOfList ,
 		L[""], 
@@ -388,7 +390,16 @@ local function SettingsCreateTeamList()
 	)
 	AJM.settingsControl.teamListDropDownList:SetList( AJM.GroupAreaList() )
 	AJM.settingsControl.teamListDropDownList:SetCallback( "OnValueChanged",  AJM.TeamListDropDownList )
-	
+	-- IsboxerSync
+	AJM.settingsControl.teamListCheckBoxSyncIsboxer = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControl, 
+		checkBoxWidth, 
+		lefticon, 
+		bottomOfList - 11,
+		L["CHECKBOX_ISBOXER_SYNC"],
+		AJM.SettingsSyncIsboxerToggle,
+		L["CHECKBOX_ISBOXER_SYNC_HELP"]
+	)	
 	
 	return bottomOfSection
 end
@@ -597,14 +608,30 @@ local function refreshDropDownList()
 	AJM.settingsControl.teamListDropDownList:SetList( AJM.simpleAreaList )
 end
 
-local function Test()
-	return pairs( AJM.simpleAreaList )
-end	
-
 local function TeamList()
-	return pairs( AJM.db.teamList )
+	--return pairs( AJM.db.teamList )
+	local teamlist = {}
+	for name, info in pairs( AJM.db.newTeamList ) do
+		for _, charInfo in pairs (info) do
+			teamlist[name] = charInfo.order
+		end
+	end
+	return pairs( teamlist )
 end
 
+
+local function FullTeamList()
+	local fullTeamList = {}
+	for name, info in pairs ( AJM.db.newTeamList ) do
+		for _, charInfo in pairs (info) do
+		table.insert(fullTeamList, { charInfo.name, charInfo.order, charInfo.class, charInfo.online } )
+		end
+	end
+	return pairs( fullTeamList )
+end	
+
+
+--[[
 local function Offline()
 	return pairs( AJM.db.characterOnline )
 end
@@ -613,8 +640,9 @@ local function characterClass()
 	return pairs( AJM.db.characterClass )
 end
 
+
 local function setClass()
-	for characterName, position in pairs( AJM.db.teamList ) do
+	for characterName, position in pairs( AJM.db.newTeamList ) do
 	local class, classFileName, classIndex = UnitClass( Ambiguate(characterName, "none") )
 		--AJM:Print("new", class, CharacterName )
 		if class ~= nil then
@@ -622,12 +650,30 @@ local function setClass()
 		end
 	end	
 end
+]]
 
+local function GetClass( characterName )
+	local class = nil
+	local color = nil
+	for teamCharacterName, info in pairs( AJM.db.newTeamList ) do
+		if characterName == teamCharacterName then
+			for _, charInfo in pairs (info) do
+			--charInfo.class
+				--AJM:Print("classDatatest",  characterName, charInfo.class )
+				if charInfo.class ~= nil or charInfo.class ~= "UNKNOWN" then
+					class = JambaUtilities:Lowercase( charInfo.class )
+					color = RAID_CLASS_COLORS[charInfo.class]
+				end
+			end			
+		end	
+	end
+	return class, color
+end	
 
 -- Get the largest order number from the team list.
 local function GetTeamListMaximumOrder()
 	local largestPosition = 0
-	for characterName, position in pairs( AJM.db.teamList ) do 
+	for characterName, position in JambaApi.TeamList() do 
 		if position > largestPosition then
 			largestPosition = position
 		end
@@ -637,27 +683,23 @@ end
 
 local function GetTeamListMaximumOrderOnline()
 	local totalMembersDisplayed = 0
-		for index, characterName in JambaApi.TeamListOrderedOnline() do
-			--if JambaApi.GetCharacterOnlineStatus( characterName ) == true then
+		for index, characterName in JambaApi.TeamList() do
+			if JambaApi.GetCharacterOnlineStatus( characterName ) == true then
 				totalMembersDisplayed = totalMembersDisplayed + 1
-			--end
+			end
 		end	
 	return totalMembersDisplayed
 end		
 		
-local function IsCharacterInTeam( characterName )
+local function IsCharacterInTeam( name )
+	local characterName = JambaUtilities:Lowercase( name )
 	local isMember = false
-	if AJM.db.teamList[characterName] then
-		isMember = true
-	end
 	if not isMember then
-		for fullCharacterName, position in pairs( AJM.db.teamList ) do
-			local matchDash = fullCharacterName:find( "-" )
-			if matchDash then
-				fullName = gsub(fullCharacterName, "%-[^|]+", "")
-			end
-			--AJM:Print('checking', checkCharacterName, 'vs', characterName)
-			if fullName == characterName then
+		for fullCharacterName, position in JambaApi.TeamList() do 
+			local checkFullName = JambaUtilities:Lowercase( fullCharacterName )
+			local name, realm = strsplit("-", checkFullName, 2 )
+			--AJM:Print('checking', name, 'vs', characterName, "or", checkFullName )
+			if name == characterName or checkFullName == characterName then
 				--AJM:Print('match found')
 				isMember = true
 				break
@@ -706,9 +748,9 @@ local function SetMaster( master )
 end
 
 -- Add a member to the member list.
-local function AddMember( characterName )
-	local name
-	if characterName == "@Target" or characterName == "@target" or characterName == "@TARGET" then
+local function AddMember( characterName, class )
+	local name = nil
+	if characterName == "@Target" then
 		local UnitIsPlayer = UnitIsPlayer("target")
 		if UnitIsPlayer == true then
 			local unitName = GetUnitName("target", true)
@@ -718,7 +760,7 @@ local function AddMember( characterName )
 			AJM:Print(L["TEAM_NO_TARGET"])
 			return
 		end	
-	elseif characterName == "@Mouseover" or characterName == "@mouseover" or characterName == "@MOUSEOVER" then
+	elseif characterName == "@Mouseover"  then
 		local UnitIsPlayer = UnitIsPlayer("mouseover")
 		if UnitIsPlayer == true then
 			local unitName = GetUnitName("mouseover", true)
@@ -727,58 +769,42 @@ local function AddMember( characterName )
 		else
 			AJM:Print(L["TEAM_NO_TARGET"])
 			return
-		end
-	end
-	if name then
-		--AJM:Print ( "New", name )
-		local character = JambaUtilities:AddRealmToNameIfMissing( name )
-		if AJM.db.teamList[character] == nil then
-		-- Get the maximum order number.
-		local maxOrder = GetTeamListMaximumOrder()
-		-- Yes, add to the member list.
-		AJM.db.teamList[character] = maxOrder + 1
-		JambaPrivate.Team.SetTeamOnline()
-		--AJM.Print("teamList", character)
-		-- Send a message to any listeners that AJM character has been added.
-		AJM:SendMessage( AJM.MESSAGE_TEAM_CHARACTER_ADDED, character )
-		-- Refresh the settings.
-		AJM:SettingsRefresh()	
 		end	
 	else
+		name = characterName
+	end	
 	-- Wow names are at least two characters.
-	if characterName ~= nil and characterName:trim() ~= "" and characterName:len() > 1 then
+	if name ~= nil and name:trim() ~= "" and name:len() > 1 then
 		-- If the character is not already in the list...
-		local character = JambaUtilities:AddRealmToNameIfMissing( characterName )
-		if AJM.db.teamList[character] == nil then
+		local character = JambaUtilities:AddRealmToNameIfMissing( name )
+		if AJM.db.newTeamList[character] == nil then
 			-- Get the maximum order number.
-			local maxOrder = GetTeamListMaximumOrder()
-			-- Yes, add to the member list.
-			AJM.db.teamList[character] = maxOrder + 1
-			
-			local class, classFileName, classIndex = UnitClass( characterName )
-			if class ~= nil then	
-				--AJM:Print( classFileName )
-				AJM.db.characterClass[character] = classFileName
-			else
-				AJM.db.characterClass[character] = nil
+			--Store TempData
+			local maxOrder = "0"
+			local CharacterClass = "UNKNOWN"
+			local Online = true
+			-- Real Data
+			local maxOrder = GetTeamListMaximumOrder()	
+			if class ~= nil then
+				local upperClass = string.upper(class)
+				CharacterClass = upperClass 
 			end
-			JambaPrivate.Team.SetTeamOnline()
-			--AJM.Print("teamList", character)
+			local _, classFileName = UnitClass( Ambiguate(character, "none") )
+			if classFileName ~= nil then 
+				CharacterClass = classFileName
+			end
+			--AJM:Print("DebugAddToDB", "toon", character, "order", maxOrder, "class", CharacterClass, "online", Online ) 
+			AJM.db.newTeamList[character] = {}
+			table.insert( AJM.db.newTeamList[character], {name = character, order = maxOrder + 1, class = CharacterClass, online = Online } )
 			-- Send a message to any listeners that AJM character has been added.
 			AJM:SendMessage( AJM.MESSAGE_TEAM_CHARACTER_ADDED, character )
 			-- Refresh the settings.
-			AJM:SettingsRefresh()			
-			end
+			AJM:SettingsRefresh()
 		end
-	end
+	end	
 end
 
--- Add member from the command line.
-function AJM:AddMemberCommand( info, parameters )
-	local characterName = parameters
-	-- Add the character.
-	AddMember( characterName )
-end
+
 
 -- Add all party members to the member list. does not worl cross rwalm todo
 function AJM:AddPartyMembers()
@@ -810,10 +836,24 @@ function AJM:AddMemberGUI( value )
 	--AJM:SettingsGroupListScrollRefresh()
 end
 
+-- Add member from the command line.
+function AJM:AddMemberCommand( info, parameters )
+	-- Jamba-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
+	if info == nil then
+		--AJM:Print("isboxerContralRemove", parameters )
+		AJM.IsboxerSyncList[parameters] = "add"
+		return
+	end	
+	--AJM:Print("testremove", info, parameters )
+	local characterName = parameters
+	-- Add the character.
+	AddMember( characterName )
+end
+
 -- Get the character name at a specific position.
 local function GetCharacterNameAtOrderPosition( position )
 	local characterNameAtPosition = ""
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		if characterPosition == position then
 			characterNameAtPosition = characterName
 			break
@@ -825,7 +865,7 @@ end
 -- Get the position for a specific character.
 local function GetPositionForCharacterName( findCharacterName )
 	local positionForCharacterName = 0
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		if characterName == findCharacterName then
 			positionForCharacterName = characterPosition
 			break
@@ -851,9 +891,22 @@ local function TeamListSwapCharacterPositions( position1, position2 )
 	-- Get characters at positions.
 	local character1 = GetCharacterNameAtOrderPosition( position1 )
 	local character2 = GetCharacterNameAtOrderPosition( position2 )
+	for name, info in pairs (AJM.db.newTeamList) do
+		for _, charInfo in pairs (info) do
+			if name == character1 then
+				charInfo.order = position2
+			end
+			if name == character2 then
+				charInfo.order = position1
+			end
+		end
+	end
+	
+	
+	
 	-- Swap the positions.
-	AJM.db.teamList[character1] = position2
-	AJM.db.teamList[character2] = position1
+	--AJM.db.teamList[character1] = position2
+	--AJM.db.teamList[character2] = position1
 end
 
 -- Makes sure that AJM character is a team member.  Enables if previously not a member.
@@ -881,14 +934,20 @@ end
 -- Remove a member from the member list.
 local function RemoveMember( characterName )
 	-- Is character in team?
-	if IsCharacterInTeam( characterName ) == true then
+	if IsCharacterInTeam( characterName ) == true and characterName ~= AJM.characterName then
 		-- Remove character from list.
-		local characterPosition = AJM.db.teamList[characterName]
-		AJM.db.teamList[characterName] = nil
+		local characterPosition = JambaApi.GetPositionForCharacterName( characterName )
+		AJM.db.newTeamList[characterName] = nil
 		-- If any character had an order greater than this character's order, then shift their order down by one.
-		for checkCharacterName, checkCharacterPosition in pairs( AJM.db.teamList ) do
-			if checkCharacterPosition > characterPosition then
-				AJM.db.teamList[checkCharacterName] = checkCharacterPosition - 1
+		for name, position in JambaApi.TeamList() do	
+			if position > characterPosition then
+				for checkName, info in pairs (AJM.db.newTeamList) do
+					for _, charInfo in pairs (info) do
+						if name == checkName then
+							charInfo.order = position - 1
+						end	
+					end
+				end
 			end
 		end
 		-- Send a message to any listeners that this character has been removed.
@@ -899,6 +958,10 @@ local function RemoveMember( characterName )
 		ConfirmThereIsAMaster()
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
+		-- Resets to Top of list!
+		AJM:SettingsTeamListRowClick( 1, 1 )
+	else
+		AJM:Print("[PH] CAN NOT REMOVE SELF")
 	end
 end
 
@@ -908,11 +971,19 @@ function AJM:RemoveMemberGUI()
 	RemoveMember( characterName )
 	AJM.settingsControl.teamListHighlightRow = 1	
 	AJM:SettingsTeamListScrollRefresh()
-	--AJM:SettingsGroupListScrollRefresh()
+	AJM:SettingsGroupListScrollRefresh()
 end
+
 
 -- Remove member from the command line.
 function AJM:RemoveMemberCommand( info, parameters )
+	-- Jamba-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
+	if info == nil then
+		--AJM:Print("isboxerContralAdd", parameters )
+		AJM.IsboxerSyncList[parameters] = "remove"
+		return
+	end		
+	--AJM:Print("testremove", info, parameters )
 	local characterName = parameters
 	-- Wow names are at least two characters.
 	if characterName ~= nil and characterName:trim() ~= "" and characterName:len() > 1 then
@@ -957,36 +1028,69 @@ function AJM:ReceiveCommandSetMaster( target, tag )
 	end
 end
 
+-- Test IsboxerContral EbonyTest
+
+function AJM:IsboxerSyncTeamList()
+	if AJM.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
+		for characterName, teamStatus in pairs( AJM.IsboxerSyncList ) do
+			--AJM:Print("syncList", characterName, teamStatus )
+			if IsCharacterInTeam( characterName ) == true and characterName ~= AJM.characterName then
+				if teamStatus == "remove" then 
+					--AJM:Print("memberNoLongerInIsboxerTeamDelete", characterName, teamStatus )
+					RemoveMember( characterName )
+				end
+			else
+				if teamStatus == "add" and characterName ~= AJM.characterName then 
+				--AJM:Print("Isboxer-AddMember", characterName, teamStatus )
+				AddMember( characterName )
+				end
+			end
+		end
+	end
+end
+
+
 -------------------------------------------------------------------------------------------------------------
 -- Character online status.
 -------------------------------------------------------------------------------------------------------------
 
--- Get a character's online status.
+-- Get a character's online status..
 local function GetCharacterOnlineStatus( characterName )
-	--if JambaPrivate.Communications.AssumeTeamAlwaysOnline() == true then
-	--	return true
-	--end
-	return AJM.db.characterOnline[characterName]
+	local online = nil
+	for name, info in pairs (AJM.db.newTeamList) do
+		for _, charInfo in pairs (info) do
+			if characterName == name then
+				online = charInfo.online
+			end	
+		end
+	end
+	return online
 end
 
 -- Set a character's online status.
 local function SetCharacterOnlineStatus( characterName, isOnline )
-	--AJM:Print('setting', character, 'to be online')
-	AJM.db.characterOnline[characterName] = isOnline
+	--AJM:Print("setting", characterName, "to be", isOnline )
+	for name, info in pairs (AJM.db.newTeamList) do
+		for _, charInfo in pairs (info) do
+			if characterName == name then
+				--AJM:Print("Set", characterName, isOnline, charInfo.online )
+				charInfo.online = isOnline
+			end	
+		end
+	end
 end
 
 local function SetTeamStatusToOffline()
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		SetCharacterOnlineStatus( characterName, false )
 		AJM:SendMessage( AJM.MESSAGE_CHARACTER_OFFLINE )
 		AJM:SettingsTeamListScrollRefresh()
-		AJM:SettingsGroupListScrollRefresh()
 	end
 end
 
 local function SetTeamOnline()
 	-- Set all characters online status to false.
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		SetCharacterOnlineStatus( characterName, true )
 		AJM:SendMessage( AJM.MESSAGE_CHARACTER_ONLINE )
 		AJM:SettingsTeamListScrollRefresh()
@@ -1024,11 +1128,11 @@ function AJM.ReceivesetOnline( characterName )
 	AJM:SettingsRefresh()
 end
 
-function AJM:setAllMembersOffline()
+function AJM:SetAllMembersOffline()
 	SetTeamStatusToOffline()
 end	
 
-function AJM:setAllMembersOnline()
+function AJM:SetAllMembersOnline()
 	SetTeamOnline()
 end
 
@@ -1045,7 +1149,7 @@ end
 -- Return all characters ordered.
 local function TeamListOrdered()	
 	JambaUtilities:ClearTable( AJM.orderedCharacters )
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		table.insert( AJM.orderedCharacters, characterName )
 	end
 	table.sort( AJM.orderedCharacters, SortTeamListOrdered )
@@ -1055,7 +1159,7 @@ end
 -- Return all characters ordered online.
 local function TeamListOrderedOnline()	
 	JambaUtilities:ClearTable( AJM.orderedCharactersOnline )
-	for characterName, characterPosition in pairs( AJM.db.teamList ) do
+	for characterName, characterPosition in JambaApi.TeamList() do
 		if JambaApi.GetCharacterOnlineStatus( characterName ) == true then	
 			table.insert( AJM.orderedCharactersOnline, characterName )
 		end	
@@ -1276,16 +1380,9 @@ function AJM:OnInitialize()
 	local k = GetRealmName()
 	-- remove space for server name if there is one.
 	local realmName = k:gsub( "%s+", "")
-	for characterName, position in pairs( AJM.db.teamList ) do
-		--AJM:Print( 'Iterating:', characterName, position )
-		local updateMatchStart = characterName:find( "-" )
-		if not updateMatchStart then
-			updatedTeamList[characterName.."-"..realmName] = position
-			AJM.db.teamList = JambaUtilities:CopyTable( updatedTeamList )
-		end
-	end
+	AJM.IsboxerSyncList = {}
 	--Sets The class of the char.
-	setClass()
+--	setClass()
 	-- Click the first row in the team list table to populate the tag list table.
 	--AJM:SettingsTeamListRowClick( 1, 1 )
 end
@@ -1298,7 +1395,7 @@ function AJM:OnEnable()
 	AJM:SettingsTeamListScrollRefresh()
 	--AJM.SettingsGroupListScrollRefresh()
 	-- Click the first row in the team list table to populate the tag list table.
-	--AJM:SettingsTeamListRowClick( 1, 1 )F
+	--AJM:SettingsTeamListRowClick( 1, 1 )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	-- Initialise key bindings.
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
@@ -1337,7 +1434,7 @@ end
 function AJM:SettingsRefresh()
 	-- Team/Group Control
 	local test = " "
-	
+	AJM.settingsControl.teamListCheckBoxSyncIsboxer:SetValue( AJM.db.isboxerSync )
 
 	-- Master Control.
 	AJM.settingsControl.masterControlCheckBoxMasterChange:SetValue( AJM.db.masterChangePromoteLeader )
@@ -1351,6 +1448,8 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetValue( AJM.db.inviteSetAllAssistant )
 	-- Ensure correct state.
 	AJM.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetDisabled (not AJM.db.inviteConvertToRaid )
+	AJM.settingsControl.teamListCheckBoxSyncIsboxer:SetDisabled ( not IsAddOnLoaded("Isboxer" ) )
+	
 	-- Update the settings team list.
 	AJM:SettingsTeamListScrollRefresh()
 	-- Check the opt out of loot settings.
@@ -1361,7 +1460,9 @@ end
 function AJM:JambaOnSettingsReceived( characterName, settings )	
 	if characterName ~= AJM.characterName then	
 	-- Update the settings.
-		AJM.db.teamList = JambaUtilities:CopyTable( settings.teamList )
+		AJM.db.newTeamList = JambaUtilities:CopyTable( settings.newTeamList )
+		AJM.db.isboxerSync = settings.isboxerSync
+		
 		AJM.db.masterChangePromoteLeader = settings.masterChangePromoteLeader 
 		AJM.db.inviteAcceptTeam = settings.inviteAcceptTeam 
 		AJM.db.inviteAcceptFriends = settings.inviteAcceptFriends 
@@ -1371,8 +1472,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.inviteSetAllAssistant = settings.inviteSetAllAssistant
 		AJM.db.masterChangeClickToMove = settings.masterChangeClickToMove
 		AJM.db.master = settings.master
-		--Copy the Offline team members.
-		AJM.db.characterOnline = JambaUtilities:CopyTable( settings.characterOnline )
 		SetMaster( settings.master )
 		-- Refresh the settings.
 		--AJM:SettingsRefresh()
@@ -1385,6 +1484,7 @@ function AJM:PLAYER_ENTERING_WORLD()
 	-- trying this
 	-- Click the first row in the team list table to populate the tag list table.
 	AJM:SettingsTeamListRowClick( 1, 1 )
+	AJM:IsboxerSyncTeamList()
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1414,16 +1514,12 @@ function AJM:SettingsTeamListScrollRefresh()
 			-- Put character name and type into columns.
 			local characterName = GetCharacterNameAtOrderPosition( dataRowNumber )
 			
-		local class = AJM.db.characterClass[characterName]
+		--local class = AJM.db.characterClass[characterName]
 			--AJM:Print("Test", class)
 			-- Set Class Color
-			if class ~= nil then
-				local color = RAID_CLASS_COLORS[class]
-	--Debug	--	AJM:Print("Name", characterName, class)
+			local class, color = GetClass( characterName )
+			if color ~= nil then
 				AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( color.r, color.g, color.b, 1.0 )
-				if isOnline == false then
-				AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( color.r, color.g, color.b, 0.4 )
-				end
 			end
 			local isMaster = false
 			local characterType = L["MINION"]
@@ -1434,9 +1530,13 @@ function AJM:SettingsTeamListScrollRefresh()
 			local displayCharacterName , displayCharacterRleam = strsplit( "-", characterName, 2 )
 			
 			local isOnline = GetCharacterOnlineStatus( characterName )
-			local displayOnline = L["ONLINE"]
+			local displayOnline = nil
 			if isOnline == false then
 				displayOnline = L["OFFLINE"]
+				AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+			else
+				displayOnline = L["ONLINE"]
+				AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 0, 1.0, 0, 1.0 )
 			end
 			
 			-- Master is a yellow colour.
@@ -1446,7 +1546,12 @@ function AJM:SettingsTeamListScrollRefresh()
 				displayCharacterName = strconcat(" |T"..icon..":20|t", L[" "]..displayCharacterName)
 			--	AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
 			end
-			
+			local RealmLinked = JambaUtilities:CheckIsFromMyRealm( characterName )
+			-- Set Realms not linked Red
+			if RealmLinked == false then
+				displayCharacterRleam = displayCharacterRleam..L[" "]..L["NOT_LINKED"]
+				AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+			end
 			
 			AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetText( displayCharacterName )
 			AJM.settingsControl.teamList.rows[iterateDisplayRows].columns[2].textString:SetText( displayCharacterRleam )
@@ -1513,7 +1618,7 @@ function AJM:SettingsGroupListScrollRefresh()
 			--AJM:Print("test", dataRowNumber, group, characterName ) 
 			local systemGroup = JambaApi.IsASystemGroup( group )
 			if systemGroup == true then
-				AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+				AJM.settingsControl.groupList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
 			end
 			if dataRowNumber == AJM.settingsControl.groupListHighlightRow then
 				AJM.settingsControl.groupList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )	
@@ -1630,6 +1735,11 @@ end
 function AJM:SettingsDisbandClick( event )
 	AJM:DisbandTeamFromParty()
 end
+
+function AJM:SettingsSyncIsboxerToggle( event, checked)
+	AJM.db.isboxerSync = checked
+	AJM:SettingsRefresh()
+end	
 
 function AJM:SettingsSetMasterClick( event )
 	local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
@@ -1754,6 +1864,7 @@ JambaPrivate.Team.setOffline = setOffline
 JambaPrivate.Team.setOnline = setOline
 JambaPrivate.Team.RefreshGroupList = RefreshGroupList
 
+
 -- Functions available for other addons.
 JambaApi.MESSAGE_TEAM_MASTER_CHANGED = AJM.MESSAGE_TEAM_MASTER_CHANGED
 JambaApi.MESSAGE_TEAM_ORDER_CHANGED = AJM.MESSAGE_TEAM_ORDER_CHANGED
@@ -1763,6 +1874,7 @@ JambaApi.IsCharacterInTeam = IsCharacterInTeam
 JambaApi.IsCharacterTheMaster = IsCharacterTheMaster
 JambaApi.GetMasterName = GetMasterName
 JambaApi.TeamList = TeamList
+JambaApi.FullTeamList = FullTeamList
 JambaApi.Offline = Offline
 JambaApi.TeamListOrdered = TeamListOrdered
 JambaApi.GetCharacterNameAtOrderPosition = GetCharacterNameAtOrderPosition
@@ -1777,6 +1889,7 @@ JambaApi.setOnline = setOnline
 JambaApi.GetTeamListMaximumOrderOnline = GetTeamListMaximumOrderOnline
 JambaApi.TeamListOrderedOnline = TeamListOrderedOnline
 JambaApi.GetPositionForCharacterNameOnline = GetPositionForCharacterNameOnline
-JambaApi.GetClass = characterClass
-JambaApi.SetClass = setClass
+JambaApi.GetClass = GetClass
+--JambaApi.SetClass = setClass
 JambaApi.GroupAreaList = GroupAreaList
+JambaApi.refreshDropDownList = refreshDropDownList
