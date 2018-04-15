@@ -683,7 +683,7 @@ end
 
 local function GetTeamListMaximumOrderOnline()
 	local totalMembersDisplayed = 0
-		for index, characterName in JambaApi.TeamList() do
+		for characterName, position in JambaApi.TeamList() do
 			if JambaApi.GetCharacterOnlineStatus( characterName ) == true then
 				totalMembersDisplayed = totalMembersDisplayed + 1
 			end
