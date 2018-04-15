@@ -217,14 +217,9 @@ end
 	
 function JambaUtilities:InTagList( tag )
 	local isInTagList = false
-	if tag ~= nil then	
-		local tagList = JambaApi.AllTagsList()
-		for i = 1, #tagList do
-			if tag == tagList[i] then
-				isInTagList = true
-			end	
-		end		
-	end
+	if JambaApi.DoesGroupExist(  tag ) then
+		isInTagList = true 
+	end	
 	return isInTagList	
 end	
 

@@ -1196,12 +1196,12 @@ function AJM:InviteTeamToParty( info, tag )
 	if tag == nil or tag == "" then
 		tag = "all"
 	end
-	if JambaUtilities:InTagList(tag) == true then
+	if JambaApi.DoesGroupExist(tag) == true then
 		if JambaPrivate.Tag.DoesCharacterHaveTag( AJM.characterName, tag ) == false then
 			--AJM:Print("IDONOTHAVETAG", tag)
 			for index, characterName in TeamListOrderedOnline() do
 				--AJM:Print("NextChartohavetag", tag, characterName )
-				if JambaPrivate.Tag.DoesCharacterHaveTag( characterName, tag ) then
+				if JambaApi.IsCharacterInGroup( characterName, tag ) then
 					--AJM:Print("i have tag", tag, characterName )
 					AJM:JambaSendCommandToTeam( AJM.COMMAND_TAG_PARTY, characterName, tag )
 					break
@@ -1212,7 +1212,7 @@ function AJM:InviteTeamToParty( info, tag )
 			AJM.inviteList = {}
 			AJM.inviteCount = 0
 			for index, characterName in TeamListOrderedOnline() do
-				if JambaPrivate.Tag.DoesCharacterHaveTag( characterName, tag ) then
+				if JambaApi.IsCharacterInGroup( characterName, tag ) then
 					--AJM:Print("HasTag", characterName, tag )
 					-- As long as they are not the player doing the inviting.
 					if characterName ~= AJM.characterName then
