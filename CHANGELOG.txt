@@ -2,7 +2,7 @@
 ChangeLogs:
 ---------------------------
 
-Jamba Version: v8.0-Alpha(0036)
+Jamba Version: v8.0-Alpha(0039)
 Game Version: 7.3.5
 Release Date: TBA
 ---------------------------
@@ -35,9 +35,7 @@ Release Date: TBA
 	- Removed JambaAdvancedLoot 
 	
 ## Quest
-	
 	- Tell "Team" if the a character has a full Inventory when handing in the a quest With a Item
-
 
 ## Interaction 	
 	New Module:
@@ -48,8 +46,13 @@ Release Date: TBA
 	- Added "Jamba-EE Loot V2"
 		-- Support to tell the team if you loot a Epic or Rare Items.
 		-- Speeded Up looting.
-		-- No Longer Gets stuck on Items
-		-- No Longer runs a Endless Loop (WOWAPI DOES NOT LIKE LUA: "while!! .. do ")
+		-- No Longer Gets stuck on Items.
+		-- No Longer runs a Endless Loop (WOWAPI DOES NOT LIKE LUA's: "while!! .. do ")
 		
 ## Toon
+
+## ItemUse
+	-- Now Count Items In Teams Bags And Displays On The Item Tooltip's.
+		--- With Bank Items.
+	-- Total Team Count Display On the Frame. 	
 			

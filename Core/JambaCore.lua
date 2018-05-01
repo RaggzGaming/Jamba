@@ -251,6 +251,29 @@ local function DebugMessage( ... )
 	AJM:Print( ... )
 end
 
+--WOW BetaBuild!
+local function isBetaBuild()
+	local _, _, _, tocversion = GetBuildInfo()
+	-- Build For BFA 8.0.1 2018
+	if tocversion >= 80000 then
+		return true 
+	else
+		return  false
+	end
+end
+
+--Ema Alpha
+local function isEmaAlphaBuild()
+	local EmaVersion = GetAddOnMetadata("EMA", "version")
+	-- Jamba Alpha Build
+	local Alpha = EmaVersion:find( "Alpha" )
+	if Alpha then
+		return true
+	else
+		return false
+	end	
+end
+
 -------------------------------------------------------------------------------------------------------------
 -- Module management.
 -------------------------------------------------------------------------------------------------------------
@@ -832,3 +855,5 @@ JambaPrivate.Core.SendCommandToTeam = SendCommandToTeam
 JambaPrivate.Core.SendCommandToMaster = SendCommandToMaster
 JambaPrivate.Core.SendCommandToToon = SendCommandToToon
 JambaPrivate.Core.OnCommandReceived = OnCommandReceived
+JambaPrivate.Core.isBetaBuild = isBetaBuild
+JambaPrivate.Core.isEmaAlphaBuild = isEmaAlphaBuild

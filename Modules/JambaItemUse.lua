@@ -14,49 +14,52 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 	"JambaModule-1.0", 
 	"AceConsole-3.0", 
 	"AceEvent-3.0",
+	"AceHook-3.0",
 	"AceTimer-3.0"
 )
 
 -- Get the Jamba Utilities Library.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
 local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
---local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
---local LibGratuity = LibStub( "LibGratuity-3.0" )
 local LibActionButton = LibStub( "LibActionButtonJamba-1.0" )
-local tooltipName = "AJMScanner"
-local tooltipScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
+local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-ItemUse"
 AJM.settingsDatabaseName = "JambaItemUseProfileDB"
-AJM.chatCommand = "jamba-item-use"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Display"]
-AJM.moduleDisplayName = L["Item Use"]
+AJM.chatCommand = "jamba-itemuse"
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core"  )
+AJM.parentDisplayName = L["DISPLAY"]
+AJM.moduleDisplayName = L["ITEM_USE"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\Toon.tga"
+-- order
+AJM.moduleOrder = 1
+
 
 -- Jamba key bindings.
-BINDING_HEADER_JAMBAITEMUSE = L["Jamba-Item-Use"]
-BINDING_NAME_JAMBAITEMUSE1 = L["Item 1"]
-BINDING_NAME_JAMBAITEMUSE2 = L["Item 2"]
-BINDING_NAME_JAMBAITEMUSE3 = L["Item 3"]
-BINDING_NAME_JAMBAITEMUSE4 = L["Item 4"]
-BINDING_NAME_JAMBAITEMUSE5 = L["Item 5"]
-BINDING_NAME_JAMBAITEMUSE6 = L["Item 6"]
-BINDING_NAME_JAMBAITEMUSE7 = L["Item 7"]
-BINDING_NAME_JAMBAITEMUSE8 = L["Item 8"]
-BINDING_NAME_JAMBAITEMUSE9 = L["Item 9"]
-BINDING_NAME_JAMBAITEMUSE10 = L["Item 10"]
-BINDING_NAME_JAMBAITEMUSE11 = L["Item 11"]
-BINDING_NAME_JAMBAITEMUSE12 = L["Item 12"]
-BINDING_NAME_JAMBAITEMUSE13 = L["Item 13"]
-BINDING_NAME_JAMBAITEMUSE14 = L["Item 14"]
-BINDING_NAME_JAMBAITEMUSE15 = L["Item 15"]
-BINDING_NAME_JAMBAITEMUSE16 = L["Item 16"]
-BINDING_NAME_JAMBAITEMUSE17 = L["Item 17"]
-BINDING_NAME_JAMBAITEMUSE18 = L["Item 18"]
-BINDING_NAME_JAMBAITEMUSE19 = L["Item 19"]
-BINDING_NAME_JAMBAITEMUSE20 = L["Item 20"]
+BINDING_HEADER_JAMBAITEMUSE = L["JAMBA-ITEM-USE"]
+BINDING_NAME_JAMBAITEMUSE1 = L["ITEM_1"]
+BINDING_NAME_JAMBAITEMUSE2 = L["ITEM_2"]
+BINDING_NAME_JAMBAITEMUSE3 = L["ITEM_3"]
+BINDING_NAME_JAMBAITEMUSE4 = L["ITEM_4"]
+BINDING_NAME_JAMBAITEMUSE5 = L["ITEM_5"]
+BINDING_NAME_JAMBAITEMUSE6 = L["ITEM_6"]
+BINDING_NAME_JAMBAITEMUSE7 = L["ITEM_7"]
+BINDING_NAME_JAMBAITEMUSE8 =L["ITEM_8"]
+BINDING_NAME_JAMBAITEMUSE9 = L["ITEM_9"]
+BINDING_NAME_JAMBAITEMUSE10 = L["ITEM_10"]
+BINDING_NAME_JAMBAITEMUSE11 = L["ITEM_11"]
+BINDING_NAME_JAMBAITEMUSE12 = L["ITEM_12"]
+BINDING_NAME_JAMBAITEMUSE13 = L["ITEM_13"]
+BINDING_NAME_JAMBAITEMUSE14 =L["ITEM_14"]
+BINDING_NAME_JAMBAITEMUSE15 = L["ITEM_15"]
+BINDING_NAME_JAMBAITEMUSE16 = L["ITEM_16"]
+BINDING_NAME_JAMBAITEMUSE17 = L["ITEM_17"]
+BINDING_NAME_JAMBAITEMUSE18 = L["ITEM_18"]
+BINDING_NAME_JAMBAITEMUSE19 = L["ITEM_19"]
+BINDING_NAME_JAMBAITEMUSE20 = L["ITEM_20"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -64,8 +67,8 @@ AJM.settings = {
 		showItemUse = true,
 		showItemUseOnMasterOnly = true,
 		hideItemUseInCombat = false,
-		borderStyle = L["Blizzard Tooltip"],
-		backgroundStyle = L["Blizzard Dialog Background"],
+		borderStyle = L["BLIZZARD_TOOLTIP"],
+		backgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
 		itemUseScale = 1,
 		itemUseTitleHeight = 3,
 		itemUseVerticalSpacing = 3,
@@ -79,6 +82,7 @@ AJM.settings = {
 		numberOfRows = 2,
 		messageArea = JambaApi.DefaultWarningArea(),
 		itemsAdvanced = {},
+		itemsSoted = {},
 		framePoint = "BOTTOMRIGHT",
 		frameRelativePoint = "BOTTOMRIGHT",
 		frameXOffset = 0,
@@ -104,32 +108,32 @@ function AJM:GetConfiguration()
 		args = {	
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the item use settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-item-use push",
 				get = false,
 				set = "JambaSendSettings",
 			},											
 			hide = {
 				type = "input",
-				name = L["Hide Item Bar"],
-				desc = L["Hide the item bar panel."],
+				name = L["HIDE_ITEM_BAR"],
+				desc = L["HIDE_ITEM_BAR_HELP"],
 				usage = "/jamba-item-use hide",
 				get = false,
 				set = "HideItemUseCommand",
 			},	
 			show = {
 				type = "input",
-				name = L["Show Item Bar"],
-				desc = L["Show the item bar panel."],
+				name = L["SHOW_ITEM_BAR"],
+				desc = L["SHOW_ITEM_BAR_HELP"],
 				usage = "/jamba-item-use show",
 				get = false,
 				set = "ShowItemUseCommand",
 			},
 			clear = {
 				type = "input",
-				name = L["Clear Item Bar"],
-				desc = L["Clear the item bar (remove all items)."],
+				name = L["CLEAR_ITEM_BAR"],
+				desc = L["CLEAR_ITEM_BAR_HELP"],
 				usage = "/jamba-item-use clear",
 				get = false,
 				set = "ClearItemUseCommand",
@@ -149,6 +153,7 @@ end
 
 AJM.COMMAND_ITEMBAR_BUTTON = "JambaCommandItemBarButton"
 AJM.COMMAND_ITEMUSE_SYNC = "JambaCommandItemBarSync"
+AJM.COMMAND_ITEM_COUNT = "JambaCommandItemBarCount"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -168,6 +173,7 @@ AJM.refreshUpdateBindingsPending = false
 AJM.updateSettingsAfterCombat = false
 AJM.maximumNumberOfItems = 20
 AJM.maximumNumberOfRows = 20
+
 
 -------------------------------------------------------------------------------------------------------------
 -- Item Bar.
@@ -223,7 +229,7 @@ local function CreateJambaItemUseFrame()
 		updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -4, -3 )
 		updateButton:SetHeight( 20 )
 		updateButton:SetWidth( 65 )
-		updateButton:SetText( L["Clear"] )	
+		updateButton:SetText( L["CLEAR_BUTT"] )	
 		updateButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "clear", true) end)
 		updateButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		ClearUpdateButton = updateButton
@@ -233,7 +239,7 @@ local function CreateJambaItemUseFrame()
 		syncButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -71, -3 )
 		syncButton:SetHeight( 20 )
 		syncButton:SetWidth( 65 )
-		syncButton:SetText( L["Sync"] )	
+		syncButton:SetText( L["SYNC_BUTT"] )	
 		syncButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "sync", true) end)
 		syncButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 		SyncUpdateButton = syncButton
@@ -261,9 +267,9 @@ function AJM:ShowTooltip(frame, info, show)
 		GameTooltip:SetPoint("TOPLEFT", frame, "TOPRIGHT", 16, 0)
 		GameTooltip:ClearLines()
 		if info == "clear" then
-		GameTooltip:AddLine(L["Clears items no longer in your bags"], 1, 0.82, 0, 1)
+			GameTooltip:AddLine(L["TOOLTIP_NOLONGER_IN_BAGS"], 1, 0.82, 0, 1)
 		elseif info == "sync" then
-		GameTooltip:AddLine(L["Synchronise Item-Use Buttons"], 1, 0.82, 0, 1)
+			GameTooltip:AddLine(L["TOOLTIP_SYNCHRONISE"], 1, 0.82, 0, 1)
 		end
 		GameTooltip:Show()
 	else
@@ -304,7 +310,7 @@ end
 function AJM:ClearItemUseCommand()
 	JambaUtilities:ClearTable(AJM.db.itemsAdvanced)
 	AJM:SettingsRefresh()
-	AJM:Print(L["Item Bar Cleared"])
+	AJM:Print(L["ITEM_BAR_CLEARED"])
 end
 
 function AJM:SetItemUseVisibility()
@@ -413,7 +419,6 @@ function AJM:OnButtonContentsChanged( event, button, state, type, value, ... )
     end
     AJM:AddItemToItemDatabase( button.itemNumber, type, value )
     AJM:JambaSendUpdate(button.itemNumber, type, value )
-	--AJM:JambaSendSettings()
 	AJM:SettingsRefresh()
 end
 
@@ -457,20 +462,7 @@ function AJM:CreateJambaItemUseItemContainer( itemNumber, parentFrame )
 end
 
 --ebony test Using the wowapi and not the scanning of tooltips
-function AJM:CheckForQuestItemAndAddToBar()
-	--[[
-	for bag = 0,4,1 do 
-		for slot = 1,GetContainerNumSlots(bag),1 do 
-			local IsQuestItem,StartsQuest,_ = GetContainerItemQuestInfo(bag,slot)
-			local _,_,_,_,readable,_,itemLink = GetContainerItemInfo(bag,slot) -- readable???
-				-- Quests now auto get started since 7.1 kinda making this usless.
-				--if not IsQuestItem and StartsQuest then
-					--local itemString = GetItemInfo(itemLink)
-					--AJM:AddAnItemToTheBarIfNotExists( itemLink, true)
-				--end
-			end
-		end
-	]]		
+function AJM:CheckForQuestItemAndAddToBar()	
 	for iterateQuests=1,GetNumQuestLogEntries() do
 	local questLogTitleText,_,_,_,isHeader = GetQuestLogTitle(iterateQuests)
 		if not isHeader then
@@ -495,15 +487,8 @@ function AJM:CheckForSatchelsItemAndAddToBar()
 		for slot = 1, GetContainerNumSlots(bag) do
 			local texture, count, locked, quality, readable, lootable, link, isFiltered, hasNoValue, itemID = GetContainerItemInfo(bag, slot)
 			if link and lootable then
-				--AJM:Print("test", link)	
-				tooltipScanner:SetOwner(UIParent, "ANCHOR_NONE")
-				tooltipScanner:SetHyperlink(link)
-				--AJM:Print("scanTooltip", link) -- Debug
-				local tooltipText = _G[tooltipName.."TextLeft2"]:GetText()
-				--AJM:Print("tooltiptest", link, tooltipText) -- Debug
+				local tooltipText = JambaUtilities:TooltipScaner( link )
 				if tooltipText ~= "Locked" then
-					--AJM:Print("Not Locked", link)
-					--AJM:Print("satchelsFound", link)
 					AJM:AddAnItemToTheBarIfNotExists( link, false )
 				end
 			end
@@ -512,7 +497,6 @@ function AJM:CheckForSatchelsItemAndAddToBar()
 end	
 
 -- Removes unused items.
-
 function AJM:ClearButton()
 	local state = "0"
 	for iterateItems = 1, AJM.db.numberOfItems, 1 do
@@ -528,15 +512,9 @@ function AJM:ClearButton()
 		if kind == "item" then
 			local name, itemLink,_,_,_,itemType,questItem = GetItemInfo( action )
 			if itemLink and itemLink:match("item:%d") then
-				tooltipScanner:SetOwner(UIParent, "ANCHOR_NONE")
-				tooltipScanner:SetHyperlink(itemLink)
-				--AJM:Print("scanTooltip", itemLink)
-				local tooltipText = _G[tooltipName.."TextLeft3"]:GetText()
-				--AJM:Print("tooltiptest", tooltipText, tooltipTextTwo)
-				if tooltipText == nil or tooltipText ~= "Unique" then
-					--AJM:Print("testWorks!", itemLink)
+				local _ , tooltipTextTwo = JambaUtilities:TooltipScaner( itemLink )
+				if tooltipTextTwo == nil or tooltipTextTwo ~= "Unique" then
 					if AJM:IsInInventory( name ) == false then
-						--AJM:Print("NOT IN BAGS", itemLink)
 						AJM.db.itemsAdvanced[iterateItems] = nil
 						AJM:JambaSendUpdate( iterateItems, "empty", nil	)
 						AJM:SettingsRefresh()
@@ -575,14 +553,9 @@ function AJM:CheckForArtifactItemAndAddToBar()
 	for bag = 0, NUM_BAG_SLOTS do
 		for slot = 1, GetContainerNumSlots(bag) do
 			local itemLink = GetContainerItemLink(bag, slot)
-			--AJM:Print("bagcheck", itemLink)
 			if itemLink and itemLink:match("item:%d") then
-				tooltipScanner:SetOwner(UIParent, "ANCHOR_NONE")
-				tooltipScanner:SetHyperlink(itemLink)
-				--AJM:Print("scanTooltip", itemLink)
-				local tooltipText = _G[tooltipName.."TextLeft2"]:GetText()
+				local tooltipText = JambaUtilities:TooltipScaner(itemLink)
 				if tooltipText and tooltipText:match(ARTIFACT_POWER) then
-					--AJM:Print("artifactPowerFound", itemLink)
 					AJM:AddAnItemToTheBarIfNotExists( itemLink, false )
 				end
 			end
@@ -618,7 +591,7 @@ function AJM:AddAnItemToTheBarIfNotExists( itemLink, startsQuest)
 	local alreadyExists = false
 	local itemId = JambaUtilities:GetItemIdFromItemLink( itemLink )
 	for iterateItems = 1, AJM.db.numberOfItems, 1 do
-		itemInfo = AJM:GetItemFromItemDatabase( iterateItems )
+		local itemInfo = AJM:GetItemFromItemDatabase( iterateItems )
 			--AJM:Print("check", itemLink, itemInfo.action)
 		if itemInfo.kind == "item" and itemInfo.action == itemId then
 			alreadyExists = true
@@ -635,8 +608,9 @@ function AJM:AddAnItemToTheBarIfNotExists( itemLink, startsQuest)
 				AJM:AddItemToItemDatabase( iterateItems, "item", itemId )
 				AJM:JambaSendUpdate( iterateItems, "item", itemId )
 				AJM:SettingsRefresh()	
+					-- TODO: to we need this?
 					if startsQuest then
-						AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["New item that starts a quest found!"], false )
+						AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["NEW_QUEST_ITEM"], false )
 					end
 				return
 			end
@@ -740,24 +714,26 @@ local function SettingsCreateOptions( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Item Use Options"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["ITEM_USE_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowItemUse = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Show Item Bar"],
-		AJM.SettingsToggleShowItemUse
+		L["SHOW_ITEM_BAR"],
+		AJM.SettingsToggleShowItemUse,
+		L["SHOW_ITEM_BAR_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
-		left, 
+		left,
 		movingTop, 
-		L["Only On Master"],
-		AJM.SettingsToggleShowItemUseOnlyOnMaster
+		L["ONLY_ON_MASTER"],
+		AJM.SettingsToggleShowItemUseOnlyOnMaster,
+		L["ONLY_ON_MASTER_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxItemBarsSynchronized = JambaHelperSettings:CreateCheckBox( 
@@ -765,8 +741,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Keep Item Bars On Minions Synchronized"],
-		AJM.SettingsToggleItemBarsSynchronized
+		L["KEEP_BARS_SYNCHRONIZED"],
+		AJM.SettingsToggleItemBarsSynchronized,
+		L["KEEP_BARS_SYNCHRONIZED_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxAutoAddQuestItem = JambaHelperSettings:CreateCheckBox( 
@@ -774,8 +751,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Automatically Add Quest Items To Bar"],
-		AJM.SettingsToggleAutoAddQuestItem
+		L["ADD_QUEST_ITEMS_TO_BAR"],
+		AJM.SettingsToggleAutoAddQuestItem,
+		L["ADD_QUEST_ITEMS_TO_BAR_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem = JambaHelperSettings:CreateCheckBox( 
@@ -783,8 +761,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Automatically Add Artifact Power Items To Bar"],
-		AJM.SettingsToggleAutoAddArtifactItem
+		L["ADD_ARTIFACT_ITEMS"],
+		AJM.SettingsToggleAutoAddArtifactItem,
+		L["ADD_ARTIFACT_ITEMS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem = JambaHelperSettings:CreateCheckBox( 
@@ -792,8 +771,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Automatically Add Satchel Items To Bar"],
-		AJM.SettingsToggleAutoAddSatchelsItem
+		L["ADD_SATCHEL_ITEMS"],
+		AJM.SettingsToggleAutoAddSatchelsItem,
+		L["ADD_SATCHEL_ITEMS_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxHideClearButton = JambaHelperSettings:CreateCheckBox( 
@@ -801,8 +781,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Hide Buttons"],
-		AJM.SettingsToggleHideClearButton
+		L["HIDE_BUTTONS"],
+		AJM.SettingsToggleHideClearButton,
+		L["HIDE_BUTTONS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing	
 	AJM.settingsControl.displayOptionsCheckBoxHideItemUseInCombat = JambaHelperSettings:CreateCheckBox( 
@@ -810,8 +791,9 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Hide Item Bar In Combat"],
-		AJM.SettingsToggleHideItemUseInCombat
+		L["HIDE_IN_COMBAT"],
+		AJM.SettingsToggleHideItemUseInCombat,
+		L["HIDE_IN_COMBAT_HELP_IU"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing	
 	AJM.settingsControl.displayOptionsItemUseNumberOfItems = JambaHelperSettings:CreateSlider( 
@@ -819,7 +801,7 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Number Of Items"]
+		L["NUMBER_OF_ITEMS"]
 	)
 	AJM.settingsControl.displayOptionsItemUseNumberOfItems:SetSliderValues( 1, AJM.maximumNumberOfItems, 1 )
 	AJM.settingsControl.displayOptionsItemUseNumberOfItems:SetCallback( "OnValueChanged", AJM.SettingsChangeNumberOfItems )
@@ -829,19 +811,19 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Number Of Rows"]
+		L["NUMBER_OF_ROWS"]
 	)
 	AJM.settingsControl.displayOptionsItemUseNumberOfRows:SetSliderValues( 1, AJM.maximumNumberOfRows, 1 )
 	AJM.settingsControl.displayOptionsItemUseNumberOfRows:SetCallback( "OnValueChanged", AJM.SettingsChangeNumberOfRows )
 	movingTop = movingTop - sliderHeight - verticalSpacing
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Appearance & Layout"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	AJM.settingsControl.displayOptionsItemUseScaleSlider = JambaHelperSettings:CreateSlider( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Scale"]
+		L["SCALE"]
 	)
 	AJM.settingsControl.displayOptionsItemUseScaleSlider:SetSliderValues( 0.5, 2, 0.01 )
 	AJM.settingsControl.displayOptionsItemUseScaleSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeScale )
@@ -851,7 +833,7 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Transparency"]
+		L["TRANSPARENCY"]
 	)
 	AJM.settingsControl.displayOptionsItemUseTransparencySlider:SetSliderValues( 0, 1, 0.01 )
 	AJM.settingsControl.displayOptionsItemUseTransparencySlider:SetCallback( "OnValueChanged", AJM.SettingsChangeTransparency )
@@ -861,7 +843,7 @@ local function SettingsCreateOptions( top )
 		halfWidth, 
 		left, 
 		movingTop,
-		L["Border Style"]
+		L["BORDER_STYLE"]
 	)
 	AJM.settingsControl.displayOptionsItemUseMediaBorder:SetCallback( "OnValueChanged", AJM.SettingsChangeBorderStyle )
 	AJM.settingsControl.displayOptionsBorderColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -869,7 +851,7 @@ local function SettingsCreateOptions( top )
 		halfWidth,
 		column2left + 15,
 		movingTop - 15,
-		L["Border Colour"]
+		L["BORDER COLOUR"]
 	)
 	AJM.settingsControl.displayOptionsBorderColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.displayOptionsBorderColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBorderColourPickerChanged )
@@ -879,7 +861,7 @@ local function SettingsCreateOptions( top )
 		halfWidth, 
 		left, 
 		movingTop,
-		L["Background"]
+		L["BACKGROUND"]
 	)
 	AJM.settingsControl.displayOptionsItemUseMediaBackground:SetCallback( "OnValueChanged", AJM.SettingsChangeBackgroundStyle )
 	AJM.settingsControl.displayOptionsBackgroundColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -887,32 +869,33 @@ local function SettingsCreateOptions( top )
 		halfWidth,
 		column2left + 15,
 		movingTop - 15,
-		L["Background Colour"]
+		L["BG_COLOUR"]
 	)
 	AJM.settingsControl.displayOptionsBackgroundColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.displayOptionsBackgroundColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBackgroundColourPickerChanged )	
 	movingTop = movingTop - mediaHeight - verticalSpacing
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Messages"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	AJM.settingsControl.dropdownMessageArea = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Message Area"] 
+		L["MESSAGE_AREA"] 
 	)
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", AJM.SettingsSetMessageArea )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
-    JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Clear Item Bar"], movingTop, false )
+    JambaHelperSettings:CreateHeading( AJM.settingsControl, L["CLEAR_ITEM_BAR"], movingTop, false )
     movingTop = movingTop - headingHeight
     AJM.settingsControl.buttonClearItemBar = JambaHelperSettings:CreateButton(
         AJM.settingsControl,
         headingWidth,
         left,
         movingTop,
-        L["Clear Item Bar"],
-        AJM.ClearItemUseCommand
+        L["CLEAR_ITEM_BAR"],
+        AJM.ClearItemUseCommand,
+		L["CLEAR_ITEM_BAR_HELP"]
     )
     movingTop = movingTop - buttonHeight - verticalSpacing
 	return movingTop
@@ -1116,6 +1099,7 @@ function AJM:OnInitialize()
 	AJM:SettingsUpdateBorderStyle()
 	AJM:SetItemUseVisibility()
 	AJM:UpdateItemsInBar()
+	AJM.sharedInvData = {}
 end
 
 -- Called when the addon is enabled.
@@ -1124,6 +1108,7 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	AJM:RegisterEvent( "BAG_UPDATE" )
 	AJM:RegisterEvent( "ITEM_PUSH" )
+	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	AJM:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
 	AJM.SharedMedia.RegisterCallback( AJM, "LibSharedMedia_Registered" )
     AJM.SharedMedia.RegisterCallback( AJM, "LibSharedMedia_SetGlobal" )	
@@ -1138,6 +1123,7 @@ function AJM:OnEnable()
 	LibActionButton.RegisterCallback( AJM, "OnButtonUpdate", "OnButtonUpdate" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonState", "OnButtonState" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonUsable", "OnButtonUsable" )
+	AJM:SecureHook( GameTooltip , "SetHyperlink", "AddTooltipInfo" )
 end
 
 -- Called when the addon is disabled.
@@ -1184,9 +1170,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -1224,6 +1208,8 @@ function AJM:BAG_UPDATE()
 		AJM:UpdateQuestItemsInBar()
 		--AJM:ScheduleTimer( "UpdateArtifactItemsInBar", 1 )
 	end
+	-- ItemCount 
+		AJM:GetItemCount()
 end
 
 function AJM:QUEST_UPDATE()
@@ -1246,7 +1232,80 @@ function AJM:ITEM_PUSH()
 	if AJM.db.autoAddSatchelsItemsToBar == true then
 		AJM:ScheduleTimer( "CheckForSatchelsItemAndAddToBar", 1 )
 	end	
+	
 end
+
+function AJM:PLAYER_ENTERING_WORLD( event, ... )
+	AJM:ScheduleTimer( "GetItemCount", 0.5 )	
+end		
+
+
+function AJM:AddTooltipInfo( toolTip, itemID )
+	AJM:AddToTooltip( toolTip, itemID )
+	toolTip:Show()
+end
+
+function AJM:AddToTooltip(toolTip, itemID) 
+	toolTip:AddLine(" ")
+	toolTip:AddDoubleLine(L["TEAM_BAGS"], L["BAG_BANK"], 1,0.82,0,1,0.82,0)
+	for characterName, position in JambaApi.TeamList() do
+		local count, bankCount = AJM:GetItemCountFromItemID( characterName, itemID )
+		if count ~= nil then
+			toolTip:AddDoubleLine(Ambiguate(characterName, "none"), count..L[" "]..L["("]..bankCount..L[")"], 1,1,1,1,1,1)
+		end
+	end
+end		
+
+function AJM:GetItemCount()
+	local iteminfo = {}
+	for iterateItems , itemInfo in pairs( AJM.db.itemsAdvanced ) do
+		local itemID = itemInfo.action
+		if itemID ~= nil then
+			local itemName = GetItemInfo( itemID )
+			local countBags = GetItemCount( itemID )
+			local countTotal = GetItemCount( itemID , true)
+			local countBank = ( countTotal - countBags )
+			if itemName ~= nil then	
+				iteminfo[itemName] = {}
+				table.insert( iteminfo[itemName], { itemID = itemID, countBags = countBags, countBank = countBank } )
+			end	
+		end
+	end
+	AJM:JambaSendCommandToTeam( AJM.COMMAND_ITEM_COUNT, iteminfo )
+end
+
+function AJM:ReceiveItemCount( characterName, dataTable )
+	--AJM:Print("ReceiveItemCount", characterName )
+	for itemName, info in pairs( dataTable ) do
+		for i, data in pairs( info ) do
+		if AJM.sharedInvData[characterName..itemName] == nil then
+			AJM.sharedInvData[characterName..itemName] = {}
+		else
+			JambaUtilities:ClearTable( AJM.sharedInvData[characterName..itemName] )
+		
+		end
+		table.insert(AJM.sharedInvData[characterName..itemName], {name = characterName, item = data.itemID, itemCount = data.countBags, bankCount = data.countBank } )
+		end
+	end
+	LibActionButton:UpdateAllButtons()
+end
+
+function AJM:GetItemCountFromItemID( characterName, itemID )
+	local count = nil 
+	local countBank = nil
+	for itemName, data in pairs( AJM.sharedInvData ) do
+		for id, itemData in pairs( data ) do
+			--AJM:Print("testaaa", itemID, "vs", itemData.item)
+			if itemID == itemData.item and characterName == itemData.name then
+				--AJM:Print("Found", characterName, itemData.itemCount )
+				count = itemData.itemCount
+				countBank = itemData.bankCount
+			end	
+		end
+	end
+	return count, countBank
+end	
+
 
 function AJM:UPDATE_BINDINGS()
 	if InCombatLockdown() then
@@ -1266,6 +1325,21 @@ function AJM:UPDATE_BINDINGS()
 	end
 end
 
+
+local function GetMaxItemCountFromItemID(itemID)
+	if itemID == nil then return 0 end
+	if AJM.sharedInvData == nil then return 0 end
+	local count = 0
+	for itemName, data in pairs( AJM.sharedInvData ) do
+		for id, itemData in pairs( data ) do
+			if itemID == itemData.item then
+				count = count + itemData.itemCount
+			end	
+		end	
+	end	
+	return count
+end
+
 function AJM:LibSharedMedia_Registered()
 end
 
@@ -1274,12 +1348,16 @@ end
 
 -- A Jamba command has been recieved.
 function AJM:JambaOnCommandReceived( characterName, commandName, ... )
-	if characterName ~= self.characterName then
+	if JambaApi.IsCharacterInTeam(characterName) == true then  	
 		if commandName == AJM.COMMAND_ITEMBAR_BUTTON then
 			AJM:ReceiveButtonData( characterName, ... )
 		end
 		if commandName == AJM.COMMAND_ITEMUSE_SYNC then
 			AJM:ReceiveSync( characterName, ... )
 		end
-	end
+		if commandName == AJM.COMMAND_ITEM_COUNT then
+			AJM:ReceiveItemCount( characterName, ... )
+		end
+	end	
 end	
+JambaApi.GetMaxItemCountFromItemID = GetMaxItemCountFromItemID

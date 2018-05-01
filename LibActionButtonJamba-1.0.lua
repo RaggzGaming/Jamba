@@ -189,7 +189,7 @@ function lib:CreateButton(id, name, header, config)
 	button.HotKey:SetVertexColor(0.75, 0.75, 0.75)
 
 	-- adjust count/stack size
-	button.Count:SetFont(button.Count:GetFont(), 16, "OUTLINE")
+	button.Count:SetFont(button.Count:GetFont(), 14, "OUTLINE")
 
 	-- Store the button in the registry, needed for event and OnUpdate handling
 	if not next(ButtonRegistry) then
@@ -672,7 +672,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 	lib.eventFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
 	lib.eventFrame:RegisterEvent("PLAYER_MOUNT_DISPLAY_CHANGED")
-
+	
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_USABLE")
 	lib.eventFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
@@ -701,6 +701,7 @@ function InitializeEventHandler()
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 	lib.eventFrame:RegisterEvent("SPELL_UPDATE_USABLE")
 	lib.eventFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	lib.eventFrame:RegisterEvent("BAG_UPDATE")
 
 	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	lib.eventFrame:RegisterEvent("LOSS_OF_CONTROL_UPDATE")
@@ -832,6 +833,12 @@ function OnEvent(frame, event, arg1, ...)
 			end
 		end
 	elseif event == "PLAYER_EQUIPMENT_CHANGED" then
+		for button in next, ActiveButtons do
+			if button._state_type == "item" then
+				Update(button)
+			end
+		end
+	elseif  event == "BAG_UPDATE" then
 		for button in next, ActiveButtons do
 			if button._state_type == "item" then
 				Update(button)
@@ -1025,6 +1032,15 @@ function Generic:UpdateAction(force)
 	end
 end
 
+function lib:UpdateAllButtons()
+	for button in next, ActiveButtons do
+		if button._state_type == "item" then
+			Update(button)
+		end
+	end
+end	
+
+
 function Update(self)
 	if self:HasAction() then
 		ActiveButtons[self] = true
@@ -1175,17 +1191,23 @@ function UpdateUsable(self)
 end
 
 function UpdateCount(self)
+	--print("libtest", self:GetCount() )
 	if not self:HasAction() then
 		self.Count:SetText("")
 		return
 	end
 	if self:IsConsumableOrStackable() then
 		local count = self:GetCount()
-		if count > (self.maxDisplayCount or 9999) then
-			self.Count:SetText("*")
+		if count ~= 0 then	
+			if count > (self.maxDisplayCount or 999) then
+				--TODO: Relly this should show digits then * if over 999
+				self.Count:SetText("*")
+			else
+				self.Count:SetText(count)
+			end
 		else
-			self.Count:SetText(count)
-		end
+			self.Count:SetText("")
+		end	
 	else
 		local charges, maxCharges, chargeStart, chargeDuration = self:GetCharges()
 		if charges and maxCharges and maxCharges > 1 then
@@ -1298,7 +1320,9 @@ end
 function UpdateTooltip(self)
 	if GameTooltip:IsForbidden() then return end
 	if (GetCVar("UberTooltips") == "1") then
-		GameTooltip_SetDefaultAnchor(GameTooltip, self);
+		--for i,n in pairs(GameTooltip) do print(i,n) end
+		--print("lib", GameTooltip, self)
+		GameTooltip_SetDefaultAnchor(GameTooltip, self)
 	else
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	end
@@ -1526,19 +1550,25 @@ local function getItemId(input)
 end
 
 Item.HasAction               = function(self) return true end
+--Item.HasAction               = function(self) return false end
 Item.GetActionText           = function(self) return "" end
 Item.GetTexture              = function(self) return GetItemIcon(self._state_action) end
 Item.GetCharges              = function(self) return nil end
-Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
+--Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
+-- Ebony changes for Jamba-EE to count the stacks all chars and display in the bar!
+Item.GetCount                = function(self) return JambaApi.GetMaxItemCountFromItemID( self._state_action ) end
 Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
 Item.IsAttack                = function(self) return nil end
 Item.IsEquipped              = function(self) return IsEquippedItem(self._state_action) end
 Item.IsCurrentlyActive       = function(self) return IsCurrentItem(self._state_action) end
 Item.IsAutoRepeat            = function(self) return nil end
 Item.IsUsable                = function(self) return IsUsableItem(self._state_action) end
-Item.IsConsumableOrStackable = function(self) return IsConsumableItem(self._state_action) end
+-- Ebony this seems to always return false! and will not show the stacks on the bar!
+-- i always want to show even if there is just want item so return true.
+--Item.IsConsumableOrStackable = function(self) return IsConsumableItem(self._state_action) end
+Item.IsConsumableOrStackable = function(self) return true end
 Item.IsUnitInRange           = function(self, unit) return IsItemInRange(self._state_action, unit) end
-Item.SetTooltip              = function(self) return GameTooltip:SetHyperlink(self._state_action) end
+Item.SetTooltip              = function(self) return GameTooltip:SetHyperlink(self._state_action)  end
 Item.GetSpellId              = function(self) return nil end
 
 -----------------------------------------------------------

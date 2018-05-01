@@ -17,12 +17,26 @@ L["JAMBA EE"] = "Jamba EE"
 L[""] = true
 L[" "] = true
 L[": "] = true
+L["("] = true
+L[")"] = true
 L["PUSH_SETTINGS"] = "Push Settings"
 L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
 L["MINION"] = "Minion"
 L["MASTER"] = "Master"
 L["ALL"] = "All"
+L["MESSAGES_HEADER"] = "Messages"
+L["MESSAGE_AREA"]  = "Message Area"
+
+-- Display Options
+L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
+L["NUMBER_OF_ROWS"] = "Number Of Rows"
+L["SCALE"] = "Scale"
+L["TRANSPARENCY"] = "Transparency"
+L["BORDER_STYLE"] = "Border Style" 
+L["BORDER COLOUR"] = "Border Colour"
+L["BACKGROUND"] = "Background"
+L["BG_COLOUR"] = "Background Colour"
 
 --------------------------
 -- Modules Locale
@@ -34,6 +48,8 @@ L["TEAM"] = "Team"
 L["COMMUNICATIONS"] = "Communications"
 L["MESSAGE_DISPLAY"] = "Message Display"
 L["GROUP_LIST"] = "Group List"
+L["DISPLAY"] = "Display"
+L["ITEM_USE"] = "Item Use"
 
 --------------------------
 -- ALL String_Formats
@@ -214,6 +230,63 @@ L["MASTER_LOWER"] = "master"
 L["MINION_LOWER"] = "minion"
 
 --------------------------
+-- Item-Use Locale
+L["JAMBA-ITEM-USE"] = "Jamba-Item-Use"
+L["ITEM_1"] = "Item 1"
+L["ITEM_2"] = "Item 2"
+L["ITEM_3"] = "Item 3"
+L["ITEM_4"] = "Item 4"
+L["ITEM_5"] = "Item 5"
+L["ITEM_6"] = "Item 6"
+L["ITEM_7"] = "Item 7"
+L["ITEM_8"] = "Item 8"
+L["ITEM_9"] = "Item 9"
+L["ITEM_10"] = "Item 10"
+L["ITEM_11"] = "Item 11"
+L["ITEM_12"] = "Item 12"
+L["ITEM_13"] = "Item 13"
+L["ITEM_14"] = "Item 14"
+L["ITEM_15"] = "Item 15"
+L["ITEM_16"] = "Item 16"
+L["ITEM_17"] = "Item 17"
+L["ITEM_18"] = "Item 18"
+L["ITEM_19"] = "Item 19"
+L["ITEM_20"] = "Item 20"
+L["BLIZZARD_TOOLTIP"] = "Blizzard Tooltip"
+L["BLIZZARD_DIALOG_BACKGROUND"] = "Blizzard Dialog Background"
+L["HIDE_ITEM_BAR"] = "Hide Item Bar"
+L["HIDE_ITEM_BAR_HELP"] = "Hide The Item Bar Panel."
+L["SHOW_ITEM_BAR"] = "Show Item Bar"
+L["SHOW_ITEM_BAR_HELP"] = "Show The Item Bar Panel."
+L["CLEAR_ITEM_BAR"] = "Clear Item Bar"
+L["CLEAR_ITEM_BAR_HELP"] = "Clear The Item Bar (Remove All Items)."
+L["TOOLTIP_SYNCHRONISE"] = "Synchronise The Item-Use Bar"
+L["TOOLTIP_NOLONGER_IN_BAGS"] = "Remove Items No Longer In Your Bags, From The Item Bar"
+L["NEW_QUEST_ITEM"] = "New Item That Starts A Quest Found!"
+L["ITEM_USE_OPTIONS"] = "Item Use Options"
+L["SHOW_ITEM_BAR"] = "Shows The ItemBar"
+L["SHOW_ITEM_BAR_HELP"] = "Shows The Jamba Item Use Bar"
+L["ONLY_ON_MASTER"] = "Only On Master"
+L["ONLY_ON_MASTER_HELP"] = "Only Shows On The Master Character"
+L["KEEP_BARS_SYNCHRONIZED"] = "Keep Item Bars On Minions Synchronized"
+--TODO WORK OUT WHAT THIS DOES AGAIN!
+L["KEEP_BARS_SYNCHRONIZED_HELP"] = "Keep Item Bars On Minions Synchronized"
+L["ADD_QUEST_ITEMS_TO_BAR"] = "Automatically Add Quest Items To Bar"
+L["ADD_QUEST_ITEMS_TO_BAR_HELP"] = "Automatically Add's Useable Quest Items To Bar"
+L["ADD_ARTIFACT_ITEMS"] = "Automatically Add ArtifactPower Tokens To Bar"
+L["ADD_ARTIFACT_ITEMS_HELP"] = "Automatically Add ArtifactPower Tokens To Bar (Legion)"
+L["ADD_SATCHEL_ITEMS"] = "Automatically Add Satchel Items To Bar"
+L["ADD_SATCHEL_ITEMS_HELP"] = "Automatically Add Satchel Items To Bar ( Lootable Bags/Box's )"
+L["HIDE_BUTTONS"] = "Hide Buttons"
+L["HIDE_BUTTONS_HELP"] = "Hides The Top Buttons (Clear)"
+L["HIDE_IN_COMBAT"] = "Hide In Combat" 
+L["HIDE_IN_COMBAT_HELP_IU"] = "Hide Item Bar In Combat"
+L["NUMBER_OF_ITEMS"] = "Number Of Items"
+L["CLEAR_BUTT"] = "Clear"
+L["SYNC_BUTT"] = "Sync"
+L["ITEM_BAR_CLEARED"] = "Item Bar Cleared"
+L["TEAM_BAGS"] = "Items In Team Bags"
+L["BAG_BANK"] = "Bag (Banks)"
+
+--------------------------
 -- X Locale
-
-
