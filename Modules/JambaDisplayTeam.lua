@@ -29,10 +29,13 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 AJM.moduleName = "JmbDspTm"
 AJM.settingsDatabaseName = "JambaDisplayTeamProfileDB"
 AJM.chatCommand = "jamba-display-team"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Display"]
-AJM.moduleDisplayName = L["Display"]
-
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["DISPLAY"]
+AJM.moduleDisplayName = L["DISPLAY"]
+-- Icon 
+--AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
+-- order
+AJM.moduleOrder = 50
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -41,10 +44,10 @@ AJM.settings = {
 		showTeamListOnMasterOnly = true,
 		hideTeamListInCombat = false,
 		enableClique = false,
-		statusBarTexture = L["Blizzard"],
-		borderStyle = L["Blizzard Tooltip"],
-		backgroundStyle = L["Blizzard Dialog Background"],
-		fontStyle = L["Arial Narrow"],
+		statusBarTexture = L["BLIZZARD"],
+		borderStyle = L["BLIZZARD_TOOLTIP"],
+		backgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
+		fontStyle = L["ARIAL_NARROW"],
 		fontSize = 12,
 		teamListScale = 1,
 		teamListTitleHeight = 15,
@@ -126,24 +129,24 @@ function AJM:GetConfiguration()
 		args = {	
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the display team settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-display-team push",
 				get = false,
 				set = "JambaSendSettings",
 			},	
 			hide = {
 				type = "input",
-				name = L["Hide Team Display"],
-				desc = L["Hide the display team panel."],
+				name = L["HIDE_TEAM_DISPLAY"],
+				desc = L["HIDE_TEAM_DISPLAY_HELP"],
 				usage = "/jamba-display-team hide",
 				get = false,
 				set = "HideTeamListCommand",
 			},	
 			show = {
 				type = "input",
-				name = L["Show Team Display"],
-				desc = L["Show the display team panel."],
+				name = L["SHOW_TEAM_DISPLAY"],
+				desc = L["SHOW_TEAM_DISPLAY_HELP"],
 				usage = "/jamba-display-team show",
 				get = false,
 				set = "ShowTeamListCommand",
@@ -159,7 +162,6 @@ end
 
 AJM.COMMAND_FOLLOW_STATUS_UPDATE = "FlwStsUpd"
 AJM.COMMAND_EXPERIENCE_STATUS_UPDATE = "ExpStsUpd"
-AJM.COMMAND_TOONINFORMATION_UPDATE = "IlvlInfoUpd"
 AJM.COMMAND_REPUTATION_STATUS_UPDATE = "RepStsUpd"
 AJM.COMMAND_COMBO_STATUS_UPDATE = "CboStsUpd"
 AJM.COMMAND_REQUEST_INFO = "SendInfo"
@@ -279,7 +281,7 @@ local function UpdateJambaTeamListDimensions()
 	local frame = JambaDisplayTeamListFrame
 	if AJM.db.showListTitle == true then
 		AJM.db.teamListTitleHeight = 15
-		JambaDisplayTeamListFrame.titleName:SetText( L["Jamba Team"] )
+		JambaDisplayTeamListFrame.titleName:SetText( L["JAMBA_TEAM"] )
 	else
 		AJM.db.teamListTitleHeight = 0
 		JambaDisplayTeamListFrame.titleName:SetText( "" )
@@ -309,6 +311,7 @@ local function CreateJambaTeamListFrame()
 		function( this ) 
 			if IsAltKeyDown() then
 				if not UnitAffectingCombat("player") then		
+					-- TODO: SO ARROW ICON ON MOUDE
 					this:StartMoving()
 				end	
 			end
@@ -335,7 +338,7 @@ local function CreateJambaTeamListFrame()
 	local titleName = frame:CreateFontString( "JambaDisplayTeamListWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
 	titleName:SetPoint( "TOP", frame, "TOP", 0, -5 )
 	titleName:SetTextColor( 1.00, 1.00, 1.00 )
-	titleName:SetText( L["Jamba Team"] )
+	titleName:SetText( L["JAMBA_TEAM"] )
 	frame.titleName = titleName
 	
 	-- Set transparency of the the frame (and all its children).
@@ -535,18 +538,6 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	followBarText:SetAllPoints()
 	characterStatusBar["followBarText"] = followBarText
 	AJM:SettingsUpdateFollowText( characterName ) --, UnitLevel( Ambiguate( characterName, "none" ) ), nil, nil )
-	--ToolTip infomation
-	followBar.FreeBagSpace = 0
-	followBar.TotalBagSpace = 8
-	followBar.ArgIlvl = 1
-	followBar.Durability = 000
-	followBar.Gold = 0
-	followBar.Mail = "nothing"
-	followBar.CurrText = "currNothing"
-	followBar.CharacterLevel = 1
-	followBar.MaxCharacterLevel = 100
---	followBarClick:SetScript("OnEnter", function(self) AJM:ShowFollowTooltip(followBarClick, followBar, characterName, true) end)
---	followBarClick:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
 	-- Set the experience bar.
 	local experienceName = AJM.globalFramePrefix.."ExperienceBar"
 	local experienceBar = CreateFrame( "StatusBar", experienceName, parentFrame, "AnimatedStatusBarTemplate" ) --"TextStatusBar,SecureActionButtonTemplate" )
@@ -773,65 +764,6 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 		comboBarClick:SetAttribute( "type1", "target")
 	end
 end
-
-
-
-function AJM:ShowFollowTooltip( frame, followBar, characterName, canShow )
-	--AJM:Print("test", frame, characterName, canShow)
-	AJM:JambaRequestUpdate()
-	--Tooltip
-	if canShow then	
-		if AJM.db.showToolTipInfo == true then
-			local combat = UnitAffectingCombat("player")
-			if combat == false then
-				--AJM:Print("CanShow")
-					--followBarClick:SetScript("OnEnter", function(self)
-					GameTooltip:SetOwner(frame, "ANCHOR_TOP")
-				if AJM.db.followStatusShowName == true then 	
-				GameTooltip:AddLine(L["Toon Information"], 1, 0.82, 0, 1)	
-				else
-				GameTooltip:AddLine(Ambiguate( characterName, "none" ), 1, 0.82, 0, 1)
-				end
-				--level of player if not max.
-				if followBar.CharacterLevel ~= followBar.MaxCharacterLevel then
-					GameTooltip:AddLine(L["Player Level:"]..L[" "]..L["("]..tostring (format("%.0f", followBar.CharacterLevel ))..L[")"],1,1,1,1)
-				end
-					-- Item Level of player
-					GameTooltip:AddLine(L["Item Level:"]..L[" "]..L["("]..tostring (format("%.0f", followBar.ArgIlvl ))..L[")"],1,1,1,1)
-					-- Bag Space
-					GameTooltip:AddLine(" ",1,1,1,1)
-					GameTooltip:AddLine(L["Bag Space:"]..L[" "]..L["("]..tostring(followBar.FreeBagSpace).."/"..tostring( followBar.TotalBagSpace)..L[")"],1,1,1,1)
-					-- Durability
-					GameTooltip:AddLine(L["Durability:"]..L[" "]..L["("]..tostring(gsub( followBar.Durability , "%.[^|]+", "") )..L["%"]..L[")"],1,1,1,1)
-					-- Gold
-					GameTooltip:AddLine(" ",1,1,1,1)
-					GameTooltip:AddLine(L["Gold:"]..L[" "]..GetCoinTextureString( followBar.Gold ),1,1,1,1)
-					--AJM:Print("mail", ilvlInformationFrame.toolText, "Curr", ilvlInformationFrame.currText)
-					-- Shows if has Ingame Mail
-					if not (followBar.Mail == "nothing") then
-						GameTooltip:AddLine(" ",1,1,1,1)
-						GameTooltip:AddLine(L["Has New Mail From:"], 1, 0.82, 0, 1)
-						GameTooltip:AddLine( followBar.Mail,1,1,1,1)
-					end	
-					if not (followBar.CurrText == "currNothing") then
-						GameTooltip:AddLine(" ",1,1,1,1)
-						GameTooltip:AddLine(L["Currency Info:"], 1, 0.82, 0, 1)
-						GameTooltip:AddLine( followBar.CurrText,1,1,1,1)
-					end	
-
-					GameTooltip:Show()
-				else
-					GameTooltip:Hide()
-				end
-			end	
-	else
-		GameTooltip:Hide()
-	end
-end
-
-
-
-
 
 
 function AJM:HideJambaTeamStatusBar( characterName )	
@@ -1248,16 +1180,16 @@ local function SettingsCreateDisplayOptions( top )
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
 	-- Create show.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Show"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["SHOW"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowTeamList = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Show Team List"],
+		L["SHOW_TEAM_FRAME"],
 		AJM.SettingsToggleShowTeamList,
-		L["Show Jamba Team or Unit Frame List"]
+		L["SHOW_TEAM_FRAME_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxShowTeamListOnlyOnMaster = JambaHelperSettings:CreateCheckBox( 
@@ -1265,9 +1197,9 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Only On Master"],
+		L["ONLY_ON_MASTER"],
 		AJM.SettingsToggleShowTeamListOnMasterOnly,
-		L["Only Show on Master Character"]
+		L["ONLY_ON_MASTER_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxHideTeamListInCombat = JambaHelperSettings:CreateCheckBox( 
@@ -1275,9 +1207,9 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Hide Team List In Combat"],
+		L["HIDE_IN_COMBAT"],
 		AJM.SettingsToggleHideTeamListInCombat,
-		L["Olny Show The Team List out of Combat"]
+		L["HIDE_IN_COMBAT_HELP_DT"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxEnableClique = JambaHelperSettings:CreateCheckBox( 
@@ -1285,9 +1217,9 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Enable Clique Support"],
+		L["ENABLE_CLIQUE"],
 		AJM.SettingsToggleEnableClique,
-		L["Enable Clique Support\n\n**reload UI to take effect**"]
+		L["ENABLE_CLIQUE_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxOlnyShowInParty = JambaHelperSettings:CreateCheckBox( 
@@ -1295,9 +1227,9 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Only Show in Party"],
+		L["SHOW_PARTY"],
 		AJM.SettingsToggleOlnyShowinParty,
-		L["Only Show Display-Team\nIn Party or Raid"]
+		L["SHOW_PARTY_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxHpManaOutOfParty = JambaHelperSettings:CreateCheckBox( 
@@ -1305,22 +1237,22 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Health & Power Out of Group"],
+		L["HEALTH_POWER_GROUP"],
 		AJM.SettingsToggleHpManaOutOfParty,
-		L["Update Health and Power out of Groups\nUse Guild Communications!"]
+		L["HEALTH_POWER_GROUP_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	-- Create appearance & layout.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Appearance & Layout"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowListTitle = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show Title"],
+		L["SHOW_TITLE"],
 		AJM.SettingsToggleShowTeamListTitle,
-		L["Show Team List Title"]
+		L["SHOW_TITLE_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxStackVertically = JambaHelperSettings:CreateCheckBox( 
@@ -1328,33 +1260,17 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Stack Bars Vertically"],
+		L["STACK_VERTICALLY_HELP"],
 		AJM.SettingsToggleStackVertically,
-		L["Stack Bars Vertically"]
+		L["STACK_VERTICALLY_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-
---[[	movingTop = movingTop - sliderHeight - sectionSpacing	
-	
-	AJM.settingsControl.displayOptionsCheckBoxTeamHorizontal = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["Display Team List Horizontally"],
-		AJM.SettingsToggleTeamHorizontal,
-		L["Display Team List Horizontally"]
-	)
-
-	movingTop = movingTop - checkBoxHeight - verticalSpacing
- ]]	
-
 	AJM.settingsControl.displayOptionsCharactersPerBar = JambaHelperSettings:CreateSlider( 
 		AJM.settingsControl, 
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Characters Per Bar"]
+		L["CHARACTERS_PER_BAR"]
 	)
 	AJM.settingsControl.displayOptionsCharactersPerBar:SetSliderValues( 1, 10, 1 )
 	AJM.settingsControl.displayOptionsCharactersPerBar:SetCallback( "OnValueChanged", AJM.SettingsChangeCharactersPerBar )
@@ -1365,7 +1281,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Scale"]
+		L["SCALE"]
 	)
 	AJM.settingsControl.displayOptionsTeamListScaleSlider:SetSliderValues( 0.5, 2, 0.01 )
 	AJM.settingsControl.displayOptionsTeamListScaleSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeScale )
@@ -1376,7 +1292,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Transparency"]
+		L["TRANSPARENCY"]
 	)
 	AJM.settingsControl.displayOptionsTeamListTransparencySlider:SetSliderValues( 0, 1, 0.01 )
 	AJM.settingsControl.displayOptionsTeamListTransparencySlider:SetCallback( "OnValueChanged", AJM.SettingsChangeTransparency )
@@ -1386,7 +1302,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Status Bar Texture"]
+		L["BAR_TEXTURES"]
 	)
 	AJM.settingsControl.displayOptionsTeamListMediaStatus:SetCallback( "OnValueChanged", AJM.SettingsChangeStatusBarTexture )
 	movingTop = movingTop - mediaHeight - verticalSpacing
@@ -1395,7 +1311,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Border Style"]
+		L["BORDER_STYLE"]
 	)
 	AJM.settingsControl.displayOptionsTeamListMediaBorder:SetCallback( "OnValueChanged", AJM.SettingsChangeBorderStyle )
 	AJM.settingsControl.displayOptionsBorderColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -1403,7 +1319,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider,
 		column2left + 15,
 		movingTop - 15,
-		L["Border Colour"]
+		L["BORDER COLOUR"]
 	)
 	AJM.settingsControl.displayOptionsBorderColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.displayOptionsBorderColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBorderColourPickerChanged )	
@@ -1413,7 +1329,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Background"]
+		L["BACKGROUND"]
 	)
 	AJM.settingsControl.displayOptionsTeamListMediaBackground:SetCallback( "OnValueChanged", AJM.SettingsChangeBackgroundStyle )
 	AJM.settingsControl.displayOptionsBackgroundColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -1421,7 +1337,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider,
 		column2left + 15,
 		movingTop - 15,
-		L["Background Colour"]
+		L["BG_COLOUR"]
 	)
 	AJM.settingsControl.displayOptionsBackgroundColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.displayOptionsBackgroundColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBackgroundColourPickerChanged )
@@ -1432,7 +1348,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Font"]
+		L["FONT"]
 	)
 	AJM.settingsControl.displayOptionsTeamListMediaFont:SetCallback( "OnValueChanged", AJM.SettingsChangeFontStyle )
 	AJM.settingsControl.displayOptionsSetFontSize = JambaHelperSettings:CreateSlider( 
@@ -1440,22 +1356,22 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Font Size"]
+		L["FONT SIZE"]
 	)
 	AJM.settingsControl.displayOptionsSetFontSize:SetSliderValues( 8, 20 , 1 )
 	AJM.settingsControl.displayOptionsSetFontSize:SetCallback( "OnValueChanged", AJM.SettingsChangeFontSize )
 	movingTop = movingTop - mediaHeight - sectionSpacing	
 	-- Create portrait.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Portrait"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["PORTRAIT_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowPortrait = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowPortrait,
-		L["Show the Character Portrait"]
+		L["SHOW_CHARACTER_PORTRAIT"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsPortraitWidthSlider = JambaHelperSettings:CreateSlider( 
@@ -1463,60 +1379,39 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)
 	AJM.settingsControl.displayOptionsPortraitWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsPortraitWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangePortraitWidth )
 	movingTop = movingTop - sliderHeight - sectionSpacing
 	-- Create follow status.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Follow Status Bar"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowFollowStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowFollowStatus,
-		L["Show the Follow Bar and Character Name\n\nHover Over for Character Infomation"]
+		L["SHOW_FOLLOW_BAR"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowFollowStatusName = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["Name"],
+		L["NAME"],
 		AJM.SettingsToggleShowFollowStatusName,
-		L["Show Character Name"]
+		L["SHOW_NAME"]
 	)
-	AJM.settingsControl.displayOptionsCheckBoxShowToolTipInfo = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		thirdWidth, 
-		left3, 
-		movingTop, 
-		L["Show ToolTip"],
-		AJM.SettingsToggleShowToolTipInfo,
-		L["Show ToolTip Information"]
-	)
---[[
-	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	AJM.settingsControl.displayOptionsCheckBoxShowEquippedOnly = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop, 
-		L["Equipped iLvl Only"],
-		AJM.SettingsToggleShowEquippedOnly,
-		L["Olny shows Equipped item Level"]
-	)
---]]	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsFollowStatusWidthSlider = JambaHelperSettings:CreateSlider( 
 		AJM.settingsControl, 
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)
 	AJM.settingsControl.displayOptionsFollowStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsFollowStatusWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeFollowStatusWidth )
@@ -1525,40 +1420,40 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Height"]
+		L["HEIGHT"]
 	)
 	AJM.settingsControl.displayOptionsFollowStatusHeightSlider:SetSliderValues( 15, 100, 1 )
 	AJM.settingsControl.displayOptionsFollowStatusHeightSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeFollowStatusHeight )
 	movingTop = movingTop - sliderHeight - sectionSpacing
 	-- Create experience status.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Experience Bars"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["EXPERIENCE_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowExperienceStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowExperienceStatus,
-		L["Show the Team Experience bar\n\nAnd Artifact XP Bar\nAnd Honor XP Bar\nAnd Reputation Bar\n \nHover Over Bar With Mouse and Shift to Show More Infomation."]
+		L["SHOW_XP_BAR"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowExperienceStatusValues = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["Values"],
+		L["VALUES"],
 		AJM.SettingsToggleShowExperienceStatusValues,
-		L["Show Values"]
+		L["VALUES_HELP"] 
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowExperienceStatusPercentage = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left3, 
 		movingTop, 
-		L["Percentage"],
+		L["PERCENTAGE"],
 		AJM.SettingsToggleShowExperienceStatusPercentage,
-		L["Show Percentage"]
+		L["PERCENTAGE_HELP"]
 	)		
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsCheckBoxShowXpStatus = JambaHelperSettings:CreateCheckBox( 
@@ -1566,27 +1461,27 @@ local function SettingsCreateDisplayOptions( top )
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["ShowXP"],
+		L["SHOW_XP"],
 		AJM.SettingsToggleShowXpStatus,
-		L["Show the Team Experience bar"]
+		L["SHOW_XP_HELP"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowArtifactStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["ShowArtifactXP"],
+		L["ARTIFACT_BAR"],
 		AJM.SettingsToggleShowArtifactStatus,
-		L["Show the Team Artifact XP bar"]
+		L["ARTIFACT_BAR_HELP"]
 	)		
 	AJM.settingsControl.displayOptionsCheckBoxShowHonorStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left3, 
 		movingTop, 
-		L["ShowHonorXP"],
+		L["HONORXP"],
 		AJM.SettingsToggleShowHonorStatus,
-		L["Show the Team Honor XP Bar"]
+		L["HONORXP_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing	
 	AJM.settingsControl.displayOptionsCheckBoxShowRepStatus = JambaHelperSettings:CreateCheckBox( 
@@ -1594,9 +1489,9 @@ local function SettingsCreateDisplayOptions( top )
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["ShowReputation"],
+		L["REPUTATION_BAR"],
 		AJM.SettingsToggleShowRepStatus,
-		L["Show the Team Reputation Bar"]
+		L["REPUTATION_BAR_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsExperienceStatusWidthSlider = JambaHelperSettings:CreateSlider( 
@@ -1604,7 +1499,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)
 	AJM.settingsControl.displayOptionsExperienceStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsExperienceStatusWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeExperienceStatusWidth )
@@ -1613,40 +1508,40 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Height"]
+		L["HEIGHT"]
 	)
 	AJM.settingsControl.displayOptionsExperienceStatusHeightSlider:SetSliderValues( 15, 100, 1 )
 	AJM.settingsControl.displayOptionsExperienceStatusHeightSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeExperienceStatusHeight )
 	movingTop = movingTop - sliderHeight - sectionSpacing	
 	-- Create health status.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Health Bar"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["HEALTH_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowHealthStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowHealthStatus,
-		L["Show the Teams Health Bars"]
+		L["SHOW_HEALTH"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowHealthStatusValues = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["Values"],
+		L["VALUES"],
 		AJM.SettingsToggleShowHealthStatusValues,
-		L["Show Values"]
+		L["VALUES_HELP"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowHealthStatusPercentage = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left3, 
 		movingTop, 
-		L["Percentage"],
+		L["PERCENTAGE"],
 		AJM.SettingsToggleShowHealthStatusPercentage,
-		L["Show Percentage"]
+		L["PERCENTAGE_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight - verticalSpacing		
 	AJM.settingsControl.displayOptionsCheckBoxShowClassColors = JambaHelperSettings:CreateCheckBox( 
@@ -1654,9 +1549,9 @@ local function SettingsCreateDisplayOptions( top )
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show Class Colors"],
+		L["SHOW_CLASS_COLORS"],
 		AJM.SettingsToggleShowClassColors,
-		L["Show class Coulor on Health Bar"]
+		L["SHOW_CLASS_COLORS_HELP"] 
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsHealthStatusWidthSlider = JambaHelperSettings:CreateSlider( 
@@ -1664,7 +1559,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)
 	AJM.settingsControl.displayOptionsHealthStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsHealthStatusWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeHealthStatusWidth )
@@ -1673,40 +1568,40 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Height"]
+		L["HEIGHT"]
 	)
 	AJM.settingsControl.displayOptionsHealthStatusHeightSlider:SetSliderValues( 15, 100, 1 )
 	AJM.settingsControl.displayOptionsHealthStatusHeightSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeHealthStatusHeight )
 	movingTop = movingTop - sliderHeight - sectionSpacing	
 	-- Create power status.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Power Bar"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["POWER_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowPowerStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowPowerStatus,
-		L["Show the Team Power Bar\n\nMana, Rage, Etc..."]
+		L["POWER_HELP"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowPowerStatusValues = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["Values"],
+		L["VALUES"],
 		AJM.SettingsToggleShowPowerStatusValues,
-		L["Show Values"]
+		L["VALUES_HELP"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowPowerStatusPercentage = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left3, 
 		movingTop, 
-		L["Percentage"],
+		L["PERCENTAGE"],
 		AJM.SettingsToggleShowPowerStatusPercentage,
-		L["Show Percentage"]
+		L["PERCENTAGE_HELP"]
 	)			
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsPowerStatusWidthSlider = JambaHelperSettings:CreateSlider( 
@@ -1714,7 +1609,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)
 	AJM.settingsControl.displayOptionsPowerStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsPowerStatusWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangePowerStatusWidth )
@@ -1723,40 +1618,40 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Height"]
+		L["HEIGHT"]
 	)
 	AJM.settingsControl.displayOptionsPowerStatusHeightSlider:SetSliderValues( 10, 100, 1 )
 	AJM.settingsControl.displayOptionsPowerStatusHeightSlider:SetCallback( "OnValueChanged", AJM.SettingsChangePowerStatusHeight )
 	movingTop = movingTop - sliderHeight - sectionSpacing
 	-- Create Combo Point status.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Class Power Bar"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["CLASS_BAR_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowComboStatus = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop, 
-		L["Show"],
+		L["SHOW"],
 		AJM.SettingsToggleShowComboStatus,
-		L["Show the Teams Class Power Bar\n\nComboPoints\nSoulShards\nHoly Power\nRunes\nArcane Charges\nCHI"]
+		L["CLASS_POWER"] 
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowComboStatusValues = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left2, 
 		movingTop, 
-		L["Values"],
+		L["VALUES"],
 		AJM.SettingsToggleShowComboStatusValues,
-		L["Show Values"]
+		L["VALUES_HELP"]
 	)	
 	AJM.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		thirdWidth, 
 		left3, 
 		movingTop, 
-		L["Percentage"],
+		L["PERCENTAGE"],
 		AJM.SettingsToggleShowComboStatusPercentage,
-		L["Show Percentage"]
+		L["PERCENTAGE_HELP"] 
 	)			
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	AJM.settingsControl.displayOptionsComboStatusWidthSlider = JambaHelperSettings:CreateSlider( 
@@ -1764,7 +1659,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Width"]
+		L["WIDTH"]
 	)	
 	AJM.settingsControl.displayOptionsComboStatusWidthSlider:SetSliderValues( 15, 300, 1 )
 	AJM.settingsControl.displayOptionsComboStatusWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeComboStatusWidth )
@@ -1773,7 +1668,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Height"]
+		L["HEIGHT"]
 	)
 	AJM.settingsControl.displayOptionsComboStatusHeightSlider:SetSliderValues( 10, 100, 1 )
 	AJM.settingsControl.displayOptionsComboStatusHeightSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeComboStatusHeight )
@@ -1788,7 +1683,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	local bottomOfDisplayOptions = SettingsCreateDisplayOptions( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfDisplayOptions )
@@ -1816,7 +1713,6 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.displayOptionsCheckBoxEnableClique:SetValue( AJM.db.enableClique )
 	AJM.settingsControl.displayOptionsCharactersPerBar:SetValue( AJM.db.charactersPerRow )
 	AJM.settingsControl.displayOptionsCheckBoxStackVertically:SetValue( AJM.db.barsAreStackedVertically )
---	AJM.settingsControl.displayOptionsCheckBoxTeamHorizontal:SetValue( AJM.db.teamListHorizontal )
 	AJM.settingsControl.displayOptionsCheckBoxShowListTitle:SetValue( AJM.db.showListTitle )
 	AJM.settingsControl.displayOptionsCheckBoxOlnyShowInParty:SetValue( AJM.db.olnyShowInParty )
 	AJM.settingsControl.displayOptionsCheckBoxHpManaOutOfParty:SetValue ( AJM.db.healthManaOutOfParty )
@@ -1826,14 +1722,11 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.displayOptionsTeamListMediaBorder:SetValue( AJM.db.borderStyle )
 	AJM.settingsControl.displayOptionsTeamListMediaBackground:SetValue( AJM.db.backgroundStyle )
 	AJM.settingsControl.displayOptionsTeamListMediaFont:SetValue( AJM.db.fontStyle )
-	AJM.settingsControl.displayOptionsSetFontSize:SetValue( AJM.db.fontSize )
-	
+	AJM.settingsControl.displayOptionsSetFontSize:SetValue( AJM.db.fontSize )	
 	AJM.settingsControl.displayOptionsCheckBoxShowPortrait:SetValue( AJM.db.showCharacterPortrait )
 	AJM.settingsControl.displayOptionsPortraitWidthSlider:SetValue( AJM.db.characterPortraitWidth )
 	AJM.settingsControl.displayOptionsCheckBoxShowFollowStatus:SetValue( AJM.db.showFollowStatus )
 	AJM.settingsControl.displayOptionsCheckBoxShowFollowStatusName:SetValue( AJM.db.followStatusShowName )
-	AJM.settingsControl.displayOptionsCheckBoxShowToolTipInfo:SetValue( AJM.db.showToolTipInfo )	
---	AJM.settingsControl.displayOptionsCheckBoxShowFollowStatusLevel:SetValue( AJM.db.followStatusShowLevel )
 	AJM.settingsControl.displayOptionsFollowStatusWidthSlider:SetValue( AJM.db.followStatusWidth )
 	AJM.settingsControl.displayOptionsFollowStatusHeightSlider:SetValue( AJM.db.followStatusHeight )
 	AJM.settingsControl.displayOptionsCheckBoxShowExperienceStatus:SetValue( AJM.db.showExperienceStatus )
@@ -1873,7 +1766,6 @@ function AJM:SettingsRefresh()
 		AJM.settingsControl.displayOptionsCheckBoxEnableClique:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsCharactersPerBar:SetDisabled(not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsCheckBoxStackVertically:SetDisabled( not AJM.db.showTeamList )
-		--AJM.settingsControl.displayOptionsCheckBoxTeamHorizontal:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsCheckBoxShowListTitle:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsCheckBoxOlnyShowInParty:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsCheckBoxHpManaOutOfParty:SetDisabled( not AJM.db.showTeamList)
@@ -1883,14 +1775,11 @@ function AJM:SettingsRefresh()
 		AJM.settingsControl.displayOptionsTeamListMediaBorder:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsTeamListMediaBackground:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsTeamListMediaFont:SetDisabled( not AJM.db.showTeamList )
-		AJM.settingsControl.displayOptionsSetFontSize:SetDisabled( not AJM.db.showTeamList )
-		
-		
+		AJM.settingsControl.displayOptionsSetFontSize:SetDisabled( not AJM.db.showTeamList )		
 		AJM.settingsControl.displayOptionsCheckBoxShowPortrait:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsPortraitWidthSlider:SetDisabled( not AJM.db.showTeamList or not AJM.db.showCharacterPortrait )
 		AJM.settingsControl.displayOptionsCheckBoxShowFollowStatus:SetDisabled( not AJM.db.showTeamList)
 		AJM.settingsControl.displayOptionsCheckBoxShowFollowStatusName:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus )
---		AJM.settingsControl.displayOptionsCheckBoxShowFollowStatusLevel:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus )
 		AJM.settingsControl.displayOptionsFollowStatusWidthSlider:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus )
 		AJM.settingsControl.displayOptionsFollowStatusHeightSlider:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus)
 		AJM.settingsControl.displayOptionsCheckBoxShowExperienceStatus:SetDisabled( not AJM.db.showTeamList )
@@ -1920,8 +1809,6 @@ function AJM:SettingsRefresh()
 		AJM.settingsControl.displayOptionsComboStatusHeightSlider:SetDisabled( not AJM.db.showTeamList or not AJM.db.showComboStatus)
 		AJM.settingsControl.displayOptionsBackgroundColourPicker:SetDisabled( not AJM.db.showTeamList )
 		AJM.settingsControl.displayOptionsBorderColourPicker:SetDisabled( not AJM.db.showTeamList )
-		AJM.settingsControl.displayOptionsCheckBoxShowToolTipInfo:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus )
---		AJM.settingsControl.displayOptionsCheckBoxShowEquippedOnly:SetDisabled( not AJM.db.showTeamList or not AJM.db.showFollowStatus )
 		if AJM.teamListCreated == true then
 			AJM:RefreshTeamListControls()
 			AJM:SettingsUpdateBorderStyle()
@@ -1966,7 +1853,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.followStatusWidth = settings.followStatusWidth
 		AJM.db.followStatusHeight = settings.followStatusHeight
 		AJM.db.followStatusShowName = settings.followStatusShowName
-		AJM.db.showToolTipInfo = settings.showToolTipInfo	
 		AJM.db.showExperienceStatus = settings.showExperienceStatus
 		AJM.db.showXpStatus = settings.showXpStatus
 		AJM.db.showArtifactStatus = settings.showArtifactStatus
@@ -1992,7 +1878,6 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.comboStatusHeight = settings.comboStatusHeight		
 		AJM.db.comboStatusShowValues = settings.comboStatusShowValues
 		AJM.db.comboStatusShowPercentage = settings.comboStatusShowPercentage
---		AJM.db.ShowEquippedOnly = settings.ShowEquippedOnly	
 		AJM.db.frameAlpha = settings.frameAlpha
 		AJM.db.framePoint = settings.framePoint
 		AJM.db.frameRelativePoint = settings.frameRelativePoint
@@ -2009,9 +1894,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -2054,12 +1937,7 @@ function AJM:SettingsToggleStackVertically( event, checked )
 	AJM.db.teamListHorizontal = checked;
 	AJM:SettingsRefresh();
 end
---[[
-function AJM:SettingsToggleTeamHorizontal( event, checked )
-	AJM.db.teamListHorizontal = checked
-	AJM:SettingsRefresh()
-end
-]]
+
 
 function AJM:SettingsToggleShowTeamListTitle( event, checked )
 	AJM.db.showListTitle = checked
@@ -2138,11 +2016,6 @@ function AJM:SettingsToggleShowToolTipInfo( event, checked )
 	AJM:SettingsRefresh()
 end
 
---[[
-function AJM:SettingsToggleShowFollowStatusLevel( event, checked )
-	AJM.db.followStatusShowLevel = checked
-	AJM:SettingsRefresh()
-end]]
 
 function AJM:SettingsChangeFollowStatusWidth( event, value )
 	AJM.db.followStatusWidth = tonumber( value )
@@ -2321,9 +2194,6 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 	if commandName == AJM.COMMAND_REPUTATION_STATUS_UPDATE then
 		AJM:ProcessUpdateReputationStatusMessage( characterName, ... )
 	end
-	if commandName == AJM.COMMAND_TOONINFORMATION_UPDATE then
-		AJM:ProcessUpdateToonInformationMessage ( characterName, ... )
-	end
 	if commandName == AJM.COMMAND_COMBO_STATUS_UPDATE then
 		AJM:ProcessUpdateComboStatusMessage( characterName, ... )
 	end	
@@ -2366,146 +2236,6 @@ function AJM:RangeUpdateCommand()
 		local range = UnitInRange( name )
 
 	end				
-end
-
--------------------------------------------------------------------------------------------------------------
--- ToolTip Information Updates.
--------------------------------------------------------------------------------------------------------------
-
-function AJM:JambaRequestUpdate()		
-	AJM:JambaSendCommandToTeam( AJM.COMMAND_REQUEST_INFO )
-end
-
-function AJM:SendInfomationUpdateCommand()
-		-- Item Level	
-		local _, iLevel = GetAverageItemLevel()
-		-- characterLevel
-		local characterLevel = UnitLevel("player")
-		--Max Level
-		local characterMaxLevel = GetMaxPlayerLevel()
-		-- gold
-		local gold = GetMoney()
-		-- Bag information
-		local slotsFree, totalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-		-- durability
-		local curTotal, maxTotal, broken = 0, 0, 0
-		for i = 1, 18 do
-			local curItemDurability, maxItemDurability = GetInventoryItemDurability(i)
-			if curItemDurability and maxItemDurability then
-				curTotal = curTotal + curItemDurability
-				maxTotal = maxTotal + maxItemDurability
-					if maxItemDurability > 0 and curItemDurability == 0 then
-						broken = broken + 1
-					end
-			end
-		end
-		if curTotal == 0 then
-			curTotal = 1
-			maxTotal = 1
-		end	
-		local durability = curTotal / maxTotal * 100
-		--Mail (blizzard minimap code)
-		mailText = "nothing"
-		if HasNewMail() == true then
-			local sender1,sender2,sender3 = GetLatestThreeSenders()
-			if( sender1 or sender2 or sender3 ) then
-				if( sender1 ) then
-					mailText = sender1
-				end
-				if( sender2 ) then
-					mailText = mailText.."\n"..sender2
-				end
-				if( sender3 ) then
-					mailText = mailText.."\n"..sender3
-				end
-			else
-				mailText = L["Unknown Sender"]
-			end
-		end
-		--mailText = text
-		--local name, count, icon, currencyID
-		currText = "currNothing"
-		local name, count, icon, currencyID = GetBackpackCurrencyInfo(1)
-			if ( name ) then
-				--AJM:Print("test", name, count)
-				currText = name.." ".." |T"..icon..":16|t".." "..count
-			end
-		local name, count, icon, currencyID = GetBackpackCurrencyInfo(2)
-			if ( name ) then
-				--AJM:Print("test2", name, count)
-				currText = currText.."\n"..name.." ".." |T"..icon..":16|t".." "..count
-			end
-		local name, count, icon, currencyID = GetBackpackCurrencyInfo(3)
-			if ( name ) then
-				--AJM:Print("test3", name, count)
-				currText = currText.."\n"..name.." ".." |T"..icon..":16|t".." "..count
-			end
-			if AJM.db.showTeamListOnMasterOnly == true then
-				AJM:JambaSendCommandToMaster( AJM.COMMAND_TOONINFORMATION_UPDATE, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, currName, currCout, mailText, currText)
-			else
-				AJM:JambaSendCommandToTeam( AJM.COMMAND_TOONINFORMATION_UPDATE, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, currName, currCout, mailText, currText)
-			end
-end
-
-function AJM:ProcessUpdateToonInformationMessage( characterName, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, mailText, currText )
-	AJM:SettingsUpdateToonInfomation( characterName, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, mailText, currText )
-end
-
-
-function AJM:SettingsUpdateToonInfomationAll()
-	for characterName, characterStatusBar in pairs( AJM.characterStatusBar ) do			
-		AJM:SettingsUpdateToonInfomation( characterName, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil )
-	end
-end
-
-function AJM:SettingsUpdateToonInfomation( characterName, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, mailText, currText )
-	--AJM:Print("toonInfoUpdate", characterName, characterLevel, characterMaxLevel, iLevel, gold, durability, slotsFree, totalSlots, mailText, currText )
-	if CanDisplayTeamList() == false then
-		return
-	end
-	characterName = JambaUtilities:AddRealmToNameIfMissing( characterName )
-	local characterStatusBar = AJM.characterStatusBar[characterName]
-	if characterStatusBar == nil then
-		return
-	end
-	local followBar = characterStatusBar["followBar"]
-	if iLevel == nil then
-		iLevel = followBar.ArgIlvl
-	end
-	if characterLevel == nil then
-		characterLevel = followBar.CharacterLevel
-	end
-	if characterMaxLevel == nil then
-		characterMaxLevel = followBar.MaxCharacterLevel
-	end	
-	if gold == nil then
-		gold = followBar.Gold 
-	end
-	if durability == nil then
-		durability = followBar.Durability
-	end
-	if slotsFree == nil then
-		slotsFree = followBar.FreeBagSpace
-	end
-	if totalSlots == nil then
-		totalSlots = followBar.TotalBagSpace
-	end
-	if mailText == nil then
-		mailText = followBar.Mail
-	end	
-	if currText == nil then
-		currText = followBar.CurrText
-	end		
-	
-	followBar.ArgIlvl = iLevel
-	followBar.CharacterLevel = characterLevel
-	followBar.MaxCharacterLevel = characterMaxLevel
-	followBar.Gold = gold
-	followBar.Durability = durability
-	followBar.FreeBagSpace = slotsFree
-	followBar.TotalBagSpace = totalSlots
-	followBar.Mail = mailText
-	followBar.CurrText = currText
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -2708,7 +2438,11 @@ function AJM:SendExperienceStatusUpdateCommand()
 		local artifactForNextPoint = 100
 		local artifactPointsAvailable = 0
 		local artifactPointsSpent = 0
+		--TODO Adds support for 8.0.x
+		if JambaPrivate.Core.isBetaBuild() == false then	
 			if ArtifactWatchBar:IsShown() == true then
+		
+
 			--local itemID, altItemID, name, icon, totalXP, pointsSpent, quality, artifactAppearanceID, appearanceModID, itemAppearanceID, altItemAppearanceID, altOnTop = C_ArtifactUI.GetEquippedArtifactInfo()
 			--local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(pointsSpent, totalXP)
 			local artifactItemID, _, name, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
@@ -2719,6 +2453,7 @@ function AJM:SendExperienceStatusUpdateCommand()
 			artifactPointsAvailable = numPointsAvailableToSpend
 			artifactPointsSpent	= pointsSpent
 			end
+		end	
 		local honorXP = UnitHonor("player")
 		local prestigeLevel = UnitPrestige("Player")	
 		local honorMax = UnitHonorMax("player")
@@ -2851,23 +2586,8 @@ function AJM:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	local min, max = math.min(0, playerExperience), playerMaxExperience
 
 	experienceBar:SetAnimatedValues(playerExperience, min, max , playerLevel)
-
 	experienceArtBar:SetAnimatedValues(artifactXP, 0, artifactForNextPoint, artifactPointsAvailable + artifactPointsSpent)
-
-	experienceHonorBar:SetAnimatedValues(honorXP, 0, honorMax, honorLevel)
-
-	
---[[
-	if 	UnitInParty(Ambiguate( characterName, "none" ) ) == true then
-		if range == false then
-			experienceBar:SetAlpha( 0.5 )
-		else
-			experienceBar:SetAlpha( 1 )
-		end
-	else
-		experienceBar:SetAlpha( 1 )
-	end
---]]	
+	experienceHonorBar:SetAnimatedValues(honorXP, 0, honorMax, honorLevel)	
 	
 	local text = ""
 	if AJM.db.experienceStatusShowValues == true then
@@ -3565,7 +3285,12 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "UNIT_HEALTH" )
 	AJM:RegisterEvent( "UNIT_MAXHEALTH" )
 	AJM:RegisterEvent( "UNIT_HEAL_PREDICTION" )
-	AJM:RegisterEvent( "UNIT_POWER", "UNIT_POWER" )
+	--TODO Adds support for 8.0.x
+	if JambaPrivate.Core.isBetaBuild() == true then
+		AJM:RegisterEvent( "UNIT_POWER_UPDATE", "UNIT_POWER" )
+	else
+		AJM:RegisterEvent( "UNIT_POWER", "UNIT_POWER" )
+	end
 	AJM:RegisterEvent( "UNIT_MAXPOWER", "UNIT_POWER" )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	AJM:RegisterEvent( "UNIT_DISPLAYPOWER" )
@@ -3591,7 +3316,6 @@ function AJM:OnEnable()
 	AJM:ScheduleTimer( "RefreshTeamListControls", 3 )
 	AJM:ScheduleTimer( "SendExperienceStatusUpdateCommand", 5 )
 	AJM:ScheduleTimer( "SendReputationStatusUpdateCommand", 5 )
-	AJM:ScheduleTimer( "SendInfomationUpdateCommand", 5 )
 	AJM:ScheduleTimer( "SendHealthStatusUpdateCommand", 5, "player" )
 	AJM:ScheduleTimer( "SendPowerStatusUpdateCommand", 5, "player" )
 	AJM:ScheduleTimer( "SendComboStatusUpdateCommand", 5 )

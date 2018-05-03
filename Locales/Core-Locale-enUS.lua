@@ -19,17 +19,26 @@ L[" "] = true
 L[": "] = true
 L["("] = true
 L[")"] = true
+L[" / "] = true
+L["%"] = true
 L["PUSH_SETTINGS"] = "Push Settings"
 L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
 L["MINION"] = "Minion"
+L["NAME"] = "Name"
 L["MASTER"] = "Master"
 L["ALL"] = "All"
 L["MESSAGES_HEADER"] = "Messages"
 L["MESSAGE_AREA"]  = "Message Area"
+L["PH"] = "PH"
+L["GUILD"] = "Guild"
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
+L["BLIZZARD"] = "Blizzard"
+L["BLIZZARD_TOOLTIP"] = "Blizzard Tooltip"
+L["BLIZZARD_DIALOG_BACKGROUND"] = "Blizzard Dialog Background"
+L["ARIAL_NARROW"] = "Arial Narrow"
 L["NUMBER_OF_ROWS"] = "Number Of Rows"
 L["SCALE"] = "Scale"
 L["TRANSPARENCY"] = "Transparency"
@@ -37,6 +46,33 @@ L["BORDER_STYLE"] = "Border Style"
 L["BORDER COLOUR"] = "Border Colour"
 L["BACKGROUND"] = "Background"
 L["BG_COLOUR"] = "Background Colour"
+L["FONT"] = "Font"
+L["FONT SIZE"] = "Font Size"
+L["BAR_TEXTURES"] = "Status Bar Textures"
+L["WIDTH"] = "Width"
+L["HEIGHT"] = "Hight"
+
+-- Numbers
+L["1"] = "One"
+L["2"] = "Two"
+L["3"] = "Three"
+L["4"] = "Four"
+L["5"] = "Five"
+L["6"] = "Six"
+L["7"] = "Seven"
+L["8"] = "Eight"
+L["9"] = "Nine"
+L["10"] = "Ten"
+L["11"] = "Eleven"
+L["12"] = "Twelve"
+L["13"] = "Thirteen"
+L["14"] = "Fourteen"
+L["15"] = "Fifteen"
+L["16"] = "Sixteen"
+L["17"] = "Sventeen"
+L["18"] = "Eighteen"
+L["19"] = "Nineteen"
+L["20"] = "Twenty"
 
 --------------------------
 -- Modules Locale
@@ -50,9 +86,13 @@ L["MESSAGE_DISPLAY"] = "Message Display"
 L["GROUP_LIST"] = "Group List"
 L["DISPLAY"] = "Display"
 L["ITEM_USE"] = "Item Use"
+L["VENDER"] = "Vender"
+L["VENDER_LIST_MODULE"] = "Sell List"
+L["INTERACTION"] = "Interaction"
+L["CURRENCY"] = "Currency"
 
 --------------------------
--- ALL String_Formats
+-- Pecoded String Formats
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
 	return string.format("Settings Received From %s", characterName )
 end
@@ -60,7 +100,6 @@ end
 L["A_IS_NOT_IN_TEAM"] = function( characterName )
 	return string.format("%s Is Not In My Team List. I Can Not Set Them To Be My Master.", characterName )
 end
-
 --------------------------
 -- Core Locale
 L["STATUSTEXT"] = "The Awesome MultiBoxing Assistant Ebony's Edition"
@@ -155,7 +194,7 @@ L["BUTTON_REMOVE_HELP"] = "Removes Selected Member From The Team List"
 L["BUTTON_MASTER_HELP"] = "Set The Selected Member To Be The Master Of The Group"
 L["BUTTON_GROUP_REMOVE_HELP"] = "Removes The Group From The Selected Character"
 L["CHECKBOX_ISBOXER_SYNC"] = "Sync With Isboxer"
-L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With Isboxer TeamList \nAdd/Remove Character's No Longer In Isboxer Team"
+L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With Isboxer TeamList \nAdd/Remove Characters No Longer In Isboxer Team"
 L["MASTER_CONTROL"] = "Master Control"
 L["CHECKBOX_MASTER_LEADER"] = "Promote Master To Party Leader."
 L["CHECKBOX_MASTER_LEADER_HELP"] = "Master Will Always Be The Party Leader."
@@ -163,7 +202,7 @@ L["CHECKBOX_CTM"] = "Sets Click-To-Move On Minions"
 L["CHECKBOX_CTM_HELP"] = "Auto Activate Click-To-Move On Minions And Deactivate On Master."
 L["PARTY_CONTROLS"] = "Party Invitations Control"
 L["CHECKBOX_CONVERT_RAID"] = "Auto Convert To Raid"
-L["CHECKBOX_CONVERT_RAID_HELP"] = "Auto Convert To Raid If Team Is Over Five Character's"
+L["CHECKBOX_CONVERT_RAID_HELP"] = "Auto Convert To Raid If Team Is Over Five Characters"
 L["CHECKBOX_ASSISTANT"] = "Auto Set All Assistant"
 L["CHECKBOX_ASSISTANT_HELP"] = "Auto Set all raid Member's to Assistant."
 L["CHECKBOX_TEAM"] = "Accept From Team"
@@ -232,28 +271,7 @@ L["MINION_LOWER"] = "minion"
 --------------------------
 -- Item-Use Locale
 L["JAMBA-ITEM-USE"] = "Jamba-Item-Use"
-L["ITEM_1"] = "Item 1"
-L["ITEM_2"] = "Item 2"
-L["ITEM_3"] = "Item 3"
-L["ITEM_4"] = "Item 4"
-L["ITEM_5"] = "Item 5"
-L["ITEM_6"] = "Item 6"
-L["ITEM_7"] = "Item 7"
-L["ITEM_8"] = "Item 8"
-L["ITEM_9"] = "Item 9"
-L["ITEM_10"] = "Item 10"
-L["ITEM_11"] = "Item 11"
-L["ITEM_12"] = "Item 12"
-L["ITEM_13"] = "Item 13"
-L["ITEM_14"] = "Item 14"
-L["ITEM_15"] = "Item 15"
-L["ITEM_16"] = "Item 16"
-L["ITEM_17"] = "Item 17"
-L["ITEM_18"] = "Item 18"
-L["ITEM_19"] = "Item 19"
-L["ITEM_20"] = "Item 20"
-L["BLIZZARD_TOOLTIP"] = "Blizzard Tooltip"
-L["BLIZZARD_DIALOG_BACKGROUND"] = "Blizzard Dialog Background"
+L["ITEM"] = "Item"
 L["HIDE_ITEM_BAR"] = "Hide Item Bar"
 L["HIDE_ITEM_BAR_HELP"] = "Hide The Item Bar Panel."
 L["SHOW_ITEM_BAR"] = "Show Item Bar"
@@ -287,6 +305,165 @@ L["SYNC_BUTT"] = "Sync"
 L["ITEM_BAR_CLEARED"] = "Item Bar Cleared"
 L["TEAM_BAGS"] = "Items In Team Bags"
 L["BAG_BANK"] = "Bag (Banks)"
+
+--------------------------
+-- X Jamba-Sell
+L["SELL"] = "Sell"
+L["SELL_LIST"] = "Sell Item's List"
+L["SELL_ALL"] = "Sell Item's On All Toons"
+L["ALT_SELL_ALL"] = "Hold [Alt] While Selling An Item, To Sell On All Toons"
+L["ALT_SELL_ALL_HELP"] = "Hold [Alt] Key While Selling An Item To The Vender, To Sell That Item On All Toons"
+L["AUTO_SELL_ITEMS"] = "Automatically Sell Items"
+L["AUTO_SELL_ITEMS_HELP"] = "Automatically Sell Items Below"
+L["ONLY_SB"] = "Only SoulBound"
+L["ONLY_SB_HELP"] = "Only Sell SoulBound Items"
+L["iLVL"] = "Item Level"
+L["iLVL_HELP"] = "Sell Items Below The Item Level"
+L["SELL_GRAY"] = "Sell Gray Items"
+L["SELL_GRAY_HELP"] = "Sell All Gray Items"
+L["SELL_GREEN"] = "Sell Uncommon Items"
+L["SELL_GREEN_HELP"] = "Sell All Uncommon(Green) Items"
+L["SELL_RARE"] = "Sell Rare Items"
+L["SELL_RARE_HELP"] = "Sell All Rare(Blue) Items"
+L["SELL_EPIC"] = "Sell Epic Items"
+L["SELL_EPIC_HELP"]	= "Sell All Epic(Purple) Items"
+L["SELL_LIST_DROP_ITEM"] = "Sell:Other Item (drag item to box)"
+L["ITEM_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
+L["POPUP_REMOVE_ITEM"] = "Are You Sure You Wish To Remove The Selected Item From The Auto Sell: Items List?"
+L["ADD_TO_LIST"] = "Adds Item To List"
+L["SELL_ITEMS"] = "Sell Items"
+L["POPUP_DELETE_ITEM"] = "What You like to delete?"
+L["I_HAVE_SOLD_X"] = function( temLink )
+	return string.format("I Have Sold: %s", temLink )
+end
+L["I_SOLD_ITEMS_PLUS_GOLD"] = function( count )
+	return string.format( "I have sold: %s Items And Made: ", count )
+end	
+L["DELETE_ITEM"] = function( bagItemLink )
+	return string.format( "I Have DELETED: %s", bagItemLink )
+end
+
+--------------------------
+-- X Interaction
+L["TAXI"] = "Taxi"
+L["TAXI_OPTIONS"] = "Taxi Options"
+L["TAKE_TEAMS_TAXI"] = "Take Teams Taxi"
+L["TAKE_TEAMS_TAXI_HELP"] = "Take The Same Flight As The Any Team Member \n(Other Team Members Must Have Npc Flight Master Window Open)."
+L["REQUEST_TAXI_STOP"] = "Request Taxi Stop With Team"
+L["REQUEST_TAXI_STOP_HELP"] = "[PH] REQUEST_TAXI_STOP_HELP"
+L["CLONES_TO_TAKE_TAXI_AFTER"] = "Clones To Take Taxi After Leader"
+--Mount
+L["MOUNT"] = "Mount"
+L["MOUNT_OPTIONS"] = "Mount Options"
+L["MOUNT_WITH_TEAM"] = "Mount With Team"
+L["MOUNT_WITH_TEAM_HELP"] = "[PH] MOUNT_WITH_TEAM_HELP"
+L["DISMOUNT_WITH_TEAM"] = "Dismount With Team"
+L["DISMOUNT_WITH_TEAM_HELP"] = "Dismount When Any Team Dismount's"
+L["ONLY_DISMOUNT_WITH_MASTER"] = "Only Dismount's With Master"
+L["ONLY_DISMOUNT_WITH_MASTER_HELP"] = "ONLY DISMOUNT'S WHEM MASTER CHARACTER DISMONTS."
+L["ONLY_MOUNT_WHEN_IN_RANGE"] = "Only Mount When In Range"
+L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"] = "Dismounts Olny When The Team Is In Range /nOnly Works In A Party!"
+L["I_AM_UNABLE_TO_MOUNT"] = "I Am Unable To Mount."
+-- Loot
+L["LOOT_OPTIONS"] = "Loot v2 Options"
+L["DISMOUNT_WITH_CHARACTER"] = "Dismount With Character That Dismount"
+L["ENABLE_AUTO_LOOT"] = "Enable Auto"
+L["ENABLE_AUTO_LOOT_HELP"] = "Old Jambas Advanced Loot \Nbut Better"
+L["TELL_TEAM_BOE_RARE"] = "Tell Team BoE Rare"
+L["TELL_TEAM_BOE_RARE_HELP"] = "Tell The Team If I Loot A Boe Rare"
+L["TELL_TEAM_BOE_EPIC"] = "Tell Team Boe Epic"
+L["TELL_TEAM_BOE_EPIC_HELP"] = "Tell The Team If I Loot A Boe Epic"
+L["I_HAVE_LOOTED_X_Y_ITEM"] = function( rarity, itemName )
+	return string.format( "I Have Looted A %q BoE Item: %s .", rarity, itemName )
+end
+L["EPIC"] = "Epic"
+L["RARE"] = "Rare"
+L["REQUESTED_STOP_X"] = function( sender )
+	return string.format( "I Have Requested a Stop From %s", sender )
+end
+L["MESSAGE_AREA"] = "Message Area"
+L["SEND_WARNING_AREA"] = "Send Warning Area"
+L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
+	return "Settings Received From "..characterName.."."
+end
+L["I_AM_UNABLE_TO_FLY_TO_A"] = function( nodename )
+	return string.format( "I Am Unable To Fly To %s .", nodename )
+end
+--------------------------
+-- X Locale
+L["JAMBA_CURRENCY"] = "Jamba Currency"
+L["SHOW_CURRENCY"] = "Show Currency"
+L["SHOW_CURRENCY_HELP"] = "Show The Currency Frame Window."
+L["HIDE_CURRENCY"] = "Hide Currency"
+L["HIDE_CURRENCY_HELP"] = "Hide The Currency Values For All Members In The Team."
+L["CURRENCY_HEADER"] = "Currency Selection To Show On Frame"
+L["GOLD"] = "Gold"
+L["GOLD_HELP"] = "Shows The Minions Gold"
+L["GOLD_GB"] = "Include Gold In Guild Bank"
+L["GOLD_GB_HELP"] = "Show Gold In Guild Bank\n(This Does Not Update Unless You Visit The Guildbank)"
+L["CURR_STARTUP"] = "Open Currency List On Start Up"
+L["CURR_STARTUP_HELP"] = "Open Currency List On Start Up.\nThe Master Only)"
+L["LOCK_CURR_LIST"] = "Lock The Currency List Frame"
+L["LOCK_CURR_LIST_HELP"] = "Lock's The Currency List Frame And Enables Mouse Click-Through"
+L["SPACE_FOR_NAME"] = "Space For Name"
+L["SPACE_FOR_GOLD"] =  "Space For Name"
+L["SPACE_FOR_POINTS"] = "Space For Points"
+L["SPACE_BETWEEN_VALUES"] = "Space Between Values"
+L["TOTAL"] = "Total"
+L["CURR"] = "Curr"
+L["UPDATE"] = "Update"
+
+--------------------------
+-- Display Team Locale
+L["JAMBA_TEAM"] = "Jamba Team"
+L["HIDE_TEAM_DISPLAY"] = "Hide Team Display"
+L["HIDE_TEAM_DISPLAY_HELP"] = "Hide The Display Team Panel."
+L["SHOW_TEAM_DISPLAY"] = "Show Team Display"
+L["SHOW_TEAM_DISPLAY_HELP"] = "Show The Display Team Panel."
+L["SHOW"] = "Show"
+L["SHOW_TEAM_FRAME"] = "Show Team Frame"
+L["SHOW_TEAM_FRAME_HELP"] = "Show Jamba Team Frame List"
+L["HIDE_IN_COMBAT_HELP_DT"] = "Hides The TeamFrame In Combat"
+L["ENABLE_CLIQUE"] = "Enable Clique Support"
+L["ENABLE_CLIQUE_HELP"] = "Enable Clique Support\n([/Reload Ui] To Take Effect)"
+L["SHOW_PARTY"] = "Only Show Party Members"
+L["SHOW_PARTY_HELP"] = "Only Show Party Team Members"
+L["HEALTH_POWER_GROUP"] = "Health & Power Out of Group"
+L["HEALTH_POWER_GROUP_HELP"] = "Update Health and Power Out Of Groups\nUse Guild Communications!"
+L["SHOW_TITLE"] = "Show Title on Frame"
+L["SHOW_TITLE_HELP"] = "Show Team List Title on Display Team Frame"
+L["STACK_VERTICALLY"] = "Stack Bars Vertically"
+L["STACK_VERTICALLY_HELP"] = "Stack Display Team Frame Bars Vertically"
+L["CHARACTERS_PER_BAR"] = "Number of Characters Per Row"
+L["SHOW_CHARACTER_PORTRAIT"] = "Shows Characters Portraits"
+L["SHOW_FOLLOW_BAR"] = "Shows the Follow Bar and Character Name"
+L["SHOW_NAME"] = "Show Character Name"
+L["SHOW_XP_BAR"] = "Show the Team Experience bar\n\nAnd Artifact XP Bar\nAnd Honor XP Bar\nAnd Reputation Bar"
+L["VALUES"] = "Values"
+L["VALUES_HELP"] = "Show Values"
+L["PERCENTAGE"] = "Percentage"
+L["PERCENTAGE_HELP"] = "Show Percentage"
+L["SHOW_XP"] = "Experience Bar"
+L["SHOW_XP_HELP"] = "Show the Team Experience bar"
+L["ARTIFACT_BAR"] = "Artifact Bar"
+L["ARTIFACT_BAR_HELP"] = "Show the Team Artifact Experience bar"
+L["HONORXP"] = "Show Honor Bar"
+L["HONORXP_HELP"] = "Show the Team Honor Experience Bar"
+L["REPUTATION_BAR"] = "Show Reputation Bar"
+L["REPUTATION_BAR_HELP"] = "Show the Team Reputation Bar" 
+L["SHOW_HEALTH"] = "Show the Teams Health Bars"
+L["SHOW_CLASS_COLORS"] = "Show Class Colors"
+L["SHOW_CLASS_COLORS_HELP"] = "Show class Coulor on Health Bars"
+L["POWER_HELP"] = "Show the Team Power Bar\n\nMana, Rage, Etc..."
+L["CLASS_POWER"] = "Show the Teams Class Power Bar\n\nComboPoints\nSoulShards\nHoly Power\nRunes"
+L["DEAD"] = "Dead"
+L["PORTRAIT_HEADER"] = "Portrait"
+L["FOLLOW_BAR_HEADER"] = "Follow Status Bar"
+L["EXPERIENCE_HEADER"] = "Experience Bars"
+L["HEALTH_BAR_HEADER"] = "Health Bar"
+L["POWER_BAR_HEADER"] = "Power Bar"
+L["CLASS_BAR_HEADER"] = "Class Power Bar"
+
 
 --------------------------
 -- X Locale

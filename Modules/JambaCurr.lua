@@ -27,9 +27,14 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 AJM.moduleName = "Jamba-Curr"
 AJM.settingsDatabaseName = "JambaCurrProfileDB"
 AJM.chatCommand = "jamba-curr"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Display"]
-AJM.moduleDisplayName = L["Currency"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["DISPLAY"]
+AJM.moduleDisplayName = L["CURRENCY"]
+-- Icon 
+--AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
+-- order
+AJM.moduleOrder = 3
+
 AJM.globalCurrencyFramePrefix = "JambaToonCurrencyListFrame"
 AJM.currTypes = {}
 AJM.simpleCurrList = {}
@@ -113,9 +118,9 @@ AJM.settings = {
 		currencyFrameBorderColourG = 1.0,
 		currencyFrameBorderColourB = 1.0,
 		currencyFrameBorderColourA = 1.0,		
-		currencyBorderStyle = L["Blizzard Tooltip"],
-		currencyBackgroundStyle = L["Blizzard Dialog Background"],
-		currencyFontStyle = L["Arial Narrow"],
+		currencyBorderStyle = L["BLIZZARD_TOOLTIP"],
+		currencyBackgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
+		currencyFontStyle = L["ARIAL_NARROW"],
 		currencyFontSize = 12,		
 		currencyScale = 1,
 		currencyNameWidth = 60,
@@ -139,24 +144,24 @@ function AJM:GetConfiguration()
 		args = {
 			show = {
 				type = "input",
-				name = L["Show Currency"],
-				desc = L["Show the current toon the currency values for all members in the team."],
+				name = L["SHOW_CURRENCY"],
+				desc = L["SHOW_CURRENCY_HELP"],
 				usage = "/jamba-curr show",
 				get = false,
 				set = "JambaToonRequestCurrency",
 			},
 			hide = {
 				type = "input",
-				name = L["Hide Currency"],
-				desc = L["Hide the currency values for all members in the team."],
+				name = L["HIDE_CURRENCY"],
+				desc = L["HIDE_CURRENCY_HELP"],
 				usage = "/jamba-curr hide",
 				get = false,
 				set = "JambaToonHideCurrency",
 			},			
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the toon settings to all characters in the team."],
+				name = L["PUSH_ALL_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-curr push",
 				get = false,
 				set = "JambaSendSettings",
@@ -197,7 +202,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder	
 	)
 	local bottomOfInfo = AJM:SettingsCreateCurrency( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfInfo )	
@@ -233,16 +240,16 @@ function AJM:SettingsCreateCurrency( top )
 	local left3 = left + (thirdWidth * 1)
 	local right = left + halfWidth + horizontalSpacing
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Currency Selection"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["CURRENCY_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxCurrencyGold = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Gold"],
+		L["GOLD"],
 		AJM.SettingsToggleCurrencyGold,
-		L["Shows the minions Gold"]
+		L["GOLD_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxCurrencyGoldInGuildBank = JambaHelperSettings:CreateCheckBox( 
@@ -250,9 +257,9 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Include Gold In Guild Bank"],
+		L["GOLD_GB"],
 		AJM.SettingsToggleCurrencyGoldInGuildBank,
-		L["Show Gold In Guild Bank\n\nThis does not update unless you visit the guildbank."]
+		L["GOLD_GB_HELP"]
 	)
 	--Currency One & Two	
 	movingTop = movingTop - checkBoxHeight
@@ -261,7 +268,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		left + indent,
 		movingTop,
-		L["Currency One"]
+		L["CURRENCY"]..L[" "]..L["1"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeOneID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeOneID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeOneID)
@@ -270,7 +277,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		right + indent,
 		movingTop,
-		L["Currency Two"]
+		L["CURRENCY"]..L[" "]..L["2"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeTwoID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeTwoID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeTwoID)	
@@ -281,7 +288,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		left + indent,
 		movingTop,
-		L["Currency Three"]
+		L["CURRENCY"]..L[" "]..L["3"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeThreeID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeThreeID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeThreeID)	
@@ -290,7 +297,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		right + indent,
 		movingTop,
-		L["Currency Four"]
+		L["CURRENCY"]..L[" "]..L["4"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeFourID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeFourID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeFourID)
@@ -301,7 +308,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		left + indent,
 		movingTop,
-		L["Currency Five"]
+		L["CURRENCY"]..L[" "]..L["5"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeFiveID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeFiveID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeFiveID)	
@@ -310,7 +317,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidth,
 		right + indent,
 		movingTop,
-		L["Currency Six"]
+		L["CURRENCY"]..L[" "]..L["6"]
 	)	
 	AJM.settingsControl.editBoxCurrencyTypeSixID:SetList( AJM.CurrDropDownBox() )
 	AJM.settingsControl.editBoxCurrencyTypeSixID:SetCallback( "OnValueChanged",  AJM.EditBoxChangedCurrencyTypeSixID)
@@ -321,9 +328,9 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Show Currency"], 
+		L["SHOW_CURRENCY"], 
 		AJM.JambaToonRequestCurrency,
-		L["Show Currency Window"]
+		L["SHOW_CURRENCY_HELP"]
 	)
 	movingTop = movingTop - buttonHeight
 	AJM.settingsControl.checkBoxCurrencyOpenStartUpMaster = JambaHelperSettings:CreateCheckBox( 
@@ -331,22 +338,22 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Open Currency List On Start Up"],
+		L["CURR_STARTUP"],
 		AJM.SettingsToggleCurrencyOpenStartUpMaster,
-		L["Open Currency List On Start Up.\n\nThe Master Minion Only)"]
+		L["CURR_STARTUP_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	-- Create appearance & layout.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Appearance & Layout"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxCurrencyLockWindow = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Lock Currency List"],
+		L["LOCK_CURR_LIST"],
 		AJM.SettingsToggleCurrencyLockWindow,
-		L["Lock Currency List\n\n(Enables Mouse Click-Through)"]
+		L["LOCK_CURR_LIST_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight		
 	AJM.settingsControl.currencyScaleSlider = JambaHelperSettings:CreateSlider( 
@@ -354,7 +361,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Scale"]
+		L["SCALE"]
 	)
 	AJM.settingsControl.currencyScaleSlider:SetSliderValues( 0.5, 2, 0.01 )
 	AJM.settingsControl.currencyScaleSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeScale )
@@ -364,7 +371,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Transparency"]
+		L["TRANSPARENCY"]
 	)
 	AJM.settingsControl.currencyTransparencySlider:SetSliderValues( 0, 1, 0.01 )
 	AJM.settingsControl.currencyTransparencySlider:SetCallback( "OnValueChanged", AJM.SettingsChangeTransparency )
@@ -374,7 +381,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Border Style"]
+		L["BORDER_STYLE"]
 	)
 	AJM.settingsControl.currencyMediaBorder:SetCallback( "OnValueChanged", AJM.SettingsChangeBorderStyle )
 
@@ -383,7 +390,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider,
 		column2left + 15,
 		movingTop - 15,
-		L["Border Colour"]
+		L["BORDER COLOUR"]
 	)
 	AJM.settingsControl.currencyBorderColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.currencyBorderColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBorderColourPickerChanged )	
@@ -393,7 +400,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Background"]
+		L["BACKGROUND"]
 	)
 	AJM.settingsControl.currencyMediaBackground:SetCallback( "OnValueChanged", AJM.SettingsChangeBackgroundStyle )
 	AJM.settingsControl.currencyBackgroundColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -401,7 +408,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider,
 		column2left + 15,
 		movingTop - 15,
-		L["Background Colour"]
+		L["BG_COLOUR"]
 	)
 	AJM.settingsControl.currencyBackgroundColourPicker:SetHasAlpha( true )
 	AJM.settingsControl.currencyBackgroundColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsBackgroundColourPickerChanged )
@@ -412,7 +419,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Font"]
+		L["FONT"]
 	)
 	AJM.settingsControl.currencyMediaFont:SetCallback( "OnValueChanged", AJM.SettingsChangeFontStyle )
 	AJM.settingsControl.currencyFontSize = JambaHelperSettings:CreateSlider( 
@@ -420,7 +427,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["Font Size"]
+		L["FONT SIZE"]
 	)	
 	AJM.settingsControl.currencyFontSize:SetSliderValues( 8, 20 , 1 )
 	AJM.settingsControl.currencyFontSize:SetCallback( "OnValueChanged", AJM.SettingsChangeFontSize )
@@ -430,7 +437,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Space For Name"]
+		L["SPACE_FOR_NAME"]
 	)
 	AJM.settingsControl.currencySliderSpaceForName:SetSliderValues( 20, 200, 1 )
 	AJM.settingsControl.currencySliderSpaceForName:SetCallback( "OnValueChanged", AJM.SettingsChangeSliderSpaceForName )
@@ -440,7 +447,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Space For Gold"]
+		L["SPACE_FOR_GOLD"]
 	)
 	AJM.settingsControl.currencySliderSpaceForGold:SetSliderValues( 20, 200, 1 )
 	AJM.settingsControl.currencySliderSpaceForGold:SetCallback( "OnValueChanged", AJM.SettingsChangeSliderSpaceForGold )
@@ -450,7 +457,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Space For Points"]
+		L["SPACE_FOR_POINTS"]
 	)
 	AJM.settingsControl.currencySliderSpaceForPoints:SetSliderValues( 20, 200, 1 )
 	AJM.settingsControl.currencySliderSpaceForPoints:SetCallback( "OnValueChanged", AJM.SettingsChangeSliderSpaceForPoints )
@@ -460,7 +467,7 @@ function AJM:SettingsCreateCurrency( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Space Between Values"]
+		L["SPACE_BETWEEN_VALUES"]
 	)
 	AJM.settingsControl.currencySliderSpaceBetweenValues:SetSliderValues( 0, 20, 1 )
 	AJM.settingsControl.currencySliderSpaceBetweenValues:SetCallback( "OnValueChanged", AJM.SettingsChangeSliderSpaceBetweenValues )
@@ -485,17 +492,11 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxCurrencyGold:SetValue( AJM.db.currGold )
 	AJM.settingsControl.checkBoxCurrencyGoldInGuildBank:SetValue( AJM.db.currGoldInGuildBank )
 	AJM.settingsControl.checkBoxCurrencyGoldInGuildBank:SetDisabled( not AJM.db.currGold )
-
 	AJM.settingsControl.editBoxCurrencyTypeOneID:SetValue( AJM.db.CcurrTypeOneName )
-
 	AJM.settingsControl.editBoxCurrencyTypeTwoID:SetValue ( AJM.db.CcurrTypeTwoName )	
-
 	AJM.settingsControl.editBoxCurrencyTypeThreeID:SetValue ( AJM.db.CcurrTypeThreeName )
-	
 	AJM.settingsControl.editBoxCurrencyTypeFourID:SetValue ( AJM.db.CcurrTypeFourName )
-
 	AJM.settingsControl.editBoxCurrencyTypeFiveID:SetValue ( AJM.db.CcurrTypeFiveName )	
-
 	AJM.settingsControl.editBoxCurrencyTypeSixID:SetValue ( AJM.db.CcurrTypeSixName )
 	--state
 	AJM.settingsControl.checkBoxCurrencyOpenStartUpMaster:SetValue( AJM.db.currOpenStartUpMaster )
@@ -749,9 +750,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -818,7 +817,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	local titleName = frame:CreateFontString( "JambaToonCurrencyListWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
 	titleName:SetPoint( "TOPLEFT", frame, "TOPLEFT", 3, -8 )
 	titleName:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
-	titleName:SetText( L["Currency"] )
+	titleName:SetText( L["CURRENCY"] )
 	titleName:SetWidth( 200 )
 	titleName:SetJustifyH( "LEFT" )
 	titleName:SetWordWrap( false )
@@ -837,7 +836,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the characters name font string.
 	local frameCharacterName = AJM.globalCurrencyFramePrefix.."TitleCharacterName"
 	local frameCharacterNameText = parentFrame:CreateFontString( frameCharacterName.."Text", "OVERLAY", "GameFontNormal" )
-	frameCharacterNameText:SetText( L["Toon"] )
+	frameCharacterNameText:SetText( L["NAME"] )
 	frameCharacterNameText:SetTextColor( r, g, b, a )
 	frameCharacterNameText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameCharacterNameText:SetWidth( width * 2.5 )
@@ -847,7 +846,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the Gold font string.
 	local frameGold = AJM.globalCurrencyFramePrefix.."TitleGold"
 	local frameGoldText = parentFrame:CreateFontString( frameGold.."Text", "OVERLAY", "GameFontNormal" )
-	frameGoldText:SetText( L["Gold"] )
+	frameGoldText:SetText( L["GOLD"] )
 	frameGoldText:SetTextColor( r, g, b, a )
 	frameGoldText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameGoldText:SetWidth( width )
@@ -857,7 +856,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeOne font string.
 	local frameTypeOne = AJM.globalCurrencyFramePrefix.."TitleTypeOne"
 	local frameTypeOneText = parentFrame:CreateFontString( frameTypeOne.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeOneText:SetText( L["CurrOne"] )
+	frameTypeOneText:SetText( L["CURR"]..L["1"] )
 	frameTypeOneText:SetTextColor( r, g, b, a )
 	frameTypeOneText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeOneText:SetWidth( width )
@@ -867,7 +866,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeTwo font string.
 	local frameTypeTwo = AJM.globalCurrencyFramePrefix.."TitleTypeTwo"
 	local frameTypeTwoText = parentFrame:CreateFontString( frameTypeTwo.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeTwoText:SetText( L["CurrTwo"] )
+	frameTypeTwoText:SetText( L["CURR"]..L["2"] )
 	frameTypeTwoText:SetTextColor( r, g, b, a )
 	frameTypeTwoText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeTwoText:SetWidth( width )
@@ -877,7 +876,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeThree font string.
 	local frameTypeThree = AJM.globalCurrencyFramePrefix.."TitleTypeThree"
 	local frameTypeThreeText = parentFrame:CreateFontString( frameTypeThree.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeThreeText:SetText( L["CurrThree"] )
+	frameTypeThreeText:SetText( L["CURR"]..L["3"] )
 	frameTypeThreeText:SetTextColor( r, g, b, a )
 	frameTypeThreeText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeThreeText:SetWidth( width )
@@ -887,7 +886,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeFour font string.
 	local frameTypeFour = AJM.globalCurrencyFramePrefix.."TitleTypeFour"
 	local frameTypeFourText = parentFrame:CreateFontString( frameTypeFour.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeFourText:SetText( L["CurrFour"] )
+	frameTypeFourText:SetText( L["CURR"]..L["4"] )
 	frameTypeFourText:SetTextColor( r, g, b, a )
 	frameTypeFourText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeFourText:SetWidth( width )
@@ -897,7 +896,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeFive font string.
 	local frameTypeFive = AJM.globalCurrencyFramePrefix.."TitleTypeFive"
 	local frameTypeFiveText = parentFrame:CreateFontString( frameTypeFive.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeFiveText:SetText( L["CurrFive"] )
+	frameTypeFiveText:SetText( L["CURR"]..L["5"] )
 	frameTypeFiveText:SetTextColor( r, g, b, a )
 	frameTypeFiveText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeFiveText:SetWidth( width )
@@ -907,7 +906,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	-- Set the TypeSix font string.
 	local frameTypeSix = AJM.globalCurrencyFramePrefix.."TitleTypeSix"
 	local frameTypeSixText = parentFrame:CreateFontString( frameTypeSix.."Text", "OVERLAY", "GameFontNormal" )
-	frameTypeSixText:SetText( L["CurrSix"] )
+	frameTypeSixText:SetText( L["CURR"]..L["6"] )
 	frameTypeSixText:SetTextColor( r, g, b, a )
 	frameTypeSixText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTypeSixText:SetWidth( width )
@@ -919,7 +918,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	top = -50
 	local frameTotalGoldTitle = AJM.globalCurrencyFramePrefix.."TitleTotalGold"
 	local frameTotalGoldTitleText = parentFrame:CreateFontString( frameTotalGoldTitle.."Text", "OVERLAY", "GameFontNormal" )
-	frameTotalGoldTitleText:SetText( L["Total"] )
+	frameTotalGoldTitleText:SetText( L["TOTAL"] )
 	frameTotalGoldTitleText:SetTextColor( r, g, b, a )
 	frameTotalGoldTitleText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTotalGoldTitleText:SetWidth( width )
@@ -928,7 +927,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 
 	local frameTotalGoldGuildTitle = AJM.globalCurrencyFramePrefix.."TitleTotalGoldGuild"
 	local frameTotalGoldGuildTitleText = parentFrame:CreateFontString( frameTotalGoldGuildTitle.."Text", "OVERLAY", "GameFontNormal" )
-	frameTotalGoldGuildTitleText:SetText( L["Guild"] )
+	frameTotalGoldGuildTitleText:SetText( L["GUILD"] )
 	frameTotalGoldGuildTitleText:SetTextColor( r, g, b, a )
 	frameTotalGoldGuildTitleText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
 	frameTotalGoldGuildTitleText:SetWidth( width )
@@ -977,7 +976,7 @@ function AJM:CreateJambaToonCurrencyListFrame()
 	updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -30, -4 )
 	updateButton:SetHeight( 22 )
 	updateButton:SetWidth( 55 )
-	updateButton:SetText( L["Update"] )		
+	updateButton:SetText( L["UPDATE"] )		
 	
 	frame.updateButton = updateButton
 	
@@ -1252,22 +1251,22 @@ function AJM:CurrencyListSetColumnWidth()
 	parentFrame.titleName:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", frameHorizontalSpacing, -9 )
 	if AJM.db.currGold == true then
 		if numberOfPointsColumns > 1 then
-			parentFrame.titleName:SetText( L["Jamba Currency"] )
+			parentFrame.titleName:SetText( L["JAMBA_CURRENCY"] )
 		else
-			parentFrame.titleName:SetText( L["Currency"] )
+			parentFrame.titleName:SetText( L["CURRENCY"] )
 		end
 	else
 		if numberOfPointsColumns < 2 then
 			parentFrame.titleName:SetText( "" )
 		end
 		if numberOfPointsColumns == 2 then
-			parentFrame.titleName:SetText( L["Curr"] )
+			parentFrame.titleName:SetText( L["CURR"] )
 		end
 		if (numberOfPointsColumns >= 3) and (numberOfPointsColumns <= 4) then
-			parentFrame.titleName:SetText( L["Currency"] )
+			parentFrame.titleName:SetText( L["CURRENCY"] )
 		end
 		if numberOfPointsColumns > 4 then
-			parentFrame.titleName:SetText( L["Jamba Currency"] )
+			parentFrame.titleName:SetText( L["JAMBA_CURRENCY"] )
 		end
 	end
 	parentFrame:SetWidth( finalParentWidth )

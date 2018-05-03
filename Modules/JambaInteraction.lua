@@ -26,7 +26,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 AJM.moduleName = "Jamba-Interaction"
 AJM.settingsDatabaseName = "JambaInteractionProfileDB"
 AJM.chatCommand = "jamba-Interaction"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]
 AJM.moduleDisplayName = L["INTERACTION"]
 -- Icon 
@@ -67,7 +67,7 @@ function AJM:GetConfiguration()
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
-				desc = L["PUSH_SETTINGS_HELP"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-interaction push",
 				get = false,
 				set = "JambaSendSettings",

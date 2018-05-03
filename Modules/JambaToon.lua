@@ -796,13 +796,13 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "CONFIRM_SUMMON")
 	AJM:RegisterEvent( "DUEL_REQUESTED" )
 	AJM:RegisterEvent( "GUILD_INVITE_REQUEST" )
-	AJM:RegisterEvent( "ITEM_PUSH" )
+	--AJM:RegisterEvent( "ITEM_PUSH" )
 	AJM:RegisterEvent( "LFG_ROLE_CHECK_SHOW" )
 	AJM:RegisterEvent( "READY_CHECK" )
 	AJM:RegisterEvent("LOSS_OF_CONTROL_ADDED")
-	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "ITEM_PUSH" )
+	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
 
---	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
+	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
@@ -1071,7 +1071,6 @@ function AJM:doSoulStone()
 			StaticPopup_Hide("TEAMDEATH")
 		else
 			AJM:JambaSendMessageToTeam( AJM.db.warningArea, L["I Do not have a SoulStone"], false )
-			RepopMe()
 		end	
 	end
 end
@@ -1320,31 +1319,38 @@ function AJM:PLAYER_REGEN_DISABLED( event, ... )
 	end
 end
 
-function AJM:ITEM_PUSH( event, Type, message, ... )
-	--AJM:Print("test", message )
+function AJM:BAGS_FULL( event, arg1, message, ... )
+	AJM:Print("test", message )
    if AJM.db.warnBagsFull == true then
+		--AJM.bagsFull = 
 		if UnitIsGhost( "player" ) then return end
 		if UnitIsDead( "player" ) then return end
 		
-		if message == ERR_INV_FULL then	
-			---AJM:Print("Inventory is full.", "one")
-			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
-			end	
-
-		elseif message == INVENTORY_FULL then
-			--AJM:Print("Inventory is full.", "two")
-			AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
-		end
-	--[[
-	local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-		if numberFreeSlots == 0 then
-			if AJM.previousFreeBagSlotsCount ~= numberFreeSlots then
-				AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
+		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+		AJM:Print("test12", numberFreeSlots ) 
+		
+		if  message == ERR_INV_FULL or message == INVENTORY_FULL then
+			AJM:Print("here", numberFreeSlots, "vs", AJM.previousFreeBagSlotsCount)
+			if numberFreeSlots == 0 then
+				AJM:Print("a", numberFreeSlots, "vs", AJM.previousFreeBagSlotsCount)
+				if tostring(numberFreeSlots) == tostring(AJM.previousFreeBagSlotsCount) then
+					AJM:Print("canSend")
+					AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
+				end
 			end
-		end
-	AJM.previousFreeBagSlotsCount = numberFreeSlots
+			AJM.previousFreeBagSlotsCount = numberFreeSlots
+		end	
 	end
-	--]]
+end
+
+function  AJM:BAG_UPDATE_DELAYED(event, ... )
+	
+	local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+	AJM:Print("updateBags",numberFreeSlots )
+	AJM.previousFreeBagSlotsCount = numberFreeSlots
+	
+
+
 end
 
 --Ebony CCed
@@ -1416,7 +1422,7 @@ function AJM:AddToTooltip(toolTip, link)
 	end					
 end		
 
-
+--[[
 function  AJM:BAG_UPDATE_DELAYED(event, ... )	
 	for bagID = 0, NUM_BAG_SLOTS do	
 		for slot = 1, GetContainerNumSlots(bagID) do
@@ -1442,7 +1448,7 @@ function  AJM:BAG_UPDATE_DELAYED(event, ... )
 		end		
 	end	
 end
-
+]]
 function AJM:addItemIfNotExists( itemLink, countBags, characterName )
 	local IfNotExists = false
 		for id, item in pairs( AJM.sharedInvData ) do
