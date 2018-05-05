@@ -58,7 +58,7 @@ BINDING_NAME_JAMBAITEMUSE15 = L["ITEM"]..L[" "]..L["15"]
 BINDING_NAME_JAMBAITEMUSE16 = L["ITEM"]..L[" "]..L["16"]
 BINDING_NAME_JAMBAITEMUSE17 = L["ITEM"]..L[" "]..L["17"]
 BINDING_NAME_JAMBAITEMUSE18 = L["ITEM"]..L[" "]..L["18"]
-BINDING_NAME_JAMBAITEMUSE19 =L["ITEM"]..L[" "]..L["19"]
+BINDING_NAME_JAMBAITEMUSE19 = L["ITEM"]..L[" "]..L["19"]
 BINDING_NAME_JAMBAITEMUSE20 = L["ITEM"]..L[" "]..L["20"]
 
 -- Settings - the values to store and their defaults for the settings database.
@@ -1106,7 +1106,7 @@ end
 function AJM:OnEnable()
 	AJM:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	AJM:RegisterEvent( "PLAYER_REGEN_DISABLED" )
-	AJM:RegisterEvent( "BAG_UPDATE" )
+	AJM:RegisterEvent( "BAG_UPDATE_DELAYED" )
 	AJM:RegisterEvent( "ITEM_PUSH" )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	AJM:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
@@ -1202,22 +1202,19 @@ function AJM:PLAYER_REGEN_DISABLED()
 	end
 end
 
-function AJM:BAG_UPDATE()
+function AJM:BAG_UPDATE_DELAYED()
 	if not InCombatLockdown() then
 		AJM:UpdateItemsInBar()
 		AJM:UpdateQuestItemsInBar()
-		--AJM:ScheduleTimer( "UpdateArtifactItemsInBar", 1 )
+		-- ItemCount 
+		AJM:GetJambaItemCount()											  
 	end
-	-- ItemCount 
-		AJM:GetItemCount()
 end
-
 function AJM:QUEST_UPDATE()
 	if not InCombatLockdown() then
 		AJM:UpdateQuestItemsInBar()	
 	end
 end
-
 
 function AJM:ITEM_PUSH()
 	if AJM.db.showItemUse == false then
@@ -1236,9 +1233,8 @@ function AJM:ITEM_PUSH()
 end
 
 function AJM:PLAYER_ENTERING_WORLD( event, ... )
-	AJM:ScheduleTimer( "GetItemCount", 0.5 )	
+	AJM:ScheduleTimer( "GetJambaItemCount", 0.5 )	
 end		
-
 
 function AJM:AddTooltipInfo( toolTip, itemID )
 	AJM:AddToTooltip( toolTip, itemID )
@@ -1256,7 +1252,7 @@ function AJM:AddToTooltip(toolTip, itemID)
 	end
 end		
 
-function AJM:GetItemCount()
+function AJM:GetJambaItemCount()
 	local iteminfo = {}
 	for iterateItems , itemInfo in pairs( AJM.db.itemsAdvanced ) do
 		local itemID = itemInfo.action
@@ -1306,7 +1302,6 @@ function AJM:GetItemCountFromItemID( characterName, itemID )
 	return count, countBank
 end	
 
-
 function AJM:UPDATE_BINDINGS()
 	if InCombatLockdown() then
 		AJM.refreshUpdateBindingsPending = true
@@ -1325,10 +1320,12 @@ function AJM:UPDATE_BINDINGS()
 	end
 end
 
-
 local function GetMaxItemCountFromItemID(itemID)
-	if itemID == nil then return 0 end
-	if AJM.sharedInvData == nil then return 0 end
+	if itemID == nil then 
+		return 0 
+	if AJM.sharedInvData == nil then 
+		return 0
+	end	
 	local count = 0
 	for itemName, data in pairs( AJM.sharedInvData ) do
 		for id, itemData in pairs( data ) do

@@ -235,9 +235,10 @@ function JambaUtilities:TooltipScaner(item)
 			local tooltipTextTwo = _G[tooltipName.."TextLeft3"]:GetText()
 				--print("test",  tooltipTextTwo)
 				text = tooltipText 
-				text2 = tooltipTextTwo
-			end		
-	--print("test9", text, text2)
+				text2 = tooltipTextTwo	
+			--print("test9", text, text2)
+			tooltipScanner:Hide()
+		end		
 	return text, text2
 end
 
@@ -269,15 +270,16 @@ function JambaUtilities:getPetOwner( petName )
 	--print(petName)
 	if petName ~= nil then
 		local tooltipName = "AJMPetScanner"
-		local tooltipScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
-		tooltipScanner:ClearLines()
-		tooltipScanner:SetOwner(WorldFrame, "ANCHOR_NONE")
-		tooltipScanner:SetUnit( petName )
+		local tooltipPetScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
+		tooltipPetScanner:ClearLines()
+		tooltipPetScanner:SetOwner(WorldFrame, "ANCHOR_NONE")
+		tooltipPetScanner:SetUnit( petName )
 		local ownerName = _G[tooltipName.."TextLeft2"]:GetText() -- This is the line with <[Player]'s Pet>
 		if not ownerName then 
 			 return nil 
 		end
 		local owner, _ = string.split("'",ownerName)
+		tooltipPetScanner:Hide()
 		return owner -- This is the pet's owner
 	--	print(owner)
 	end
