@@ -8,12 +8,7 @@
 -->
 
 <Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="JambaCurr-Locale-enUS.lua" />
-	<Script file="JambaDisplayTeam-Locale-enUS.lua" />
-	<Script file="JambaFollow-Locale-enUS.lua" />
-
-	<Script file="JambaItemUse-Locale-enUS.lua" />
-
+	
 	<Script file="JambaPurchase-Locale-enUS.lua" />
 	<Script file="JambaQuest-Locale-enUS.lua" />
 	<Script file="JambaQuestWatcher-Locale-enUS.lua" />

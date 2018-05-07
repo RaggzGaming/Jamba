@@ -770,7 +770,7 @@ function AJM:OnInitialize()
 	-- Have been hit flag.
 	AJM.haveBeenHit = false
 	-- Bags full changed count.
-	AJM.previousFreeBagSlotsCount = -0
+	AJM.previousFreeBagSlotsCount = false
 	--Start-DB for items.
 	--AJM:scanBagsForItems()
 	AJM:AddDummyItem()
@@ -796,12 +796,10 @@ function AJM:OnEnable()
 	AJM:RegisterEvent( "CONFIRM_SUMMON")
 	AJM:RegisterEvent( "DUEL_REQUESTED" )
 	AJM:RegisterEvent( "GUILD_INVITE_REQUEST" )
-	--AJM:RegisterEvent( "ITEM_PUSH" )
 	AJM:RegisterEvent( "LFG_ROLE_CHECK_SHOW" )
 	AJM:RegisterEvent( "READY_CHECK" )
 	AJM:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	AJM:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
-
 	AJM:RegisterEvent(  "BAG_UPDATE_DELAYED" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
@@ -1320,38 +1318,40 @@ function AJM:PLAYER_REGEN_DISABLED( event, ... )
 end
 
 function AJM:BAGS_FULL( event, arg1, message, ... )
-	AJM:Print("test", message )
    if AJM.db.warnBagsFull == true then
-		--AJM.bagsFull = 
-		if UnitIsGhost( "player" ) then return end
-		if UnitIsDead( "player" ) then return end
-		
+		if UnitIsGhost( "player" ) then 
+			return 
+		end
+		if UnitIsDead( "player" ) then 
+			return 
+		end
 		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-		AJM:Print("test12", numberFreeSlots ) 
-		
 		if  message == ERR_INV_FULL or message == INVENTORY_FULL then
-			AJM:Print("here", numberFreeSlots, "vs", AJM.previousFreeBagSlotsCount)
 			if numberFreeSlots == 0 then
-				AJM:Print("a", numberFreeSlots, "vs", AJM.previousFreeBagSlotsCount)
-				if tostring(numberFreeSlots) == tostring(AJM.previousFreeBagSlotsCount) then
-					AJM:Print("canSend")
+				if AJM.previousFreeBagSlotsCount == false then
 					AJM:JambaSendMessageToTeam( AJM.db.warningArea, AJM.db.bagsFullMessage, false )
+					AJM.previousFreeBagSlotsCount = true
+					AJM:ScheduleTimer("ResetBagFull", 60, nil )
 				end
 			end
-			AJM.previousFreeBagSlotsCount = numberFreeSlots
 		end	
 	end
 end
 
-function  AJM:BAG_UPDATE_DELAYED(event, ... )
-	
-	local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-	AJM:Print("updateBags",numberFreeSlots )
-	AJM.previousFreeBagSlotsCount = numberFreeSlots
-	
-
-
+function AJM:BAG_UPDATE_DELAYED(event, ... )
+	if AJM.db.warnBagsFull == true then	
+		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+		if numberFreeSlots > 0 then
+			 AJM.previousFreeBagSlotsCount = false
+			 AJM:CancelAllTimers()
+		end
+	end	
 end
+
+function AJM:ResetBagFull()
+	AJM.previousFreeBagSlotsCount = false
+	AJM:CancelAllTimers()
+end	
 
 --Ebony CCed
 function AJM:LOSS_OF_CONTROL_ADDED( event, ... )

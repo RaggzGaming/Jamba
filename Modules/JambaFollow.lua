@@ -25,15 +25,15 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 AJM.moduleName = "Jamba-Follow"
 AJM.settingsDatabaseName = "JambaFollowProfileDB"
 AJM.chatCommand = "jamba-follow"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Toon"]
-AJM.moduleDisplayName = L["Follow"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["TOON"]
+AJM.moduleDisplayName = L["FOLLOW"]
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
 		warnWhenFollowBreaks = true, 
-		followBrokenMessage = L["Follow Broken!"],
+		followBrokenMessage = L["FOLLOW_BROKEN_MSG"],
 		autoFollowAfterCombat = false,  
 		useAfterCombatDelay = false,
 		afterCombatDelay = "3",
@@ -66,86 +66,78 @@ function AJM:GetConfiguration()
 		args = {	
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the follow settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-follow push",
 				get = false,
 				set = "JambaSendSettings",
 			},											
 			master = {
 				type = "input",
-				name = L["Follow The Master"],
-				desc = L["Follow the current master."],
+				name = L["FOLLOW_MASTER"],
+				desc = L["FOLLOW_MASTER_HELP"],
 				usage = "/jamba-follow master <tag>",
 				get = false,
 				set = "FollowMasterCommand",
 			},					
 			target = {
 				type = "input",
-				name = L["Follow A Target"],
-				desc = L["Follow the target specified."],
+				name = L["FOLLOW_TARGET"],
+				desc = L["FOLLOW_TARGET_HELP"],
 				usage = "/jamba-follow target <target> <tag>",
 				get = false,
 				set = "FollowTargetCommand",
 			},					
 			afterCombat = {
 				type = "input",
-				name = L["Auto Follow After Combat"],
-				desc = L["Automatically follow after combat."],
+				name = L["FOLLOW_AFTER_COMBAT"],
+				desc = L["FOLLOW_AFTER_COMBAT_HELP"],
 				usage = "/jamba-follow aftercombat <on|off> <tag>",
 			},															
 			strobeOn = {
 				type = "input",
-				name = L["Begin Follow Strobing Target."],
-				desc = L["Begin a sequence of follow commands that strobe every second (configurable) a specified target."],
+				name = L["FOLLOW_STROBING"],
+				desc = L["FOLLOW_STROBING_HELP"],
 				usage = "/jamba-follow strobeon <target> <tag>",
 				get = false,
 				set = "FollowStrobeOnCommand",
 			},	
 			strobeOnMe = {
 				type = "input",
-				name = L["Begin Follow Strobing Me."],
-				desc = L["Begin a sequence of follow commands that strobe every second (configurable) this character."],
+				name = L["FOLLOW_STROBING_ME"],
+				desc = L["FOLLOW_STROBING_ME_HELP"],
 				usage = "/jamba-follow strobeonme <tag>",
 				get = false,
 				set = "FollowStrobeOnMeCommand",
-			},								
-			strobeOnLast = {
-				type = "input",
-				name = L["Begin Follow Strobing Last Target."],
-				desc = L["Begin a sequence of follow commands that strobe every second (configurable) the last follow target character."],
-				usage = "/jamba-follow strobeonlast <tag>",
-				get = false,
-				set = "FollowStrobeOnLastCommand",
-			},				
+			},												
 			strobeOff = {
 				type = "input",
-				name = L["End Follow Strobing."],
-				desc = L["End the strobing of follow commands."],
+				name = L["FOLLOW_STROBING_END"],
+				desc = L["FOLLOW_STROBING_END_HELP"],
 				usage = "/jamba-follow strobeoff <tag>",
 				get = false,
 				set = "FollowStrobeOffCommand",
 			},	
 			setmaster = {
 				type = "input",
-				name = L["Master"],
-				desc = L["Set the follow master character."],
+				name = L["FOLLOW_SET_MASTER"],
+				desc = L["FOLLOW_SET_MASTER_HELP"],
 				usage = "/jamba-follow setmaster <name> <tag>",
 				get = false,
 				set = "CommandSetFollowMaster",
 			},
 			train = {
 				type = "input",
-				name = L["Train"],
-				desc = L["Build a train of followers behind the master."],
+				name = L["TRAIN"],
+				desc = L["TRAIN_HELP"],
 				usage = "/jamba-follow train <tag>",
 				get = false,
 				set = "CommandFollowTrain",
 			},
 			snw = {
 				type = "input",
-				name = L["Suppress Next Warning"],
-				desc = L["When following, starting a new follow causes the current follow to end, this command before a follow will make sure the follow broken warning is not triggered."],
+				name = L["SNW"],
+				desc = L["SNW_HELP"],
 				usage = "/jamba-follow snw",
 				get = false,
 				set = "SuppressNextFollowWarningCommand",
@@ -178,10 +170,17 @@ AJM.COMMAND_FOLLOW_TRAIN = "FollowTrain"
 -- Settings Dialogs.
 -------------------------------------------------------------------------------------------------------------
 
+local function SortTeamListOrdered( characterA, characterB )
+	local positionA = JambaApi.GetPositionForCharacterName ( characterA )
+	local positionB = JambaApi.GetPositionForCharacterName ( characterB )
+	return positionA < positionB
+end
+
 local function BuildAndSetTeamList()
 	JambaUtilities:ClearTable( AJM.teamList )
 	for characterName, order in JambaApi.TeamList() do
 		table.insert( AJM.teamList, characterName )
+		table.sort( AJM.teamList, SortTeamListOrdered )
 	end
 	AJM.settingsControl.dropdownFollowMaster:SetList( AJM.teamList )
 end
@@ -203,15 +202,16 @@ local function SettingsCreateDisplayOptions( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Follow After Combat"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_AFTER_COMBAT"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxAutoFollowAfterCombat = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Auto Follow After Combat"],
-		AJM.SettingsToggleAutoFollowAfterCombat
+		L["FOLLOW_AFTER_COMBAT"],
+		AJM.SettingsToggleAutoFollowAfterCombat,
+		L["FOLLOW_AFTER_COMBAT_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxDelayAutoFollowAfterCombat = JambaHelperSettings:CreateCheckBox( 
@@ -219,27 +219,29 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Delay Follow After Combat (s)"],
+		L["DELAY_FOLLOW_AFTER_COMBAT"],
 		AJM.SettingsToggleDelayAutoFollowAfterCombat
+		
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.editBoxFollowAfterCombatDelaySeconds = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Seconds To Delay Before Following After Combat"]
+		L["TIME_DELAY_FOLLOWING"]
 	)	
 	AJM.settingsControl.editBoxFollowAfterCombatDelaySeconds:SetCallback( "OnEnterPressed", AJM.EditBoxChangedFollowAfterCombatDelaySeconds )
 	movingTop = movingTop - editBoxHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Follow Master"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_MASTER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxUseFollowMaster = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Use Different Master For Follow"],
-		AJM.SettingsToggleUseFollowMaster
+		L["DIFFERENT_TOON_FOLLOW"],
+		AJM.SettingsToggleUseFollowMaster,
+		L["DIFFERENT_TOON_FOLLOW_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.dropdownFollowMaster = JambaHelperSettings:CreateDropdown( 
@@ -247,19 +249,19 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["Follow Master"] 
+		L["NEW_FOLLOW_MASTER"] 
 	)
 	BuildAndSetTeamList()
 	AJM.settingsControl.dropdownFollowMaster:SetCallback( "OnValueChanged", AJM.SettingsSetFollowMaster )
 	movingTop = movingTop - dropdownHeight - verticalSpacing	
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Follow Broken Warning"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_BROKEN_WARNING"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxWarnWhenFollowBreaks = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Warn If I Stop Following"],
+		L["WARN_STOP_FOLLOWING"],
 		AJM.SettingsToggleWarnWhenFollowBreaks
 	)	
 	movingTop = movingTop - checkBoxHeight
@@ -268,15 +270,16 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Only Warn If Outside Follow Range"],
-		AJM.SettingsToggleOnlyWarnIfOutOfFollowRange
+		L["ONLY_IF_OUTSIDE_RANGE"],
+		AJM.SettingsToggleOnlyWarnIfOutOfFollowRange,
+		L["ONLY_IF_OUTSIDE_RANGE_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.editBoxFollowBrokenMessage = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Follow Broken Message"]
+		L["FOLLOW_BROKEN_MESSAGE"]
 	)	
 	AJM.settingsControl.editBoxFollowBrokenMessage:SetCallback( "OnEnterPressed", AJM.EditBoxChangedFollowBrokenMessage )
 	movingTop = movingTop - editBoxHeight
@@ -285,7 +288,7 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Send Warning Area"] 
+		L["SEND_WARNING_AREA"] 
 	)
 	AJM.settingsControl.dropdownWarningArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownWarningArea:SetCallback( "OnValueChanged", AJM.SettingsSetWarningArea )
@@ -295,7 +298,7 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop,
-		L["Do Not Warn If"]
+		L["DO_NOT_WARN"]
 	)	
 	movingTop = movingTop - labelHeight	
 	AJM.settingsControl.checkBoxDoNotWarnInCombat = JambaHelperSettings:CreateCheckBox( 
@@ -303,15 +306,16 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["In Combat"],
-		AJM.SettingsToggleDoNotWarnInCombat
+		L["IN_COMBAT"],
+		AJM.SettingsToggleDoNotWarnInCombat,
+		L["IN_COMBAT"]
 	)	
 	AJM.settingsControl.checkBoxDoNotWarnMembersInCombat = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		halfWidth, 
 		column2left, 
 		movingTop, 
-		L["Any Member In Combat"],
+		L["ANY_MEMBER_IN_COMBAT"],
 		AJM.SettingsToggleDoNotWarnMembersInCombat
 	)	
 	movingTop = movingTop - checkBoxHeight
@@ -320,18 +324,18 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["Follow Strobing"],
+		L["FOLLOW_STROBING"],
 		AJM.SettingsToggleDoNotWarnFollowStrobing
 	)		
 	movingTop = movingTop - checkBoxHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Follow Strobing"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_STROBING"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.labelStrobeHelp = JambaHelperSettings:CreateLabel( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop,
-		L["Follow strobing is controlled by /jamba-follow commands."]
+		L["FOLLOW_STROBING_AJM_FOLLOW_COMMANDS."]
 	)	
 	movingTop = movingTop - labelHeight	
 	AJM.settingsControl.checkBoxOverrideStrobeTargetWithMaster = JambaHelperSettings:CreateCheckBox( 
@@ -339,7 +343,7 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Always Use Master As The Strobe Target"],
+		L["USE_MASTER_STROBE_TARGET"],
 		AJM.SettingsToggleOverrideStrobeTargetWithMaster
 	)	
 	movingTop = movingTop - checkBoxHeight	
@@ -348,7 +352,7 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth, 
 		left, 
 		movingTop,
-		L["Pause Follow Strobing If"]
+		L["PAUSE_FOLLOW_STROBING"]
 	)	
 	movingTop = movingTop - labelHeight	
 	AJM.settingsControl.checkBoxPauseInCombat = JambaHelperSettings:CreateCheckBox( 
@@ -356,7 +360,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["In Combat"],
+		L["IN_COMBAT"],
 		AJM.SettingsTogglePauseInCombat
 	)	
 	AJM.settingsControl.checkBoxPauseDrinking = JambaHelperSettings:CreateCheckBox( 
@@ -364,7 +368,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		column2left, --left, 
 		movingTop, 
-		L["Drinking/Eating"],
+		L["DRINKING_EATING"],
 		AJM.SettingsTogglePauseDrinking
 	)		
 	movingTop = movingTop - checkBoxHeight
@@ -373,7 +377,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["In A Vehicle"],
+		L["IN_A_VEHICLE"],
 		AJM.SettingsTogglePauseIfInVehicle
 	)	
 	movingTop = movingTop - checkBoxHeight
@@ -381,7 +385,7 @@ local function SettingsCreateDisplayOptions( top )
 		headingWidth,
 		left,
 		movingTop,
-		L["Tag For Pause Follow Strobe"]
+		L["GROUP_FOLLOW_STROBE"]
 	)	
 	AJM.settingsControl.editBoxFollowStrobePauseTag:SetCallback( "OnEnterPressed", AJM.EditBoxChangedFollowStrobePauseTag )
 	movingTop = movingTop - editBoxHeight
@@ -389,14 +393,14 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidth,
 		left,
 		movingTop,
-		L["Frequency (s)"]
+		L["FREQUENCY"]
 	)	
 	AJM.settingsControl.editBoxFollowStrobeDelaySeconds:SetCallback( "OnEnterPressed", AJM.EditBoxChangedFollowStrobeDelaySeconds )
 	AJM.settingsControl.editBoxFollowStrobeDelaySecondsInCombat = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
 		halfWidth,
 		column2left,
 		movingTop,
-		L["Frequency In Combat (s)"]
+		L["FREQUENCY_COMABT"]
 	)	
 	AJM.settingsControl.editBoxFollowStrobeDelaySecondsInCombat:SetCallback( "OnEnterPressed", AJM.EditBoxChangedFollowStrobeDelaySecondsInCombat )	
 	movingTop = movingTop - editBoxHeight
@@ -651,9 +655,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -885,7 +887,7 @@ end
 
 function AJM:DoToggleAutoFollowAfterCombat( state )
 	-- Translate the on/off state from string to boolean/nil.
-	local setToOn = JambaUtilities:GetOnOrOffFromCommand( state, L["on"], L["off"] )	
+	local setToOn = JambaUtilities:GetOnOrOffFromCommand( state, L["ON"], L["OFF"] )	
 	-- If nil, then assume false.
 	if setToOn == nil then
 		setToOn = false
@@ -1086,15 +1088,15 @@ function AJM:FollowTarget( target )
 		-- And the character has the pause tag...
 		if JambaApi.DoesCharacterHaveTag( AJM.characterName, AJM.db.strobePauseTag ) == true then
 			-- Check player for drinking buff.
-			if JambaUtilities:DoesThisCharacterHaveBuff( L["Drink"] ) == true then
+			if JambaUtilities:DoesThisCharacterHaveBuff( L["DRINK"] ) == true then
 				-- Have drinking buff, do not allow follow.
 				canFollowTarget = false
 			end
-			if JambaUtilities:DoesThisCharacterHaveBuff( L["Food"] ) == true then
+			if JambaUtilities:DoesThisCharacterHaveBuff( L["FOOD"] ) == true then
 				-- Have eating buff, do not allow follow.
 				canFollowTarget = false
 			end
-			if JambaUtilities:DoesThisCharacterHaveBuff( L["Refreshment"] ) == true then
+			if JambaUtilities:DoesThisCharacterHaveBuff( L["REFRESHMENT"] ) == true then
 				-- Eating Mage food Yum Yum Yum.
 				canFollowTarget = false
 			end

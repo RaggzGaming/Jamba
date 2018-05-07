@@ -1323,6 +1323,7 @@ end
 local function GetMaxItemCountFromItemID(itemID)
 	if itemID == nil then 
 		return 0 
+	end
 	if AJM.sharedInvData == nil then 
 		return 0
 	end	
