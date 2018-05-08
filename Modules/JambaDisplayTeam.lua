@@ -2206,9 +2206,6 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 	if commandName == AJM.COMMAND_POWER_STATUS_UPDATE then
 		AJM:ProcessUpdatePowerStatusMessage(characterName, ... )
 	end																		  	
-	if commandName == AJM.COMMAND_REQUEST_INFO then
-		AJM.SendInfomationUpdateCommand()
-	end
 end	
 
 -------------------------------------------------------------------------------------------------------------
@@ -3334,7 +3331,6 @@ function AJM:UpdateAll(event, ...)
 	AJM:ScheduleTimer( "RefreshTeamListControls", 3 )
 	AJM:ScheduleTimer( "SendExperienceStatusUpdateCommand", 2 )
 	AJM:ScheduleTimer( "SendReputationStatusUpdateCommand", 2 )
-	AJM:ScheduleTimer( "SendInfomationUpdateCommand", 2 )
 	AJM:ScheduleTimer( "SendComboStatusUpdateCommand", 2 )
 end
 
@@ -3347,7 +3343,6 @@ function AJM:GROUP_ROSTER_UPDATE()
 	AJM:ScheduleTimer( "RefreshTeamListControls", 1 )
 	AJM:ScheduleTimer( "SendExperienceStatusUpdateCommand", 1 )
 	AJM:ScheduleTimer( "SendReputationStatusUpdateCommand", 1 )
-	AJM:ScheduleTimer( "SendInfomationUpdateCommand", 1 )
 	AJM:ScheduleTimer( "SendComboStatusUpdateCommand", 1 )
 	for index, characterName in JambaApi.TeamListOrderedOnline() do
 		unit = Ambiguate( characterName, "none" )
