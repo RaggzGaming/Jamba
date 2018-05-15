@@ -67,7 +67,6 @@ function AJM:OnDisable()
 end
 
 local function JambaSettingsTreeSort( a, b )
-	print("test",a, b)
 	local aText = ""
 	local bText = ""
 	local aJambaOrder = 0

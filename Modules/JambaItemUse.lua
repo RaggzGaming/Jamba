@@ -194,36 +194,50 @@ local function CanDisplayItemUse()
 end
 
 local function CreateJambaItemUseFrame()
-	-- The frame.	
-	local frame = CreateFrame( "Frame", "JambaItemUseWindowFrame", UIParent, "SecureHandlerStateTemplate" )
-	RegisterStateDriver(JambaItemUseWindowFrame, "page", "[mod:alt]0;0")
-	JambaItemUseWindowFrame:SetAttribute("_onstate-page", [[
+	-- The frame.	JambaItemUseWindowFrame
+	local frame = CreateFrame( "Frame", "JambaItemUseWindowFrame" , UIParent, "SecureHandlerStateTemplate" )
+	
+	frame:SetAttribute("_onstate-page", [[
 		self:SetAttribute("state", newstate)
 		control:ChildUpdate("state", newstate)
 	]])
+	RegisterStateDriver(frame, "page", "[mod:alt]0;0")
 	frame.parentObject = AJM
 	frame:SetFrameStrata( "LOW" )
 	frame:SetToplevel( true )
 	frame:SetClampedToScreen( true )
 	frame:EnableMouse( true )
 	frame:SetMovable( true )	
+	
 	frame:RegisterForDrag( "LeftButton" )
 	frame:SetScript( "OnDragStart", 
-		function( this ) 
+			--function( this ) 
+		function( self,button )	
 			if IsAltKeyDown() then
-				this:StartMoving() 
+				self:StartMoving() 
 			end
 		end )
 	frame:SetScript( "OnDragStop", 
-		function( this ) 
-			this:StopMovingOrSizing() 
-			local point, relativeTo, relativePoint, xOffset, yOffset = this:GetPoint()
+		--function( this ) 
+		function(self,button)	
+			self:StopMovingOrSizing() 
+			local point, relativeTo, relativePoint, xOffset, yOffset = self:GetPoint()
 			AJM.db.framePoint = point
 			AJM.db.frameRelativePoint = relativePoint
 			AJM.db.frameXOffset = xOffset
 			AJM.db.frameYOffset = yOffset
 		end	)	
-	-- Artifact Remove Buttion
+	frame:SetBackdrop( {
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
+		tile = true, tileSize = 10, edgeSize = 10, 
+		insets = { left = 3, right = 3, top = 3, bottom = 3 }
+	} )	
+	frame:SetPoint( AJM.db.framePoint, nil, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
+	frame:Hide()
+	--frame:ClearAllPoints()
+	-- Clear Button
+
 		local updateButton = CreateFrame( "Button", "ButtonUpdate", frame, "UIPanelButtonTemplate" )
 		updateButton:SetScript( "OnClick", function() AJM:ClearButton() end )
 		updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -4, -3 )
@@ -232,7 +246,7 @@ local function CreateJambaItemUseFrame()
 		updateButton:SetText( L["CLEAR_BUTT"] )	
 		updateButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "clear", true) end)
 		updateButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-		ClearUpdateButton = updateButton
+		_G["ClearUpdateButton"] = updateButton
 	-- Sync Button	
 		local syncButton = CreateFrame( "Button", "ButtonSync", frame, "UIPanelButtonTemplate" )
 		syncButton:SetScript( "OnClick", function() AJM:SyncButton() end )
@@ -242,19 +256,13 @@ local function CreateJambaItemUseFrame()
 		syncButton:SetText( L["SYNC_BUTT"] )	
 		syncButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "sync", true) end)
 		syncButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-		SyncUpdateButton = syncButton
-	frame:ClearAllPoints()
-	frame:SetPoint( AJM.db.framePoint, UIParent, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
-	frame:SetBackdrop( {
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
-		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
-		tile = true, tileSize = 10, edgeSize = 10, 
-		insets = { left = 3, right = 3, top = 3, bottom = 3 }
-	} )
+		_G["SyncUpdateButton"] = syncButton
+		
+
 	-- Set transparency of the the frame (and all its children).
 	frame:SetAlpha(AJM.db.frameAlpha)
 	-- Set the global frame reference for this frame.
-	JambaItemUseFrame = frame
+	_G["JambaItemUseFrame"] = frame
 	-- Remove unsued items --test
 	AJM:SettingsUpdateBorderStyle()	
 	AJM.itemUseCreated = true
@@ -282,14 +290,14 @@ function AJM:UpdateHeight()
 	if AJM.db.hideClearButton == false then
 		AJM.db.itemUseTitleHeight = 2
 		local newHeight = AJM.db.itemUseTitleHeight + 20
-		ClearUpdateButton:Show()
-		SyncUpdateButton:Show()
+--		ClearUpdateButton:Show()
+--		SyncUpdateButton:Show()
 		return newHeight	
 	else
 		AJM.db.itemUseTitleHeight = 2
 		oldHeight = AJM.db.itemUseTitleHeight
-		ClearUpdateButton:Hide()
-		SyncUpdateButton:Hide()
+--		ClearUpdateButton:Hide()
+--		SyncUpdateButton:Hide()
 		return oldHeight
 	end	
 end
@@ -314,20 +322,21 @@ function AJM:ClearItemUseCommand()
 end
 
 function AJM:SetItemUseVisibility()
+	local frame = _G["JambaItemUseFrame"]
 	if CanDisplayItemUse() == true then
-		JambaItemUseFrame:ClearAllPoints()
-		JambaItemUseFrame:SetPoint( AJM.db.framePoint, UIParent, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
-		JambaItemUseFrame:SetAlpha( AJM.db.frameAlpha )
-		JambaItemUseFrame:Show()
+		frame:ClearAllPoints()
+		frame:SetPoint( AJM.db.framePoint, UIParent, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
+		frame:SetAlpha( AJM.db.frameAlpha )
+		frame:Show()
 	else
-		JambaItemUseFrame:Hide()
+		frame:Hide()
 	end	
 end
 
 function AJM:SettingsUpdateBorderStyle()
 	local borderStyle = AJM.SharedMedia:Fetch( "border", AJM.db.borderStyle )
 	local backgroundStyle = AJM.SharedMedia:Fetch( "background", AJM.db.backgroundStyle )
-	local frame = JambaItemUseFrame
+	local frame = _G["JambaItemUseFrame"]
 	frame:SetBackdrop( {
 		bgFile = backgroundStyle, 
 		edgeFile = borderStyle, 
@@ -370,7 +379,7 @@ end
 
 function AJM:UpdateItemsInBar()
 	local state = "0"
-    local parentFrame = JambaItemUseFrame
+    local parentFrame = _G["JambaItemUseFrame"]
 	for iterateItems = 1, AJM.maximumNumberOfItems, 1 do
 		local itemContainer = AJM.itemContainer[iterateItems]
 		if itemContainer == nil then
@@ -1106,7 +1115,7 @@ end
 function AJM:OnEnable()
 	AJM:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	AJM:RegisterEvent( "PLAYER_REGEN_DISABLED" )
-	AJM:RegisterEvent( "BAG_UPDATE_DELAYED" )
+	AJM:RegisterEvent( "BAG_UPDATE" )
 	AJM:RegisterEvent( "ITEM_PUSH" )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	AJM:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
@@ -1202,7 +1211,7 @@ function AJM:PLAYER_REGEN_DISABLED()
 	end
 end
 
-function AJM:BAG_UPDATE_DELAYED()
+function AJM:BAG_UPDATE()
 	if not InCombatLockdown() then
 		AJM:UpdateItemsInBar()
 		AJM:UpdateQuestItemsInBar()

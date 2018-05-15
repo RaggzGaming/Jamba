@@ -299,10 +299,10 @@ end
 
 local function CreateJambaTeamListFrame()
 	-- The frame.
-	local frame = CreateFrame( "Frame", "JambaDisplayTeamListWindowFrame", UIParent )
+	local frame = CreateFrame( "Frame", "JambaDisplayTeamListWindowFrame",  UIParent )
 	frame.obj = AJM
 	frame:SetFrameStrata( "LOW" )
-	frame:SetToplevel( true )
+	--frame:SetToplevel( true )
 	frame:SetClampedToScreen( true )
 	frame:EnableMouse( true )
 	frame:SetMovable( true )	
@@ -501,11 +501,15 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	AJM.characterStatusBar[characterName] = {}
 	-- Get the status bars table.
 	local characterStatusBar = AJM.characterStatusBar[characterName]
+--[[
 	-- Set the portrait.
 	local portraitName = AJM.globalFramePrefix.."PortraitButton"
 	local portraitButton = CreateFrame( "PlayerModel", portraitName, parentFrame )
 	portraitButton:ClearModel()
-	portraitButton:SetUnit( Ambiguate( characterName, "short" ) )
+	local portraitName = Ambiguate( characterName, "short" )
+	--portraitButton:SetUnit( Ambiguate( characterName, "short" ) )
+	
+	portraitButton:SetUnit( "Ebóny" )
 	portraitButton:SetPortraitZoom( 1 )
     portraitButton:SetCamDistanceScale( 1 )
     portraitButton:SetPosition( 0, 0, 0 )
@@ -513,6 +517,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	portraitButtonClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )
 	characterStatusBar["portraitButton"] = portraitButton
 	characterStatusBar["portraitButtonClick"] = portraitButtonClick
+]]
 	-- Set the follow bar.
 	local followName = AJM.globalFramePrefix.."FollowBar"
 	local followBar = CreateFrame( "StatusBar", followName, parentFrame, "TextStatusBar,SecureActionButtonTemplate" )
@@ -528,7 +533,6 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	followBar:SetAlpha( 1 )
 	local followBarClick = CreateFrame( "CheckButton", followName.."Click", parentFrame, "SecureActionButtonTemplate" )
 	followBarClick:SetAttribute( "unit", Ambiguate( characterName, "all" ) )
-	--followBarClick:SetAttribute( "macrotext", "/targetexact "..characterName )
 	followBarClick:SetFrameStrata( "MEDIUM" )
 	characterStatusBar["followBar"] = followBar
 	characterStatusBar["followBarClick"] = followBarClick	
@@ -747,7 +751,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 	--TODO there got to be a better way to doing this for sure but right now i can not be assed to do this for now you need to reload the UI when turning off and on clique support. 
 	ClickCastFrames = ClickCastFrames or {}
 	if AJM.db.enableClique == true then
-		ClickCastFrames[portraitButtonClick] = true
+--		ClickCastFrames[portraitButtonClick] = true
 		ClickCastFrames[followBarClick] = true
 		ClickCastFrames[experienceBarClick] = true
 		ClickCastFrames[reputationBarClick] = true
@@ -755,7 +759,7 @@ function AJM:CreateJambaTeamStatusBar( characterName, parentFrame )
 		ClickCastFrames[powerBarClick] = true
 		ClickCastFrames[comboBarClick] = true
 	else
-		portraitButtonClick:SetAttribute( "type1", "target")
+--		portraitButtonClick:SetAttribute( "type1", "target")
 		followBarClick:SetAttribute( "type1", "target")
 		experienceBarClick:SetAttribute( "type1", "target")
 		reputationBarClick:SetAttribute( "type1", "target")
@@ -870,7 +874,8 @@ function AJM:UpdateJambaTeamStatusBar( characterName, characterPosition )
 		positionLeft = 6
 		positionTop = positionTop - (characterPosition * characterHeight)
 	end
-	-- Display the portrait.
+	-- Display the portrait. -- This Needs to Update or get removed.
+--[[
 	local portraitButton = characterStatusBar["portraitButton"]
 	local portraitButtonClick = characterStatusBar["portraitButtonClick"]
 	if AJM.db.showCharacterPortrait == true then
@@ -894,6 +899,7 @@ function AJM:UpdateJambaTeamStatusBar( characterName, characterPosition )
 		portraitButton:Hide()
 		portraitButtonClick:Hide()
 	end
+]]	
 	-- Display the follow bar.
 	local followBar	= characterStatusBar["followBar"]
 	local followBarClick = characterStatusBar["followBarClick"]
@@ -1751,7 +1757,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.displayOptionsPowerStatusHeightSlider:SetValue( AJM.db.powerStatusHeight )
 	AJM.settingsControl.displayOptionsCheckBoxShowComboStatus:SetValue( AJM.db.showComboStatus )
 	AJM.settingsControl.displayOptionsCheckBoxShowComboStatusValues:SetValue( AJM.db.comboStatusShowValues )
-	AJM.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage:SetValue( AJM.db.comboStatusShowPercentage )
+	AJM.settingsControl.displayOptionsCheckBoxShowComboStatusPercentage:SetValue( AJM.db.comboStatusShowPercentage )	
 	AJM.settingsControl.displayOptionsComboStatusWidthSlider:SetValue( AJM.db.comboStatusWidth )
 	AJM.settingsControl.displayOptionsComboStatusHeightSlider:SetValue( AJM.db.comboStatusHeight )	
 	AJM.settingsControl.displayOptionsBackgroundColourPicker:SetColor( AJM.db.frameBackgroundColourR, AJM.db.frameBackgroundColourG, AJM.db.frameBackgroundColourB, AJM.db.frameBackgroundColourA )

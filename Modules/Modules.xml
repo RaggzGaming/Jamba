@@ -11,21 +11,21 @@
 	<Script file="JambaSell.lua" />
 	<Script file="JambaToon.lua" />
 	
-	<Script file="JambaDisplayTeam.lua" />
+<!--	<Script file="JambaDisplayTeam.lua" />
 	<Script file="JambaCurr.lua" />
 	
-	<Script file="JambaFollow.lua" />
+	<Script file="JambaFollow.lua" /> -->
 
-	<Script file="JambaItemUse.lua" />
+	<Script file="JambaItemUse.lua" /> 
 	
-	<Script file="JambaPurchase.lua" />
+<!--	<Script file="JambaPurchase.lua" />
 	
 	<Script file="JambaQuest.lua" />
-	<Script file="JambaQuestWatcher.lua" />
+	<Script file="JambaQuestWatcher.lua" /> -->
 	
 	<Script file="JambaTalk.lua" />
 	
-	<Script file="JambaInteraction.lua" />
-	<Script file="JambaTrade.lua" />
+	<Script file="JambaInteraction.lua" /> 
+	<Script file="JambaTrade.lua" /> 
 
 </Ui>
