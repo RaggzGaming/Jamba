@@ -8,7 +8,7 @@
 --																					--
 -- ================================================================================ --
 
-local MAJOR, MINOR = "JambaHelperSettings-1.0", 1
+local MAJOR, MINOR = "JambaHelperSettings-1.0", 2
 local JambaHelperSettings, oldMinor = LibStub:NewLibrary( MAJOR, MINOR )
 
 if not JambaHelperSettings then 
@@ -80,7 +80,8 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	end	
 	
 	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
-	containerWidgetSettings:SetLayout( "JambaFill" )
+	--containerWidgetSettings:SetLayout( "JambaFill" )
+	containerWidgetSettings:SetLayout( "Fill" )
 	
 	local widgetSettingsHelp = AceGUI:Create( "ScrollFrame" )
 	widgetSettingsHelp:SetLayout( "Flow" )
@@ -89,13 +90,15 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	widgetSettings:SetLayout( "JambaManual" )
 	
 	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
-	tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )	
+	--tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )
+	tabGroupWidgetSettings:SetLayout( "Fill" )
 --	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, } ) --{text=L["Commands"], value="help"} } )
 	
 	containerWidgetSettings:AddChild( tabGroupWidgetSettings )
 	tabGroupWidgetSettings:AddChild( widgetSettings )
 	
 	-- Jafula loves closures!
+	--[[
 	settingsControl.tabGroupSelected = function( container, event, group )
 		if group == "options" then
 			widgetSettingsHelp.frame:Hide()
@@ -116,7 +119,7 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 
 	tabGroupWidgetSettings:SelectTab( "options" )
 	tabGroupWidgetSettings:SetCallback( "OnGroupSelected", settingsControl.tabGroupSelected )
-	
+]]	
 
 	local lable = AceGUI:Create( "Label" )
 	lable:SetText( displayName )
@@ -608,7 +611,9 @@ end
 -- list.rows[x].columns[y].columnNumber - Number (the column number of this column)
 -- list.rows[x].columns[y].textString - FontString (where text for column goes)
 --
+
 function JambaHelperSettings:CreateScrollList( list )
+	print("testListMaker", list, list.parentFrame)
 	-- Position and size constants.
 	local columnSpacing = 6
 	local widthOfScrollBar = 16
@@ -696,14 +701,7 @@ function JambaHelperSettings:CreateScrollList( list )
 					list.rowRightClickCallback(	self, displayRow, displayColumn, displayColumn.rowNumber, displayColumn.columnNumber )
 					end
 				end 
-			)	
-		--[[
-			displayColumn:SetScript( "OnEnter", 
-				function( self )
-				list.toolTipDragCallback( self, displayRow )
-			end
 			)
-		]]
 			displayColumn.textString:SetJustifyH( list.columnInformation[iterateDisplayColumns].alignment )
 			displayColumn.textString:SetAllPoints( displayColumn )		
 			displayRow.columns[iterateDisplayColumns] = displayColumn

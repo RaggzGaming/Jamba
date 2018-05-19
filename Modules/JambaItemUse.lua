@@ -27,7 +27,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-ItemUse"
-AJM.settingsDatabaseName = "JambaItemUseProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-itemuse"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core"  )
 AJM.parentDisplayName = L["DISPLAY"]
@@ -1132,7 +1132,7 @@ function AJM:OnEnable()
 	LibActionButton.RegisterCallback( AJM, "OnButtonUpdate", "OnButtonUpdate" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonState", "OnButtonState" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonUsable", "OnButtonUsable" )
-	AJM:SecureHook( GameTooltip , "SetHyperlink", "AddTooltipInfo" )
+	--AJM:SecureHook( GameTooltip , "SetHyperlink", "AddTooltipInfo" )
 end
 
 -- Called when the addon is disabled.
@@ -1344,7 +1344,7 @@ local function GetMaxItemCountFromItemID(itemID)
 			end	
 		end	
 	end	
-	return count
+	return 0 --count
 end
 
 function AJM:LibSharedMedia_Registered()

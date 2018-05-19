@@ -25,11 +25,11 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 
-local JambaQuestMapQuestOptionsDropDown = CreateFrame("Frame", "JambaQuestMapQuestOptionsDropDown", QuestMapFrame, "UIDropDownMenuTemplate");
+--local JambaQuestMapQuestOptionsDropDown = CreateFrame("Frame", "JambaQuestMapQuestOptionsDropDown", QuestMapFrame, "UIDropDownMenuTemplate");
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Quest"
-AJM.settingsDatabaseName = "JambaQuestProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-quest"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Quest"]
@@ -234,7 +234,7 @@ function AJM:OnInitialize()
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
 	-- Create the Jamba Quest Log frame.
-	AJM:CreateJambaMiniQuestLogFrame()
+	--AJM:CreateJambaMiniQuestLogFrame()
 	-- An empty table to hold the available and active quests at an npc.
 	AJM.gossipQuests = {}
 end
@@ -1927,9 +1927,9 @@ end
 
 function AJM:ToggleShowQuestCommandWindow( show )
     if show == true then
-		JambaMiniQuestLogFrame:Show()
+	--	JambaMiniQuestLogFrame:Show()
     else
-		JambaMiniQuestLogFrame:Hide()
+	--	JambaMiniQuestLogFrame:Hide()
     end
 end
 

@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Team"
-AJM.settingsDatabaseName = "JambaTeamProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]
@@ -258,6 +258,7 @@ local function SettingsCreateTeamList()
 		L["GROUPS_HEADER"]
 	)
 	-- Create a team list frame.
+	
 	local list = {}
 	list.listFrameName = "JambaTeamSettingsTeamListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
@@ -300,8 +301,11 @@ local function SettingsCreateTeamList()
 	AJM.settingsControl.groupList = listTwo
 	JambaHelperSettings:CreateScrollList( AJM.settingsControl.groupList )
 	-- Position and size constants (once list height is known).
+	
 	local bottomOfList = topOfList - list.listHeight - verticalSpacing
+	
 	local bottomOfSection = bottomOfList -  dropdownHeight - verticalSpacing		
+
 	--Create Icons
 	AJM.settingsControl.teamListButtonAdd = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -1492,12 +1496,15 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:SettingsTeamListScrollRefresh()
+	AJM:Print("updateFrameteam")
+	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.teamList.listScrollFrame, 
 		GetTeamListMaximumOrder(),
 		AJM.settingsControl.teamList.rowsToDisplay, 
 		AJM.settingsControl.teamList.rowHeight
 	)
+	
 	AJM.settingsControl.teamListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.teamList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.teamList.rowsToDisplay do
 		-- Reset.
@@ -1564,7 +1571,6 @@ function AJM:SettingsTeamListScrollRefresh()
 	end
 end
 
-
 local function DisplayGroupsForCharacterInGroupsList( characterName )
 	AJM.characterGroupList = JambaApi.GetGroupListForCharacter( characterName )
 	table.sort( AJM.characterGroupList )
@@ -1591,9 +1597,10 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 		DisplayGroupsForCharacterInGroupsList( characterName )
 	end
 end
-	
 
 function AJM:SettingsGroupListScrollRefresh()
+	AJM:Print("updateFrameGroups")
+	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.groupList.listScrollFrame, 
 		--JambaPrivate.Tag.GetTagListMaxPosition(),
@@ -1601,6 +1608,7 @@ function AJM:SettingsGroupListScrollRefresh()
 		AJM.settingsControl.groupList.rowsToDisplay, 
 		AJM.settingsControl.groupList.rowHeight
 	)
+	
 	AJM.settingsControl.groupListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.groupList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.groupList.rowsToDisplay do	
 		
@@ -1627,7 +1635,6 @@ function AJM:SettingsGroupListScrollRefresh()
 	end
 
 end	
-
 
 function AJM:SettingsGroupListRowClick( rowNumber, columnNumber )		
 	if AJM.settingsControl.groupListOffset + rowNumber <= GetTagListMaxPosition() then

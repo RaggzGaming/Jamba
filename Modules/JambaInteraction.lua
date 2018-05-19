@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Interaction"
-AJM.settingsDatabaseName = "JambaInteractionProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-Interaction"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]
@@ -102,8 +102,9 @@ AJM.MESSAGE_TAXI_TAKEN = "JambaTaxiTaxiTaken"
 
 -- Initialise the module.
 function AJM:OnInitialize()
-	AJM.jambaTakesTaxi = false
-	AJM.jambaLeavsTaxi = false
+	AJM.JambaTakesTaxi = false
+	AJM.JambaLeavsTaxi = false
+	AJM.TaxiFrameName = TaxiFrame
 	-- Create the settings control.
 	AJM:SettingsCreate()
 	-- Initialse the JambaModule part of this module.
@@ -118,9 +119,12 @@ function AJM:OnEnable()
 	-- Hook the TaketaxiNode function.
 	AJM:SecureHook( "TakeTaxiNode" )
 	AJM:SecureHook( "TaxiRequestEarlyLanding" )
-	AJM:RegisterEvent("UNIT_SPELLCAST_START")
-	AJM:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
-	AJM:RegisterEvent( "LOOT_READY" )	
+--	AJM:RegisterEvent("UNIT_SPELLCAST_START")
+--	AJM:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	AJM:RegisterEvent( "LOOT_READY" )
+	if JambaPrivate.Core.isBetaBuild() == true then
+		AJM:RegisterEvent( "TAXIMAP_OPENED" )
+	end		
 	-- WoW API Events.
 	AJM:RegisterEvent("TAXIMAP_CLOSED")
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
@@ -299,9 +303,11 @@ function AJM:SettingsCreateTaxi( top )
 end
 
 function AJM:OnMessageAreasChanged( message )
+	AJM:Print("callBackTest")
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownWarningArea:SetList( JambaApi.MessageAreaList() )
 end
+
 function AJM:SettingsSetMessageArea( event, value )
 	AJM.db.messageArea = value
 	AJM:SettingsRefresh()
@@ -419,6 +425,15 @@ end
 -- JambaTaxi Functionality.
 -------------------------------------------------------------------------------------------------------------
 
+function AJM:TAXIMAP_OPENED(event, ...)
+	local uiMapSystem = ...
+	if (uiMapSystem == Enum.UIMapSystem.Taxi) then	
+		AJM.TaxiFrameName = TaxiFrame
+	else
+		AJM.TaxiFrameName = FlightMapFrame
+	end
+end	
+
 -- Take a taxi.
 local function TakeTaxi( sender, nodeName )
 	-- If the take masters taxi option is on.
@@ -438,7 +453,7 @@ local function TakeTaxi( sender, nodeName )
 				-- Send a message to any listeners that a taxi is being taken.
 				AJM:SendMessage( AJM.MESSAGE_TAXI_TAKEN )
 				-- Take a taxi.
-				AJM.jambaTakesTaxi = true
+				AJM.JambaTakesTaxi = true
 				AJM:ScheduleTimer( "TakeTimedTaxi", AJM.db.changeTexiTime , nodeIndex )
 				--GetNumRoutes( nodeIndex )
 				--TakeTaxiNode( nodeIndex )
@@ -463,18 +478,18 @@ function AJM:TakeTaxiNode( taxiNodeIndex )
 	if AJM.db.takeMastersTaxi == true then
 		-- Get the name of the node flown to.
 		local nodeName = TaxiNodeName( taxiNodeIndex )
-		if AJM.jambaTakesTaxi == false then
+		if AJM.JambaTakesTaxi == false then
 			-- Tell the other characters about the taxi.
 			AJM:JambaSendCommandToTeam( AJM.COMMAND_TAKE_TAXI, nodeName )
 		end
-		AJM.jambaTakesTaxi = false
+		AJM.JambaTakesTaxi = false
 	end
 end
 
 local function LeaveTaxi ( sender )
 	if AJM.db.requestTaxiStop == true then
 		if sender ~= AJM.characterName then
-			AJM.jambaLeavsTaxi = true
+			AJM.JambaLeavsTaxi = true
 			TaxiRequestEarlyLanding()
 			AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["REQUESTED_STOP_X"]( sender ), false )	
 		end
@@ -486,24 +501,28 @@ function AJM.TaxiRequestEarlyLanding( sender )
 	--AJM:Print("test")
 	if AJM.db.requestTaxiStop == true then
 		if UnitOnTaxi( "player" ) and CanExitVehicle() == true then
-			if AJM.jambaLeavsTaxi == false then
+			if AJM.JambaLeavsTaxi == false then
 				-- Send a message to any listeners that a taxi is being taken.
 				AJM:JambaSendCommandToTeam ( AJM.COMMAND_EXIT_TAXI )
 			end
 		end
-		AJM.jambaLeavsTaxi = false
+		AJM.JambaLeavsTaxi = false
 	end
 end
 
 function AJM:TAXIMAP_CLOSED( event, ... )
-	--AJM:Print("closeTaxiTwo", AJM.jambaTakesTaxi )
-	if TaxiFrame_ShouldShowOldStyle() or FlightMapFrame:IsVisible() then
+	-- TODO Clean UP AFTER BETA
+	if JambaPrivate.Core.isBetaBuild() == false then
+		if TaxiFrame_ShouldShowOldStyle() or FlightMapFrame:IsVisible() then
+			AJM:JambaSendCommandToTeam ( AJM.COMMAND_CLOSE_TAXI )
+		end
+	else
 		AJM:JambaSendCommandToTeam ( AJM.COMMAND_CLOSE_TAXI )
-	end	
+	end		
 end
 
 local function CloseTaxiMapFrame()
-	if AJM.jambaTakesTaxi == false then
+	if AJM.JambaTakesTaxi == false then
 		CloseTaxiMap()
 	end
 end
@@ -542,7 +561,7 @@ function AJM:UNIT_SPELLCAST_SUCCEEDED(event, unitID, spell, rank, lineID, spellI
 		--AJM:Print("test", spell)
 		AJM.isMounted = spell
 		--AJM:Print("Mounted!", AJM.isMounted)
-		AJM:RegisterEvent("UNIT_AURA")
+	--	AJM:RegisterEvent("UNIT_AURA")
 	--else
 		-- SomeThing gone wrong! so going to cast a random mount!
 		--AJM:Print("This Mount is not supported!", spell)
@@ -563,7 +582,7 @@ function AJM:UNIT_AURA(event, unitID, ... )
 				if IsShiftKeyDown() == false then	
 					--AJM:Print("test")
 					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-					AJM:UnregisterEvent("UNIT_AURA")
+				--	AJM:UnregisterEvent("UNIT_AURA")
 				end		
 			else	
 				--AJM:Print("test1")
@@ -571,7 +590,7 @@ function AJM:UNIT_AURA(event, unitID, ... )
 			end
 		else
 			AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-			AJM:UnregisterEvent("UNIT_AURA")
+		--	AJM:UnregisterEvent("UNIT_AURA")
 		end		
 	end
 end
@@ -661,7 +680,12 @@ function AJM:doLoot( tries )
 	local numloot = GetNumLootItems()
 	if numloot ~= 0 then
 		for slot = 1, numloot do
-			local _, name, _, lootQuality , locked = GetLootSlotInfo(slot)
+			-- BETA 8.0 FIX NEED's to be local when released.
+			if JambaPrivate.Core.isBetaBuild() == true then 
+				_, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
+			else
+				_,name,_,lootQuality,locked = GetLootSlotInfo(slot)
+			end	
 			--AJM:Print("items", slot, locked, name, tries)
 			if locked ~= nil and not locked then
 				if AJM.db.tellBoERare == true then
@@ -674,11 +698,10 @@ function AJM:doLoot( tries )
 						AJM:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
 				end
-				--AJM:Print("canLoot", "slot", slot, "name", name )
+				---AJM:Print("canLoot", "slot", slot, "name", name )
 				LootSlot(slot)
 				
 				numloot = GetNumLootItems()
-				--CloseLoot()
 			end	
 		end
 		tries = tries + 1
@@ -740,13 +763,19 @@ function AJM:JambaOnCommandReceived( characterName, commandName, ... )
 			-- If not already on a taxi...
 			if not UnitOnTaxi( "player" ) then
 				-- And if the taxi frame is open...
-				-- 7.0.3 Added support for FlightMapFrame for legion flightMastrers. --ebony 
-				if TaxiFrame_ShouldShowOldStyle() == true then
-					if TaxiFrame:IsVisible() then
-						TakeTaxi( characterName, ... )
-					end
+				if JambaPrivate.Core.isBetaBuild() == false then
+					if TaxiFrame_ShouldShowOldStyle() == true then
+						if TaxiFrame:IsVisible() then
+							TakeTaxi( characterName, ... )
+						end
+					else
+						if FlightMapFrame:IsVisible() then
+							TakeTaxi( characterName, ... )
+						end
+					end	
 				else
-					if FlightMapFrame:IsVisible() then
+					local JambaTaxiFrame = AJM.TaxiFrameName
+					if JambaTaxiFrame:IsVisible() then
 						TakeTaxi( characterName, ... )
 					end	
 				end

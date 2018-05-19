@@ -28,7 +28,7 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 AJM.moduleName = "Jamba-Core"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.moduleDisplayName = L["NEWS"]
-AJM.settingsDatabaseName = "JambaCoreProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.parentDisplayName = L["NEWS"]
 AJM.chatCommand = "jamba"
 AJM.teamModuleName = "Jamba-Team"
@@ -193,7 +193,7 @@ JambaPrivate.SettingsFrame.Tree.ButtonClick = JambaModuleSelected
 JambaPrivate.SettingsFrame.WidgetTree:SetTree( JambaPrivate.SettingsFrame.Tree.Data )
 JambaPrivate.SettingsFrame.WidgetTree:SetCallback( "OnClick", JambaPrivate.SettingsFrame.Tree.ButtonClick )
 JambaPrivate.SettingsFrame.Widget:Hide()
-table.insert( UISpecialFrames, "JambaSettingsWindowsFrame" )
+--table.insert( UISpecialFrames, "JambaSettingsWindowsFrame" )
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -263,9 +263,9 @@ end
 
 --Ema Alpha
 local function isEmaAlphaBuild()
-	local EmaVersion = GetAddOnMetadata("EMA", "version")
+	local JambaVersion = GetAddOnMetadata("JAMBA", "version")
 	-- Jamba Alpha Build
-	local Alpha = EmaVersion:find( "Alpha" )
+	local Alpha = JambaVersion:find( "Alpha" )
 	if Alpha then
 		return true
 	else
@@ -531,6 +531,7 @@ function AJM:OnInitialize()
 	
 	-- Attempt to load modules, if they are disabled, they won't be loaded.
 	-- TODO: This kinda defeats the purpose of the module system if we have to update core each time a module is added.
+--[[
 	AJM:LoadJambaModule( "Jamba-AdvancedLoot" )
 	AJM:LoadJambaModule( "Jamba-DisplayTeam" )
 	AJM:LoadJambaModule( "Jamba-Follow" )
@@ -550,6 +551,7 @@ function AJM:OnInitialize()
 	AJM:LoadJambaModule( "Jamba-Video" )
 	AJM:LoadJambaModule( "Jamba-Curr" )
 	AJM:LoadJambaModule( "Jamba-Mount" )
+]]	
 end
 
 function AJM:LoadJambaModule( moduleName )

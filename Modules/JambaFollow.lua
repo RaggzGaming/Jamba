@@ -23,7 +23,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Follow"
-AJM.settingsDatabaseName = "JambaFollowProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-follow"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TOON"]

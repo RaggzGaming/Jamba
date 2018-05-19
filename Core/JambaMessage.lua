@@ -23,12 +23,12 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 local Media = LibStub("LibSharedMedia-3.0")
 
 -- Built in Sounds
-Media:Register("sound", "Jamba: RaidWarning", "Sound\\interface\\RaidWarning.ogg")
+--Media:Register("sound", "Jamba: RaidWarning", "Sound\\interface\\RaidWarning.ogg")
 
  
 -- Constants and Locale for this module.
 AJM.moduleName = "Jamba-Message"
-AJM.settingsDatabaseName = "JambaMessageProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-message"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["OPTIONS"]
@@ -358,6 +358,7 @@ local function SettingsCreateAreaList()
 	-- Create a heading.
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGE_AREA_LIST"], top, false )
 	-- Create an area list frame.
+
 	local list = {}
 	list.listFrameName = "JambaMessageSettingsAreaListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
@@ -400,6 +401,7 @@ local function SettingsCreateAreaList()
 		AJM.SettingsRemoveClick,
 		L["REMOVE_MSG_HELP"]
 	)	
+	
 	return bottomOfSection
 end
 
@@ -529,6 +531,7 @@ function AJM:SettingsAreaListScrollRefresh()
 		AJM.settingsControl.areaList.rowsToDisplay, 
 		AJM.settingsControl.areaList.rowHeight
 	)
+	
 	AJM.settingsControl.areaListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.areaList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.areaList.rowsToDisplay do
 		-- Reset.

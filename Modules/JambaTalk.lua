@@ -23,7 +23,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Talk"
-AJM.settingsDatabaseName = "JambaTalkProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-talk"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Toon"]

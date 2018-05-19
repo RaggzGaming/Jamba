@@ -302,7 +302,7 @@ local function Dragger_OnMouseUp(frame)
 	--Without this :GetHeight will get stuck on the current height, causing the tree contents to not resize
 	treeframe:SetHeight(0)
 	treeframe:SetPoint("TOPLEFT", frame, "TOPLEFT",0,0)
-	treeframe:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",0,0)	
+	treeframe:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",0,0)
 	local status = self.status or self.localstatus
 	status.treewidth = treeframe:GetWidth()
 	
@@ -326,7 +326,7 @@ local methods = {
 	["OnRelease"] = function(self)
 		self.status = nil
 		self.tree = nil
-		self.frame:SetScript("OnUpdate", nil)							   
+		self.frame:SetScript("OnUpdate", nil)
 		for k, v in pairs(self.localstatus) do
 			if k == "groups" then
 				for k2 in pairs(v) do
@@ -363,7 +363,7 @@ local methods = {
 		button.toggle.button = button
 		button.toggle:SetScript("OnClick",Expand_OnClick)
 
-		button.text:SetHeight(50) -- Prevents text wrapping
+		button.text:SetHeight(14) -- Prevents text wrapping
 
 		return button
 	end,
@@ -453,7 +453,7 @@ local methods = {
 		if WoW80 and self.frame:GetParent() == UIParent and not fromOnUpdate then
 			self.frame:SetScript("OnUpdate", FirstFrameUpdate)
 			return
-		end									 
+		end
 		
 		local first, last
 		
@@ -650,7 +650,8 @@ local methods = {
 Constructor
 -------------------------------------------------------------------------------]]
 local PaneBackdrop  = {
-	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+	--bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
 	edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 	tile = true, tileSize = 16, edgeSize = 16,
 	insets = { left = 3, right = 3, top = 5, bottom = 3 }

@@ -27,7 +27,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Toon"
-AJM.settingsDatabaseName = "JambaToonProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-toon"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Toon"]
@@ -941,7 +941,13 @@ StaticPopupDialogs["TEAMDEATH"] = {
 	button3 = CANCEL,
 	OnShow = function(self)
 		self.timeleft = GetReleaseTimeRemaining()
-		local text = HasSoulstone()
+		-- TODO FIX FOR 8.0
+		if JambaPrivate.Core.isBetaBuild == true then
+			-- Find out new code????? for now we can not use this
+			local text = nil
+		else 
+			local text = HasSoulstone()
+		end
 		if ( text ) then
 			self.button2:SetText(text)
 		end

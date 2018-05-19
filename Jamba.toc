@@ -3,27 +3,44 @@
 ## Notes: Jamba Ebony's_Edition
 ## Author: Ebony
 ## Version: v8.0.0-Alpha(0043)
-## SavedVariables: JambaCoreProfileDB, JambaCommunicationsProfileDB, JambaTeamProfileDB, JambaTagProfileDB, JambaMessageProfileDB, JambaAdvancedLootProfileDB, JambaCurrProfileDB, JambaDisplayTeamProfileDB, JambaFollowProfileDB, JambaFTLProfileDB, JambaItemUseProfileDB, JambaPurchaseProfileDB, JambaQuestProfileDB,  JambaQuestWatcherProfileDB, JambaSellProfileDB, JambaTalkProfileDB, JambaInteractionProfileDB, JambaToonProfileDB, JambaTradeProfileDB
+## SavedVariables: JambaEECoreProfileDB
 
-#Libs
+## Libs ##
 JambaEmbeds.xml
 JambaUtilities.lua
 
-#Locales
+## Locales ##
 Locales\Locales.xml
 Modules\Locales\Locales.xml
 
-#GUI
+## GUI ##
 GUI\JambaHelperSettings.lua
 
-#Core
+## Core ##
 Core\JambaCore.lua
-Core\JambaCommunications.lua
 Core\JambaModule.lua
+Core\JambaCommunications.lua
 
 Core\JambaTeam.lua
 Core\JambaTag.lua
 Core\JambaMessage.lua
 
-#Modules
-Modules\Modules.xml
+## Modules ##
+#Modules\Modules.xml
+#Modules\JambaSell.lua
+#Modules\JambaPurchase.lua
+	
+#Modules\JambaToon.lua
+#Modules\JambaTalk.lua
+	
+#Modules\JambaFollow.lua
+
+Modules\JambaInteraction.lua
+#Modules\JambaTrade.lua
+	
+#Modules\JambaQuest.lua
+#Modules\JambaQuestWatcher.lua
+
+#Modules\JambaDisplayTeam.lua
+#Modules\JambaCurr.lua
+#Modules\JambaItemUse.lua

@@ -24,7 +24,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Tag"
-AJM.settingsDatabaseName = "JambaTagProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-group"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]
@@ -132,6 +132,7 @@ local function SettingsCreateGroupList()
 	-- Create a heading.
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["GROUP_LIST"], top, false )
 	-- Create a team list frame.
+	
 	local list = {}
 	list.listFrameName = "JambaTagSettingsGroupListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
@@ -151,7 +152,7 @@ local function SettingsCreateGroupList()
 	JambaHelperSettings:CreateScrollList( AJM.settingsControl.groupList )
 	-- Position and size constants (once list height is known).
 	local bottomOfList = topOfList - list.listHeight - verticalSpacing
-	-- Turn me into sexy buttons -- ebony!
+
 	AJM.settingsControl.tagListButtonAdd = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
 		iconSize,
@@ -630,12 +631,15 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:SettingsGroupListScrollRefresh()
+	AJM:Print("updateFrametag")
+	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.groupList.listScrollFrame, 
 		GetGroupListMaximumOrder(),
 		AJM.settingsControl.groupList.rowsToDisplay, 
 		AJM.settingsControl.groupList.rowHeight
 	)
+	
 	AJM.settingsControl.groupListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.groupList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.groupList.rowsToDisplay do
 		-- Reset.

@@ -10,6 +10,7 @@
 
 local AJM = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"JambaCommunications", 
+	"JambaModule-1.0",
 	"AceComm-3.0", 
 	"AceEvent-3.0",
 	"AceConsole-3.0",
@@ -18,7 +19,7 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 )
 
 -- Get the locale for JambaCommunications.
-local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+--local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 
 -- Get libraries.
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
@@ -28,10 +29,12 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 -- JambaCommunications is not a module, but the same naming convention for these values is convenient.
 AJM.moduleName = "Jamba-Communications"
-AJM.moduleDisplayName = L["COMMUNICATIONS"]
-AJM.settingsDatabaseName = "JambaCommunicationsProfileDB"
-AJM.parentDisplayName = L["OPTIONS"]
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-comm"
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["OPTIONS"]
+AJM.moduleDisplayName = L["COMMUNICATIONS"]
+
 AJM.teamModuleName = "Jamba-Team"
 -- Icon 
 AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\CommsLogo.tga"
@@ -89,7 +92,7 @@ AJM.settings = {
 }
 
 -- Configuration.
-local function GetConfiguration()
+function AJM:GetConfiguration()
 	local configuration = {
 		name = AJM.moduleDisplayName,
 		handler = AJM,
@@ -150,7 +153,7 @@ local function CreateCommandToSend( moduleName, commandName, ... )
 		end
 	end
 	-- Return the command to send.
-	--AJM:Print("Create", moduleName, commandName, iterateArguments)
+	AJM:Print("Create", moduleName, commandName, iterateArguments)
 	return message	
 end
 
@@ -302,7 +305,7 @@ local function SystemSpamFilter(frame, event, message)
 	end		
     return false
 end
-ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SystemSpamFilter)
+--ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SystemSpamFilter)
 
 
 
@@ -310,7 +313,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SystemSpamFilter)
 function AJM:CommandReceived( prefix, message, distribution, sender )
     local characterName = JambaUtilities:AddRealmToNameIfMissing( sender )
 	AJM:DebugMessage( "Command received: ", prefix, message, distribution, sender )
-	--AJM:Print( "Command received: ", prefix, message, distribution, sender )
+	AJM:Print( "Command received: ", prefix, message, distribution, sender )
 	-- Check if the command is for Jamba Communications.
 	if prefix == AJM.COMMAND_PREFIX then
 		--checks the char is in the team if not everyone can change settings and we do not want that
@@ -386,97 +389,12 @@ local function SendCommandToon( moduleName, characterName, commandName, ... )
 	CommandToon( moduleName, characterName, commandName, ... )
 end
 
--------------------------------------------------------------------------------------------------------------
--- Jamba Communications Initialization.
--------------------------------------------------------------------------------------------------------------
-
--- Initialize the addon.
-function AJM:OnInitialize()
-	--AJM.channelPollTimer = nil
-	-- Register commands with AceComms - tell AceComms to call the CommandReceived function when a command is received.
-	AJM:RegisterComm( AJM.COMMAND_PREFIX, "CommandReceived" )
-	-- Create the settings database supplying the settings values along with defaults.
-    AJM.completeDatabase = LibStub( "AceDB-3.0" ):New( AJM.settingsDatabaseName, AJM.settings )
-	AJM.db = AJM.completeDatabase.profile
-	-- Create the settings.
-	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
-		AJM.moduleName, 
-		GetConfiguration() 
-	)	
-	AJM:SettingsCreate()
-	AJM.settingsFrame = AJM.settingsControl.widgetSettings.frame
-	AJM:SettingsRefresh()	
-	--TODO: Is this needed? as its already in a module??
-	local k = GetRealmName()
-	local realm = k:gsub( "%s+", "" )
-	self.characterRealm = realm
-	self.characterNameLessRealm = UnitName( "player" )
-	self.characterName = self.characterNameLessRealm.."-"..self.characterRealm
-	AJM.characterGUID = UnitGUID( "player" )
-	-- End of needed:
-	-- Register communications as a module.
-	JambaPrivate.Core.RegisterModule( AJM, AJM.moduleName )
-end
-	
-function AJM:OnEnable()
-
-	AJM:RegisterEvent("GUILD_ROSTER_UPDATE")
-	if AJM.db.boostCommunication == true then
-		AJM:BoostCommunication()
-		-- Repeat every 5 minutes.
-		AJM:ScheduleRepeatingTimer( "BoostCommunication", 300 )
-	end
-end
-
-function AJM:BoostCommunication()
-	if AJM.db.boostCommunication == true then
-		-- 2000 seems to be safe if NOTHING ELSE is happening. let's call it 800.
-		ChatThrottleLib.MAX_CPS = 1200 --800
-		-- Guesstimate overhead for sending a message; source+dest+chattype+protocolstuff
-		ChatThrottleLib.MSG_OVERHEAD = 40
-		-- WoW's server buffer seems to be about 32KB. 8KB should be safe, but seen disconnects on _some_ servers. Using 4KB now.
-		ChatThrottleLib.BURST = 6000 --4000
-		-- Reduce output CPS to half (and don't burst) if FPS drops below this value
-		ChatThrottleLib.MIN_FPS = 10 --20
-	end
-end
-
--- Handle the chat command.
-function AJM:JambaChatCommand( input )
-    if not input or input:trim() == "" then
-        InterfaceOptionsFrame_OpenToCategory( AJM.moduleDisplayName )
-    else
-        LibStub( "AceConfigCmd-3.0" ):HandleCommand( AJM.chatCommand, AJM.moduleName, input )
-    end    
-end
-
-function AJM:OnDisable()
-end
-
-function AJM:GUILD_ROSTER_UPDATE(event, ... )
-	if AJM.db.useGuildComms == false then
-		return
-	end
-	local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
-	for index = 1, numGuildMembers do
-		characterName,_,_,_,class,_,_,_,online,status,classFileName,_, _,isMobile = GetGuildRosterInfo(index)
-		--AJM:Print("Name", fullName, "online", online )
-		if online == false then 
-			if AJM.db.autoSetTeamOnlineorOffline == true then
-				if JambaApi.IsCharacterInTeam(characterName) == true and IsCharacterOnline( characterName ) == true then 	
-					JambaApi.setOffline( characterName, false )
-					--AJM:Print("player offline in team", characterName )
-				end
-			end	
-		end
-	end	
-end
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
 -------------------------------------------------------------------------------------------------------------
 
-function AJM:SettingsCreate()
+local function SettingsCreate()
 	AJM.settingsControl = {}
 	JambaHelperSettings:CreateSettings( 
 		AJM.settingsControl, 
@@ -491,7 +409,7 @@ function AJM:SettingsCreate()
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfOptions )
 	-- Help
 	local helpTable = {}
-	JambaHelperSettings:CreateHelp( AJM.settingsControl, helpTable, GetConfiguration() )	
+	JambaHelperSettings:CreateHelp( AJM.settingsControl, helpTable, AJM:GetConfiguration() )	
 end
 
 function AJM:SettingsCreateOptions( top )
@@ -598,6 +516,102 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	end
 end
 
+-------------------------------------------------------------------------------------------------------------
+-- Jamba Communications Initialization.
+-------------------------------------------------------------------------------------------------------------
+
+-- Initialize the addon.
+function AJM:OnInitialize()
+	--AJM.channelPollTimer = nil
+	-- Register commands with AceComms - tell AceComms to call the CommandReceived function when a command is received.
+	
+	AJM:RegisterComm( AJM.COMMAND_PREFIX, "CommandReceived" )
+	SettingsCreate()
+	AJM:JambaModuleInitialize( AJM.settingsControl.widgetSettings.frame )
+	AJM:SettingsRefresh()
+--[[	
+	-- Create the settings database supplying the settings values along with defaults.
+    
+	AJM.completeDatabase = LibStub( "AceDB-3.0" ):New( AJM.settingsDatabaseName, AJM.settings )
+	AJM.db = AJM.completeDatabase.profile
+	-- Create the settings.
+	
+	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
+		AJM.moduleName, 
+		GetConfiguration() 
+	)	
+	AJM:SettingsCreate()
+	AJM.settingsFrame = AJM.settingsControl.widgetSettings.frame
+	AJM:SettingsRefresh()	
+	--TODO: Is this needed? as its already in a module??
+	local k = GetRealmName()
+	local realm = k:gsub( "%s+", "" )
+	self.characterRealm = realm
+	self.characterNameLessRealm = UnitName( "player" )
+	self.characterName = self.characterNameLessRealm.."-"..self.characterRealm
+	AJM.characterGUID = UnitGUID( "player" )
+	-- End of needed:
+	-- Register communications as a module.
+	JambaPrivate.Core.RegisterModule( AJM, AJM.moduleName )
+]]	
+end
+	
+function AJM:OnEnable()
+
+	--AJM:RegisterEvent("GUILD_ROSTER_UPDATE")
+	if AJM.db.boostCommunication == true then
+		AJM:BoostCommunication()
+		-- Repeat every 5 minutes.
+		--AJM:ScheduleRepeatingTimer( "BoostCommunication", 300 )
+	end
+end
+
+function AJM:BoostCommunication()
+	if AJM.db.boostCommunication == true then
+		-- 2000 seems to be safe if NOTHING ELSE is happening. let's call it 800.
+		ChatThrottleLib.MAX_CPS = 1200 --800
+		-- Guesstimate overhead for sending a message; source+dest+chattype+protocolstuff
+		ChatThrottleLib.MSG_OVERHEAD = 40
+		-- WoW's server buffer seems to be about 32KB. 8KB should be safe, but seen disconnects on _some_ servers. Using 4KB now.
+		ChatThrottleLib.BURST = 6000 --4000
+		-- Reduce output CPS to half (and don't burst) if FPS drops below this value
+		ChatThrottleLib.MIN_FPS = 10 --20
+	end
+end
+
+-- Handle the chat command.
+function AJM:JambaChatCommand( input )
+    if not input or input:trim() == "" then
+        InterfaceOptionsFrame_OpenToCategory( AJM.moduleDisplayName )
+    else
+        LibStub( "AceConfigCmd-3.0" ):HandleCommand( AJM.chatCommand, AJM.moduleName, input )
+    end    
+end
+
+function AJM:OnDisable()
+end
+
+--[[
+function AJM:GUILD_ROSTER_UPDATE(event, ... )
+	if AJM.db.useGuildComms == false then
+		return
+	end
+	local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
+	for index = 1, numGuildMembers do
+		characterName,_,_,_,class,_,_,_,online,status,classFileName,_, _,isMobile = GetGuildRosterInfo(index)
+		--AJM:Print("Name", fullName, "online", online )
+		if online == false then 
+			if AJM.db.autoSetTeamOnlineorOffline == true then
+				if JambaApi.IsCharacterInTeam(characterName) == true and IsCharacterOnline( characterName ) == true then 	
+					JambaApi.setOffline( characterName, false )
+					--AJM:Print("player offline in team", characterName )
+				end
+			end	
+		end
+	end	
+end
+
+]]
 
 -- Functions available from Jamba Communications for other Jamba internal objects.
 JambaPrivate.Communications.COMMUNICATION_PRIORITY_BULK = AJM.COMMUNICATION_PRIORITY_BULK
