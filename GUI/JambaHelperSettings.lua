@@ -32,8 +32,8 @@ AceGUI:RegisterLayout("JambaFill",
 			local width = content:GetWidth()
 			children[1]:SetWidth(width)
 			children[1]:SetHeight(height)
-			children[1]:ClearAllPoints()
 			children[1]:SetPoint( "TOPLEFT", 0, -offset )
+			children[1]:ClearAllPoints()
 			children[1].frame:Show()
 		end
 	end)
@@ -47,8 +47,8 @@ AceGUI:RegisterLayout("JambaFillAce3Fix",
 			local width = content:GetWidth()
 			children[1]:SetWidth(width)
 			children[1]:SetHeight(height)
-			children[1]:ClearAllPoints()
 			children[1]:SetPoint("TOPLEFT", content)
+			children[1]:ClearAllPoints()
 			children[1].frame:Show()
 		end
 	end)
@@ -613,7 +613,6 @@ end
 --
 
 function JambaHelperSettings:CreateScrollList( list )
-	print("testListMaker", list, list.parentFrame)
 	-- Position and size constants.
 	local columnSpacing = 6
 	local widthOfScrollBar = 16

@@ -22,13 +22,13 @@
 	<Script file="JambaTrade.lua" />
 	
 	<Script file="JambaQuest.lua" /> 
-	<Script file="JambaQuestWatcher.lua" />
+	<Script file="JambaQuestWatcher.lua" /> 
 	
 
 	<Script file="JambaDisplayTeam.lua" />
 	<Script file="JambaCurr.lua" />
 	<Script file="JambaItemUse.lua" />
-	
+
 
 	 
 

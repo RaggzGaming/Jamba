@@ -17,7 +17,7 @@ JambaPrivate.Team = {}
 JambaPrivate.Tag = {}
 
 -- The global public API table for Jamba.
-JambaApi = {}
+_G.JambaApi = {}
 
 local AJM = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"JambaCore", 
@@ -39,9 +39,10 @@ AJM.moduleOrder = 1
 
 
 -- Load libraries.
+local AceGUI = LibStub("AceGUI-3.0")
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
 local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
-local AceGUI = LibStub("AceGUI-3.0")
+
 
 -- Create frame for Jamba Settings.
 JambaPrivate.SettingsFrame = {}
@@ -118,11 +119,13 @@ end
 
 
 local function JambaAddModuleToSettings( childName, parentName, moduleIcon, order, moduleFrame, tabGroup )
+	print("AddModuleToSettings", parentName, moduleIcon, order, moduleFrame, tabGroup)
 	-- 	childName is the parentName then make the child the parent.
 	if childName == parentName then
 		local parent = JambaTreeGroupTreeGetParent( parentName )
 		if parent == nil then
 			table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
+			table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
 			parent = JambaTreeGroupTreeGetParent( parentName )
 			JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
 			JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
@@ -149,6 +152,7 @@ end
 
 
 local function JambaModuleSelected( tree, event, treeValue, selected )
+	AJM:Print("test")
 	local parentValue, value = strsplit( "\001", treeValue )
 	if tree == nil and event == nil then
 		-- Came from chat command.
@@ -182,7 +186,7 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 		end
 	end
 end
-
+AJM:Print("test10000000000000001")
 JambaPrivate.SettingsFrame.Tree = {}
 JambaPrivate.SettingsFrame.Tree.Data = {}
 JambaPrivate.SettingsFrame.Tree.ModuleFrames = {}
@@ -489,9 +493,9 @@ function AJM:OnInitialize()
 	AJM.registeredModulesByName = {}
 	AJM.registeredModulesByAddress = {}
 	-- Create the settings database supplying the settings values along with defaults.
-    AJM.completeDatabase = LibStub( "AceDB-3.0" ):New( AJM.settingsDatabaseName, AJM.settings )
+   AJM.completeDatabase = LibStub( "AceDB-3.0" ):New( AJM.settingsDatabaseName, AJM.settings )
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileChanged", "OnProfileChanged" )
-	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileCopied", "OnProfileCopied" )
+	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileCopied", "OnProfileCopied" )	
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileReset", "OnProfileReset" )	
 	AJM.completeDatabase.RegisterCallback( AJM, "OnProfileDeleted", "OnProfileDeleted" )	
 	
@@ -504,6 +508,7 @@ function AJM:OnInitialize()
 	-- Create the settings frame.
 	AJM:CoreSettingsCreate()
 	AJM.settingsFrame = AJM.settingsControl.widgetSettings.frame
+	--[[
 	-- Blizzard options frame.
 	local frame = CreateFrame( "Frame" )
 	frame.name = L["JAMBA"]
@@ -512,6 +517,7 @@ function AJM:OnInitialize()
 	button:SetText( "/jamba" )
 	button:SetScript( "OnClick", AJM.LoadJambaSettings )
 	InterfaceOptions_AddCategory( frame )
+	]]
 	-- Create the settings profile support.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
 		AJM.moduleName.."OPTIONS",
@@ -523,6 +529,7 @@ function AJM:OnInitialize()
 	local moduleIcon = "Interface\\Addons\\Jamba\\Media\\SettingsIcon.tga"
 	local order  = 10
 	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], moduleIcon, order, profileContainerWidget, nil )
+	
 	-- Register the core as a module.
 	RegisterModule( AJM, AJM.moduleName )
 	-- Register the chat command.

@@ -1397,9 +1397,9 @@ function AJM:OnEnable()
 	AJM:RegisterMessage( AJM.MESSAGE_TEAM_MASTER_CHANGED, "OnMasterChange" )
 	-- Kickstart the settings team list scroll frame.
 	AJM:SettingsTeamListScrollRefresh()
-	--AJM.SettingsGroupListScrollRefresh()
+	AJM.SettingsGroupListScrollRefresh()
 	-- Click the first row in the team list table to populate the tag list table.
-	--AJM:SettingsTeamListRowClick( 1, 1 )
+	AJM:SettingsTeamListRowClick( 1, 1 )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	-- Initialise key bindings.
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
@@ -1599,7 +1599,7 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 end
 
 function AJM:SettingsGroupListScrollRefresh()
-	AJM:Print("updateFrameGroups")
+	--AJM:Print("updateFrameGroups")
 	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.groupList.listScrollFrame, 
