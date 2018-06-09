@@ -28,7 +28,7 @@ local Media = LibStub("LibSharedMedia-3.0")
  
 -- Constants and Locale for this module.
 AJM.moduleName = "Jamba-Message"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaMessageProfileDB"
 AJM.chatCommand = "jamba-message"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["OPTIONS"]

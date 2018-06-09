@@ -25,7 +25,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Curr"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaCurrProfileDB"
 AJM.chatCommand = "jamba-curr"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["DISPLAY"]
@@ -1049,7 +1049,7 @@ function AJM:SettingsUpdateBorderStyle()
 	} )
 	frame:SetBackdropColor( AJM.db.currencyFrameBackgroundColourR, AJM.db.currencyFrameBackgroundColourG, AJM.db.currencyFrameBackgroundColourB, AJM.db.currencyFrameBackgroundColourA )
 	frame:SetBackdropBorderColor( AJM.db.currencyFrameBorderColourR, AJM.db.currencyFrameBorderColourG, AJM.db.currencyFrameBorderColourB, AJM.db.currencyFrameBorderColourA )
-	frame:ClearAllPoints()
+	--frame:ClearAllPoints()
 	frame:SetAlpha( AJM.db.currencyFrameAlpha )
 	frame:SetPoint( AJM.db.currencyFramePoint, UIParent, AJM.db.currencyFrameRelativePoint, AJM.db.currencyFrameXOffset, AJM.db.currencyFrameYOffset )
 end

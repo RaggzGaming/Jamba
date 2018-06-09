@@ -24,6 +24,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 -- Register a manual layout function which does nothing, each child manually sets its size and position.
 AceGUI:RegisterLayout( "JambaManual", function(content, children) end )
 
+
 AceGUI:RegisterLayout("JambaFill",
 	function(content, children)
 		if children[1] then
@@ -35,13 +36,16 @@ AceGUI:RegisterLayout("JambaFill",
 			children[1]:SetPoint( "TOPLEFT", 0, -offset )
 			children[1]:ClearAllPoints()
 			children[1].frame:Show()
+			
 		end
 	end)
-	
+
+
 	-- A single control fills the whole content area
 AceGUI:RegisterLayout("JambaFillAce3Fix",
 	function(content, children)
 		if children[1] then
+			children[1].frame:Hide()
 			local offset = 0
 			local height = content:GetHeight()
 			local width = content:GetWidth()
@@ -50,6 +54,7 @@ AceGUI:RegisterLayout("JambaFillAce3Fix",
 			children[1]:SetPoint("TOPLEFT", content)
 			children[1]:ClearAllPoints()
 			children[1].frame:Show()
+			
 		end
 	end)
 	
@@ -70,7 +75,6 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function JambaHelperSettings:CreateSettings( settingsControl, displayName, parentDisplayName, pushSettingsCallback, moduleIcon, order )
-
 	if moduleIcon == nil then
 		moduleIcon = "Interface\\Icons\\Temp"
 	end	
@@ -80,60 +84,12 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	end	
 	
 	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
-	--containerWidgetSettings:SetLayout( "JambaFill" )
 	containerWidgetSettings:SetLayout( "Fill" )
 	
-	local widgetSettingsHelp = AceGUI:Create( "ScrollFrame" )
-	widgetSettingsHelp:SetLayout( "Flow" )
-	
 	local widgetSettings = AceGUI:Create( "ScrollFrame" )
-	widgetSettings:SetLayout( "JambaManual" )
+	widgetSettings:SetLayout( "JambaFill" )
 	
-	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
-	--tabGroupWidgetSettings:SetLayout( "JambaFillAce3Fix" )
-	tabGroupWidgetSettings:SetLayout( "Fill" )
---	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, } ) --{text=L["Commands"], value="help"} } )
-	
-	containerWidgetSettings:AddChild( tabGroupWidgetSettings )
-	tabGroupWidgetSettings:AddChild( widgetSettings )
-	
-	-- Jafula loves closures!
-	--[[
-	settingsControl.tabGroupSelected = function( container, event, group )
-		if group == "options" then
-			widgetSettingsHelp.frame:Hide()
-			widgetSettings:SetParent( container )
-			widgetSettings:SetWidth( container.content:GetWidth() or 0 )
-			widgetSettings:SetHeight( container.content:GetHeight() or 0 )
-			widgetSettings.frame:SetAllPoints( container.content )
-			widgetSettings.frame:Show()	
-		elseif group == "help" then
-			widgetSettings.frame:Hide()	
-			widgetSettingsHelp:SetParent( container )
-			widgetSettingsHelp:SetWidth( container.content:GetWidth() or 0 )
-			widgetSettingsHelp:SetHeight( container.content:GetHeight() or 0 )
-			widgetSettingsHelp.frame:SetAllPoints( container.content )
-			widgetSettingsHelp.frame:Show()	
-		end
-	end
-
-	tabGroupWidgetSettings:SelectTab( "options" )
-	tabGroupWidgetSettings:SetCallback( "OnGroupSelected", settingsControl.tabGroupSelected )
-]]	
-
-	local lable = AceGUI:Create( "Label" )
-	lable:SetText( displayName )
-	lable:SetFont( "Fonts\2002.TTF", "40" ) 
-	lable:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 50, -15 )
-	containerWidgetSettings:AddChild( lable )
-		
-	local icon = AceGUI:Create( "Label" )
-	icon:SetImage( moduleIcon )
-	icon:SetImageSize(40,40)
-	icon:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", -75, 0 )
-	containerWidgetSettings:AddChild( icon )
---	icon:SetPoint( "TOPLEFT", 0, 5 )
---	icon:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPLEFT", 0, 0 )	
+	containerWidgetSettings:AddChild( widgetSettings )
 	
 	local button = AceGUI:Create( "Button" ) 
 	if displayName == "News" then
@@ -141,17 +97,17 @@ function JambaHelperSettings:CreateSettings( settingsControl, displayName, paren
 	else	
 		button:SetText( L["PUSH_SETTINGS"] )
 	end
+	
 	containerWidgetSettings:AddChild( button )
 	button:SetWidth( 200 )
-	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 0 )
+	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 40 )
 	button:SetCallback( "OnClick", pushSettingsCallback )
 	settingsControl.widgetPushSettingsButton = button
 
 	settingsControl.widgetSettingsHelp = widgetSettingsHelp
 	settingsControl.containerWidgetSettings = containerWidgetSettings
-	settingsControl.tabGroupWidgetSettings = tabGroupWidgetSettings
 	settingsControl.widgetSettings = widgetSettings
-	JambaPrivate.SettingsFrame.Tree.Add( displayName, parentDisplayName, moduleIcon, order, settingsControl.containerWidgetSettings, settingsControl.tabGroupWidgetSettings )
+	JambaPrivate.SettingsFrame.Tree.Add( displayName, parentDisplayName, moduleIcon, order, settingsControl.containerWidgetSettings )
 end
 
 function JambaHelperSettings:TopOfSettings()
@@ -163,42 +119,10 @@ function JambaHelperSettings:LeftOfSettings()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- Help.
+-- Help.  Removed We need to keep this here incase some module needs CreateHelp
 -------------------------------------------------------------------------------------------------------------
 
 function JambaHelperSettings:CreateHelp( settingsControl, help, configuration )
-	table.insert( help, {"D", ""} )
-	table.insert( help, {"H", L["SLASH_COMMANDS"]} )
-	for key, info in pairs( configuration.args ) do
-		if info.type == "input" then
-			table.insert( help, {"D", ""} )
-			table.insert( help, {"S", info.usage} )
-			table.insert( help, {"D", info.desc} )
-		end
-	end	
-	for index, info in ipairs( help ) do
-		local type = info[1]
-		local text = info[2]
-		if type == "H" then
-			local heading = AceGUI:Create( "Heading" )
-			heading:SetText( text )
-			heading.width = "fill"
-			settingsControl.widgetSettingsHelp:AddChild( heading )
-		end		
-		if type == "D" then
-			local label = AceGUI:Create( "Label" )
-			label:SetText( text )
-			label.width = "fill"
-			settingsControl.widgetSettingsHelp:AddChild( label )
-		end
-		if type == "S" then
-			local label = AceGUI:Create( "Label" )
-			label:SetText( text )
-			label:SetColor( 1.0, 0.96, 0.41 )
-			label.width = "fill"
-			settingsControl.widgetSettingsHelp:AddChild( label )
-		end		
-	end
 end
 	
 -------------------------------------------------------------------------------------------------------------
@@ -393,7 +317,7 @@ end
 
 function JambaHelperSettings:CreateDropdown( settingsControl, width, left, top, text )
 	local dropdown = AceGUI:Create( "Dropdown" )
-	--dropdown:ClearAllPoints()
+	dropdown:ClearAllPoints()
 	dropdown:SetLabel( text )
 	settingsControl.widgetSettings:AddChild( dropdown )
 	dropdown:SetWidth( width )

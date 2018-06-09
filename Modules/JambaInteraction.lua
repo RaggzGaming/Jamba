@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Interaction"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaInteractionProfileDB"
 AJM.chatCommand = "jamba-Interaction"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]

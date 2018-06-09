@@ -24,11 +24,15 @@ local AceGUI = LibStub:GetLibrary( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Purchase"
-AJM.settingsDatabaseName = "JambaPurchaseProfileDB"
+AJM.settingsDatabaseName = " JambaPurchaseProfileDB"
 AJM.chatCommand = "jamba-purchase"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Vender"]
-AJM.moduleDisplayName = L["Purchase"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["VENDER"]
+AJM.moduleDisplayName = L["PURCHASE"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\SellIcon.tga"
+-- order
+AJM.moduleOrder = 60
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -50,20 +54,10 @@ function AJM:GetConfiguration()
 		get = "JambaConfigurationGetSetting",
 		set = "JambaConfigurationSetSetting",
 		args = {
-			--[[
-			popout = {
-				type = "input",
-				name = L["PopOut"],
-				desc = L["Show the purchase settings in their own window."],
-				usage = "/jamba-purchase popout",
-				get = false,
-				set = "ShowPopOutWindow",
-			},
-			]]--
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the purchase settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_ALL_SETTINGS"],
 				usage = "/jamba-purchase push",
 				get = false,
 				set = "JambaSendSettings",
@@ -118,9 +112,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -143,14 +135,14 @@ local function SettingsCreateOptions( top )
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local left2 = left + halfWidth + horizontalSpacing
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Purchase Items"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["PURCHASE_ITEMS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxAutoBuy = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		halfWidth, 
 		left, 
 		movingTop, 
-		L["Auto Buy Items"],
+		L["AUTO_BUY_ITEMS"],
 		AJM.SettingsToggleAutoBuyItems
 	)	
 	AJM.settingsControl.checkBoxAutoBuyOverflow = JambaHelperSettings:CreateCheckBox( 
@@ -158,7 +150,7 @@ local function SettingsCreateOptions( top )
 		halfWidth, 
 		left2, 
 		movingTop, 
-		L["Overflow"],
+		L["OVERFLOW"],
 		AJM.SettingsToggleAutoBuyItemsOverflow
 	)	
 	movingTop = movingTop - checkBoxHeight	
@@ -193,18 +185,19 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left, 
 		movingTop,
-		L["Remove"],
-		AJM.SettingsRemoveClick
+		L["REMOVE"],
+		AJM.SettingsRemoveClick,
+		L["REMOVE_VENDER_LIST"]
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Add Item"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["ADD_ITEM"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.editBoxItem = JambaHelperSettings:CreateEditBox( 
 		AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Item (drag item to box from your bags)"]
+		L["ITEM_DROP"]
 	)
 	AJM.settingsControl.editBoxItem:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedItem )
 	movingTop = movingTop - editBoxHeight	
@@ -213,7 +206,7 @@ local function SettingsCreateOptions( top )
 		halfWidth,
 		left,
 		movingTop,
-		L["Tag"]
+		L["GROUP"]
 	)
 	AJM.settingsControl.editBoxTag:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTag )
 	AJM.settingsControl.editBoxAmount = JambaHelperSettings:CreateEditBox( 
@@ -221,7 +214,7 @@ local function SettingsCreateOptions( top )
 		halfWidth,
 		left2,
 		movingTop,
-		L["Amount"]
+		L["AMOUNT"]
 	)
 	AJM.settingsControl.editBoxAmount:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedAmount )
 	movingTop = movingTop - editBoxHeight		
@@ -230,18 +223,18 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left, 
 		movingTop, 
-		L["Add"],
+		L["ADD"],
 		AJM.SettingsAddClick
 	)
 	movingTop = movingTop -	buttonHeight	
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Purchase Messages"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["PURCHASE_MSG"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	AJM.settingsControl.dropdownMessageArea = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Message Area"] 
+		L["MESSAGE_AREA"] 
 	)
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", AJM.SettingsSetMessageArea )
@@ -259,7 +252,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder			
 	)
 	local bottomOfSettings = SettingsCreateOptions( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfSettings )
@@ -342,7 +337,7 @@ end
 
 function AJM:SettingsEditBoxChangedTag( event, text )
 	if not text or text:trim() == "" or text:find( "%W" ) ~= nil then
-		AJM:Print( L["Item tags must only be made up of letters and numbers."] )
+		AJM:Print( L["ITEM_ERROR"] )
 		return
 	end
 	AJM.autoBuyItemTag = text
@@ -351,7 +346,7 @@ end
 
 function AJM:SettingsEditBoxChangedAmount( event, text )
 	if not text or text:trim() == "" or text:find( "^(%d+)$" ) == nil then
-		AJM:Print( L["Amount to buy must be a number."] )
+		AJM:Print( L["NUM_ERROR"] )
 		return
 	end
 	AJM.autoBuyAmount = text
@@ -374,7 +369,7 @@ end
 -- Initialize Popup Dialogs.
 local function InitializePopupDialogs()
 	StaticPopupDialogs["JAMBAPURCHASE_CONFIRM_REMOVE_AUTO_BUY_ITEM"] = {
-        text = L["Are you sure you wish to remove the selected item from the auto buy items list?"],
+        text = L["BUY_POPUP_ACCEPT"],
         button1 = YES,
         button2 = NO,
         timeout = 0,
@@ -403,17 +398,6 @@ function AJM:OnInitialize()
 	InitializePopupDialogs()		
 	-- Populate the settings.
 	AJM:SettingsRefresh()
-	-- Create a standalone window for the purchase.
-	--[[
-	AJM.standaloneWindow = AceGUI:Create( "Window" )
-	AJM.standaloneWindow:Hide()
-	AJM.standaloneWindow:SetTitle( "Jamba-Purchase" )
-	AJM.standaloneWindow:SetLayout( "Fill" )
-	AJM.standaloneWindow:AddChild( AJM.settingsControl.widgetSettings )
-	AJM.standaloneWindow:SetHeight( 410 )
-	AJM.standaloneWindow:SetWidth( 410 )
-	AJM.standaloneWindow.frame:SetFrameStrata( "HIGH" )
-	]]--
 end
 
 -- Called when the addon is enabled.
@@ -429,10 +413,6 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- JambaPurchase functionality.
 -------------------------------------------------------------------------------------------------------------
-
-function AJM:ShowPopOutWindow()
-	--AJM.standaloneWindow:Show()
-end
 
 function AJM:GetItemsMaxPosition()
 	return #AJM.db.autoBuyItems
@@ -511,13 +491,13 @@ function AJM:DoMerchantAutoBuy()
 	end
 	-- If there was a problem, tell the master.
 	if outOfBagSpace then
-		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["I do not have enough space in my bags to complete my purchases."], false )			
+		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["ERROR_BAGS_FULL"], false )			
 	end
 	if outOfMoney then
-		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["I do not have enough money to complete my purchases."], false )
+		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["ERROR_GOLD"], false )
 	end
 	if outOfOtherCurrency then
-		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["I do not have enough other currency to complete my purchases."], false )
+		AJM:JambaSendMessageToTeam( AJM.db.messageArea, L["ERROR_CURR"], false )
 	end	
 end
 

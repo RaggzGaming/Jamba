@@ -27,7 +27,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-ItemUse"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaItemUseProfileDB"
 AJM.chatCommand = "jamba-itemuse"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core"  )
 AJM.parentDisplayName = L["DISPLAY"]
@@ -86,7 +86,7 @@ AJM.settings = {
 		framePoint = "BOTTOMRIGHT",
 		frameRelativePoint = "BOTTOMRIGHT",
 		frameXOffset = 0,
-		frameYOffset = 0,
+		frameYOffset = 70,
 		frameAlpha = 1.0,
 		frameBackgroundColourR = 1.0,
 		frameBackgroundColourG = 1.0,
@@ -234,10 +234,8 @@ local function CreateJambaItemUseFrame()
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )	
 	frame:SetPoint( AJM.db.framePoint, nil, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
-	frame:Hide()
-	--frame:ClearAllPoints()
+	frame:ClearAllPoints()
 	-- Clear Button
-
 		local updateButton = CreateFrame( "Button", "ButtonUpdate", frame, "UIPanelButtonTemplate" )
 		updateButton:SetScript( "OnClick", function() AJM:ClearButton() end )
 		updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -4, -3 )
@@ -246,7 +244,7 @@ local function CreateJambaItemUseFrame()
 		updateButton:SetText( L["CLEAR_BUTT"] )	
 		updateButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "clear", true) end)
 		updateButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-		_G["ClearUpdateButton"] = updateButton
+		ClearUpdateButton = updateButton
 	-- Sync Button	
 		local syncButton = CreateFrame( "Button", "ButtonSync", frame, "UIPanelButtonTemplate" )
 		syncButton:SetScript( "OnClick", function() AJM:SyncButton() end )
@@ -256,13 +254,13 @@ local function CreateJambaItemUseFrame()
 		syncButton:SetText( L["SYNC_BUTT"] )	
 		syncButton:SetScript("OnEnter", function(self) AJM:ShowTooltip(updateButton, "sync", true) end)
 		syncButton:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-		_G["SyncUpdateButton"] = syncButton
+		SyncUpdateButton = syncButton
 		
 
 	-- Set transparency of the the frame (and all its children).
 	frame:SetAlpha(AJM.db.frameAlpha)
 	-- Set the global frame reference for this frame.
-	_G["JambaItemUseFrame"] = frame
+	JambaItemUseFrame = frame
 	-- Remove unsued items --test
 	AJM:SettingsUpdateBorderStyle()	
 	AJM.itemUseCreated = true
@@ -290,14 +288,14 @@ function AJM:UpdateHeight()
 	if AJM.db.hideClearButton == false then
 		AJM.db.itemUseTitleHeight = 2
 		local newHeight = AJM.db.itemUseTitleHeight + 20
---		ClearUpdateButton:Show()
---		SyncUpdateButton:Show()
+		ClearUpdateButton:Show()
+		SyncUpdateButton:Show()
 		return newHeight	
 	else
 		AJM.db.itemUseTitleHeight = 2
 		oldHeight = AJM.db.itemUseTitleHeight
---		ClearUpdateButton:Hide()
---		SyncUpdateButton:Hide()
+		ClearUpdateButton:Hide()
+		SyncUpdateButton:Hide()
 		return oldHeight
 	end	
 end
@@ -322,7 +320,7 @@ function AJM:ClearItemUseCommand()
 end
 
 function AJM:SetItemUseVisibility()
-	local frame = _G["JambaItemUseFrame"]
+	local frame = JambaItemUseFrame
 	if CanDisplayItemUse() == true then
 		frame:ClearAllPoints()
 		frame:SetPoint( AJM.db.framePoint, UIParent, AJM.db.frameRelativePoint, AJM.db.frameXOffset, AJM.db.frameYOffset )
@@ -336,7 +334,7 @@ end
 function AJM:SettingsUpdateBorderStyle()
 	local borderStyle = AJM.SharedMedia:Fetch( "border", AJM.db.borderStyle )
 	local backgroundStyle = AJM.SharedMedia:Fetch( "background", AJM.db.backgroundStyle )
-	local frame = _G["JambaItemUseFrame"]
+	local frame = JambaItemUseFrame
 	frame:SetBackdrop( {
 		bgFile = backgroundStyle, 
 		edgeFile = borderStyle, 
@@ -379,7 +377,7 @@ end
 
 function AJM:UpdateItemsInBar()
 	local state = "0"
-    local parentFrame = _G["JambaItemUseFrame"]
+    local parentFrame = JambaItemUseFrame
 	for iterateItems = 1, AJM.maximumNumberOfItems, 1 do
 		local itemContainer = AJM.itemContainer[iterateItems]
 		if itemContainer == nil then
@@ -1132,7 +1130,7 @@ function AJM:OnEnable()
 	LibActionButton.RegisterCallback( AJM, "OnButtonUpdate", "OnButtonUpdate" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonState", "OnButtonState" )
 	LibActionButton.RegisterCallback( AJM, "OnButtonUsable", "OnButtonUsable" )
-	--AJM:SecureHook( GameTooltip , "SetHyperlink", "AddTooltipInfo" )
+	AJM:SecureHook( GameTooltip , "SetHyperlink", "AddTooltipInfo" )
 end
 
 -- Called when the addon is disabled.
@@ -1344,7 +1342,7 @@ local function GetMaxItemCountFromItemID(itemID)
 			end	
 		end	
 	end	
-	return 0 --count
+	return count
 end
 
 function AJM:LibSharedMedia_Registered()

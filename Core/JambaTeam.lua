@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Team"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaTeamProfileDB"
 AJM.chatCommand = "jamba-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]
@@ -257,8 +257,7 @@ local function SettingsCreateTeamList()
 		leftOfList,
 		L["GROUPS_HEADER"]
 	)
-	-- Create a team list frame.
-	
+	-- Create a team list frame.	
 	local list = {}
 	list.listFrameName = "JambaTeamSettingsTeamListFrame"
 	list.parentFrame = AJM.settingsControl.widgetSettings.content
@@ -300,12 +299,9 @@ local function SettingsCreateTeamList()
 	listTwo.rowClickCallback = AJM.SettingsGroupListRowClick
 	AJM.settingsControl.groupList = listTwo
 	JambaHelperSettings:CreateScrollList( AJM.settingsControl.groupList )
-	-- Position and size constants (once list height is known).
-	
-	local bottomOfList = topOfList - list.listHeight - verticalSpacing
-	
+	-- Position and size constants (once list height is known).	
+	local bottomOfList = topOfList - list.listHeight - verticalSpacing	
 	local bottomOfSection = bottomOfList -  dropdownHeight - verticalSpacing		
-
 	--Create Icons
 	AJM.settingsControl.teamListButtonAdd = JambaHelperSettings:Icon( 
 		AJM.settingsControl, 
@@ -1397,9 +1393,9 @@ function AJM:OnEnable()
 	AJM:RegisterMessage( AJM.MESSAGE_TEAM_MASTER_CHANGED, "OnMasterChange" )
 	-- Kickstart the settings team list scroll frame.
 	AJM:SettingsTeamListScrollRefresh()
-	AJM.SettingsGroupListScrollRefresh()
+	--AJM.SettingsGroupListScrollRefresh()
 	-- Click the first row in the team list table to populate the tag list table.
-	AJM:SettingsTeamListRowClick( 1, 1 )
+	--AJM:SettingsTeamListRowClick( 1, 1 )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	-- Initialise key bindings.
 	AJM.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
@@ -1496,15 +1492,12 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:SettingsTeamListScrollRefresh()
-	AJM:Print("updateFrameteam")
-	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.teamList.listScrollFrame, 
 		GetTeamListMaximumOrder(),
 		AJM.settingsControl.teamList.rowsToDisplay, 
 		AJM.settingsControl.teamList.rowHeight
-	)
-	
+	)	
 	AJM.settingsControl.teamListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.teamList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.teamList.rowsToDisplay do
 		-- Reset.
@@ -1572,9 +1565,11 @@ function AJM:SettingsTeamListScrollRefresh()
 end
 
 local function DisplayGroupsForCharacterInGroupsList( characterName )
-	AJM.characterGroupList = JambaApi.GetGroupListForCharacter( characterName )
-	table.sort( AJM.characterGroupList )
-	AJM:SettingsGroupListScrollRefresh()
+	--if not AJM.characterGroupList then
+		AJM.characterGroupList = JambaApi.GetGroupListForCharacter( characterName )
+		table.sort( AJM.characterGroupList )
+		AJM:SettingsGroupListScrollRefresh()
+	--end	
 end
 
 local function GetGroupAtPosition( position )
@@ -1596,19 +1591,16 @@ function AJM:SettingsTeamListRowClick( rowNumber, columnNumber )
 		local characterName = GetCharacterNameAtOrderPosition( AJM.settingsControl.teamListHighlightRow )
 		DisplayGroupsForCharacterInGroupsList( characterName )
 	end
-end
+end											   
 
 function AJM:SettingsGroupListScrollRefresh()
-	--AJM:Print("updateFrameGroups")
-	
 	FauxScrollFrame_Update(
 		AJM.settingsControl.groupList.listScrollFrame, 
 		--JambaPrivate.Tag.GetTagListMaxPosition(),
 		JambaApi.CharacterMaxGroups(),
 		AJM.settingsControl.groupList.rowsToDisplay, 
 		AJM.settingsControl.groupList.rowHeight
-	)
-	
+	)	
 	AJM.settingsControl.groupListOffset = FauxScrollFrame_GetOffset( AJM.settingsControl.groupList.listScrollFrame )
 	for iterateDisplayRows = 1, AJM.settingsControl.groupList.rowsToDisplay do	
 		
@@ -1635,7 +1627,6 @@ function AJM:SettingsGroupListScrollRefresh()
 	end
 
 end	
-
 function AJM:SettingsGroupListRowClick( rowNumber, columnNumber )		
 	if AJM.settingsControl.groupListOffset + rowNumber <= GetTagListMaxPosition() then
 		AJM.settingsControl.groupListHighlightRow = AJM.settingsControl.groupListOffset + rowNumber

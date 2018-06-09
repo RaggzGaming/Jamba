@@ -21,19 +21,18 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 local JambaUtilities = LibStub:GetLibrary( "JambaUtilities-1.0" )
 local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
---local LibGratuity = LibStub( "LibGratuity-3.0" ) --Unlikey to be used bugged!
 local AceGUI = LibStub( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Trade"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaTradeProfileDB"
 AJM.chatCommand = "jamba-trade"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
 AJM.parentDisplayName = L["Interaction"]
 AJM.moduleDisplayName = L["Trade"]
 
-AJM.inventorySeperator = "\008"
-AJM.inventoryPartSeperator = "\009"
+--AJM.inventorySeperator = "\008"
+--AJM.inventoryPartSeperator = "\009"
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {

@@ -28,12 +28,13 @@ local AJM = LibStub( "AceAddon-3.0" ):NewAddon(
 AJM.moduleName = "Jamba-Core"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.moduleDisplayName = L["NEWS"]
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaCoreProfileDB"
 AJM.parentDisplayName = L["NEWS"]
 AJM.chatCommand = "jamba"
 AJM.teamModuleName = "Jamba-Team"
--- Icon 
+-- Icon's
 AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\NewsIcon.tga"
+AJM.pofileIcon = "Interface\\Addons\\Jamba\\Media\\SettingsIcon.tga"
 -- order
 AJM.moduleOrder = 1
 
@@ -47,18 +48,18 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 -- Create frame for Jamba Settings.
 JambaPrivate.SettingsFrame = {}
 JambaPrivate.SettingsFrame.Widget = AceGUI:Create( "JambaWindow" )
---JambaPrivate.SettingsFrame.Widget = AceGUI:Create( "Frame" )
 JambaPrivate.SettingsFrame.Widget:SetTitle( "" )
 JambaPrivate.SettingsFrame.Widget:SetStatusText(L["STATUSTEXT"])
 JambaPrivate.SettingsFrame.Widget:SetWidth(900)
 JambaPrivate.SettingsFrame.Widget:SetHeight(650)
 JambaPrivate.SettingsFrame.Widget:SetLayout( "Fill" )
 JambaPrivate.SettingsFrame.WidgetTree = AceGUI:Create( "JambaTreeGroup" )
+JambaPrivate.SettingsFrame.WidgetTree:SetLayout( "Fill" )
 JambaPrivate.SettingsFrame.TreeGroupStatus = { treesizable = false, groups = {} }
 JambaPrivate.SettingsFrame.WidgetTree:SetStatusTable( JambaPrivate.SettingsFrame.TreeGroupStatus )
 JambaPrivate.SettingsFrame.WidgetTree:EnableButtonTooltips( false )
 JambaPrivate.SettingsFrame.Widget:AddChild( JambaPrivate.SettingsFrame.WidgetTree )
-JambaPrivate.SettingsFrame.WidgetTree:SetLayout( "Fill" )
+
 
 function AJM:OnEnable()
 
@@ -104,55 +105,36 @@ local function JambaTreeGroupTreeGetParent( parentName )
 	return parent
 end
 
-local function GetTreeGroupChildEmaOrder( childName )
-	local order = 1000
-	if childName == L["NEWS"] then
-		order = 5
-	end
-	if childName == L["TEAM"] then
-		order = 10
-	end
-	
-	
-	return order
-end	
-
-
-local function JambaAddModuleToSettings( childName, parentName, moduleIcon, order, moduleFrame, tabGroup )
-	print("AddModuleToSettings", parentName, moduleIcon, order, moduleFrame, tabGroup)
+local function JambaAddModuleToSettings( childName, parentName, moduleIcon, order, moduleFrame )
 	-- 	childName is the parentName then make the child the parent.
 	if childName == parentName then
 		local parent = JambaTreeGroupTreeGetParent( parentName )
 		if parent == nil then
 			table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
 			table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
-			parent = JambaTreeGroupTreeGetParent( parentName )
 			JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
-			JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
 		end	
 
 	else
-	-- [PH] Old Core for modules not supported by the new system -- ebony! 
 	local parent = JambaTreeGroupTreeGetParent( parentName )
 	if parent == nil then
 		table.insert( JambaPrivate.SettingsFrame.Tree.Data, { value = parentName, text = parentName, jambaOrder = order } )
-		parent = JambaTreeGroupTreeGetParent( parentName )
 	end
+	local parent = JambaTreeGroupTreeGetParent( parentName )
 	if parent.children == nil then
 		parent.children = {}
 	end	
-	table.insert( parent.children, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
-	table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
-	table.sort( parent.children, JambaSettingsTreeSort )
-	JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
-	JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[childName] = tabGroup
+		table.insert( parent.children, { value = childName, text = childName, jambaOrder = order, icon = moduleIcon } )
+		table.sort( JambaPrivate.SettingsFrame.Tree.Data, JambaSettingsTreeSort )
+		table.sort( parent.children, JambaSettingsTreeSort )
+		JambaPrivate.SettingsFrame.Tree.ModuleFrames[childName] = moduleFrame
 	end
 end
 
 
 
 local function JambaModuleSelected( tree, event, treeValue, selected )
-	AJM:Print("test")
+	--AJM:Print("test", tree, event, treeValue, selected)
 	local parentValue, value = strsplit( "\001", treeValue )
 	if tree == nil and event == nil then
 		-- Came from chat command.
@@ -163,34 +145,27 @@ local function JambaModuleSelected( tree, event, treeValue, selected )
 	end
 	JambaPrivate.SettingsFrame.Widget:Show()
 	if JambaPrivate.SettingsFrame.Tree.CurrentChild ~= nil then
-		
 		JambaPrivate.SettingsFrame.Tree.CurrentChild.frame:Hide()
 		JambaPrivate.SettingsFrame.Tree.CurrentChild = nil
 	end
 	for moduleValue, moduleFrame in pairs( JambaPrivate.SettingsFrame.Tree.ModuleFrames ) do	
-		if moduleValue == value then
+		if 	moduleValue == value then
 			moduleFrame:SetParent( JambaPrivate.SettingsFrame.WidgetTree )
 			moduleFrame:SetWidth( JambaPrivate.SettingsFrame.WidgetTree.content:GetWidth() or 0 )
 			moduleFrame:SetHeight( JambaPrivate.SettingsFrame.WidgetTree.content:GetHeight() or 0 )
 			moduleFrame.frame:SetAllPoints() 
 			moduleFrame.frame:Show()	
 			JambaPrivate.SettingsFrame.Tree.CurrentChild = moduleFrame
-			-- Hacky hack hack.
-			if JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value] ~= nil then		
-				JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup[value]:SelectTab( "OPTIONS" )
-			else
-				-- Hacky hack hack.
+			if value == "Options" then
 				LibStub( "AceConfigDialog-3.0" ):Open( AJM.moduleName.."OPTIONS", moduleFrame )
 			end			
 			return
 		end
 	end
 end
-AJM:Print("test10000000000000001")
 JambaPrivate.SettingsFrame.Tree = {}
 JambaPrivate.SettingsFrame.Tree.Data = {}
 JambaPrivate.SettingsFrame.Tree.ModuleFrames = {}
-JambaPrivate.SettingsFrame.Tree.ModuleFramesTabGroup = {}
 JambaPrivate.SettingsFrame.Tree.CurrentChild = nil
 JambaPrivate.SettingsFrame.Tree.Add = JambaAddModuleToSettings
 JambaPrivate.SettingsFrame.Tree.ButtonClick = JambaModuleSelected
@@ -508,6 +483,7 @@ function AJM:OnInitialize()
 	-- Create the settings frame.
 	AJM:CoreSettingsCreate()
 	AJM.settingsFrame = AJM.settingsControl.widgetSettings.frame
+	-- TODO DO WE NEED THIS ?????? 
 	--[[
 	-- Blizzard options frame.
 	local frame = CreateFrame( "Frame" )
@@ -523,42 +499,16 @@ function AJM:OnInitialize()
 		AJM.moduleName.."OPTIONS",
 		LibStub( "AceDBOptions-3.0" ):GetOptionsTable( AJM.completeDatabase ) 
 	)
-	local profileContainerWidget = AceGUI:Create( "SimpleGroup" )
+	local profileContainerWidget = AceGUI:Create( "ScrollFrame" )
 	profileContainerWidget:SetLayout( "Fill" )
 	-- We need this to make it a working Module
-	local moduleIcon = "Interface\\Addons\\Jamba\\Media\\SettingsIcon.tga"
 	local order  = 10
-	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], moduleIcon, order, profileContainerWidget, nil )
+	JambaPrivate.SettingsFrame.Tree.Add( L["OPTIONS"], L["OPTIONS"], AJM.pofileIcon, order, profileContainerWidget )
 	
 	-- Register the core as a module.
 	RegisterModule( AJM, AJM.moduleName )
 	-- Register the chat command.
-	AJM:RegisterChatCommand( AJM.chatCommand, "JambaChatCommand" )
-	
-	
-	-- Attempt to load modules, if they are disabled, they won't be loaded.
-	-- TODO: This kinda defeats the purpose of the module system if we have to update core each time a module is added.
---[[
-	AJM:LoadJambaModule( "Jamba-AdvancedLoot" )
-	AJM:LoadJambaModule( "Jamba-DisplayTeam" )
-	AJM:LoadJambaModule( "Jamba-Follow" )
-	AJM:LoadJambaModule( "Jamba-FTL" )
-	AJM:LoadJambaModule( "Jamba-ItemUse" )
-	AJM:LoadJambaModule( "Jamba-Macro" )
-	AJM:LoadJambaModule( "Jamba-Proc" )
-	AJM:LoadJambaModule( "Jamba-Purchase" )
-	AJM:LoadJambaModule( "Jamba-Quest" )
-	AJM:LoadJambaModule( "Jamba-QuestWatcher" )
-	AJM:LoadJambaModule( "Jamba-Sell" )
-	AJM:LoadJambaModule( "Jamba-Talk" )
-	AJM:LoadJambaModule( "Jamba-Target" )
-	AJM:LoadJambaModule( "Jamba-Taxi" )
-	AJM:LoadJambaModule( "Jamba-Toon" )
-	AJM:LoadJambaModule( "Jamba-Trade" )
-	AJM:LoadJambaModule( "Jamba-Video" )
-	AJM:LoadJambaModule( "Jamba-Curr" )
-	AJM:LoadJambaModule( "Jamba-Mount" )
-]]	
+	AJM:RegisterChatCommand( AJM.chatCommand, "JambaChatCommand" )	
 end
 
 function AJM:LoadJambaModule( moduleName )
@@ -830,11 +780,13 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	end
 end
 
+--[[
 function AJM:LoadJambaSettings()
 	InterfaceOptionsFrameCancel_OnClick()
 	HideUIPanel( GameMenuFrame )
 	AJM:JambaChatCommand( "" )
 end
+]]
 
 -- Handle the chat command.
 function AJM:JambaChatCommand( input )

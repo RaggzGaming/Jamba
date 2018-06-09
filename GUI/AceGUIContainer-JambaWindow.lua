@@ -27,7 +27,7 @@ Really the olny thing changed is to lower the setframestata for InitializePopupD
 --[[-----------------------------------------------------------------------------
 Frame Container
 -------------------------------------------------------------------------------]]
-local Type, Version = "JambaWindow", 1
+local Type, Version = "JambaWindow", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -277,6 +277,7 @@ local function Constructor()
 	titlebg_r:SetWidth(30)
 	titlebg_r:SetHeight(40)
 ]]
+	
 	local sizer_se = CreateFrame("Frame", nil, frame)
 	sizer_se:SetPoint("BOTTOMRIGHT")
 	sizer_se:SetWidth(25)

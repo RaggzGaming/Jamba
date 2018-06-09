@@ -90,9 +90,11 @@ L["VENDER"] = "Vender"
 L["VENDER_LIST_MODULE"] = "Sell List"
 L["INTERACTION"] = "Interaction"
 L["CURRENCY"] = "Currency"
-L["TOON"] = "Toons"
+L["TOON"] = "Toon"
 L["FOLLOW"] = "Follow"
-
+L["PURCHASE"] = "Purchase"
+L["VENDER"] = "Vender"
+L["PURCHASE"] = "Purchase"
 
 --------------------------
 -- Pecoded String Formats
@@ -239,7 +241,6 @@ L["DEFAULT_WARNING"] = "Default Warning"
 L["MUTE_POFILE"] = "Mute (Default)"
 L["ADD_MSG_HELP"] = "Add's New Message Area"
 L["REMOVE_MSG_HELP"] = "Remove's Message Area"
-L["MESSAGE_AREA"] = "Message Area Type"
 L["NAME"] = "Name"
 L["PASSWORD"] = "Password"
 L["AREA"]  = "Area On Screen"
@@ -384,7 +385,6 @@ L["RARE"] = "Rare"
 L["REQUESTED_STOP_X"] = function( sender )
 	return string.format( "I Have Requested a Stop From %s", sender )
 end
-L["MESSAGE_AREA"] = "Message Area"
 L["SEND_WARNING_AREA"] = "Send Warning Area"
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
 	return "Settings Received From "..characterName.."."
@@ -518,7 +518,22 @@ L["DRINK"] = "Drink"
 L["FOOD"] = "Food"
 L["REFRESHMENT"] = "Refreshment"
 
- 
- 
+--------------------------
+-- Vender/Purchase Locale.
+L["AUTO_BUY_ITEMS"] = "Auto Buy Items"
+L["OVERFLOW"] = "Overflow"
+L["REMOVE_VENDER_LIST"] = "Remove From Vender List"
+L["ITEM_DROP"] = "Item (Drag Item To Box From Your Bags)"
+L["PURCHASE_ITEMS"] = "Auto Purchase Items"
+L["ADD_ITEM"] = "Add Item"
+L["AMOUNT"] = "Amount"
+L["PURCHASE_MSG"] = "Purchase Messages"
+L["ITEM_ERROR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
+L["NUM_ERROR"] = "Amount To Buy Must Be A Number."
+L["BUY_POPUP_ACCEPT"] = "Are You Sure You Wish To Remove The Selected Item From The Auto Buy Items List?"
+L["ERROR_BAGS_FULL"] =  "I Do Not Have Enough Space In My Bags To Complete My Purchases."
+L["ERROR_GOLD"] = "I Do Not Have Enough Money To Complete My Purchases." 
+L["ERROR_CURR"] = "I Do Not Have Enough Other Currency To Complete My Purchases."
+
 --------------------------
 -- X Locale

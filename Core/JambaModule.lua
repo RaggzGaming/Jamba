@@ -26,6 +26,7 @@ LibStub( "AceConsole-3.0" ):Embed( JambaModule )
 JambaModule.embeddedModules = JambaModule.embeddedModules or {}
 
 -- These methods are the embbedable methods.
+
 local mixinMethods = {
 	"JambaRegisterModule", "JambaModuleInitialize",
 	"JambaSendCommandToTeam", "JambaSendCommandToMaster",
