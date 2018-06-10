@@ -254,6 +254,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 	local column2LeftIndent = column1LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local column3LeftIndent = column2LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, "", movingTop, false )
+	movingTop = movingTop - headingHeight	
 	-- Create a heading for quest completion.
 	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["Quest Watcher"], movingTop, true )
 	movingTop = movingTop - headingHeight

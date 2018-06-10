@@ -509,9 +509,11 @@ function AJM:SettingsCreateOptions( top )
 	local column1Left = left
 	local column2Left = left + 10
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["COMMUNICATIONS"]..L[" "]..L["OPTIONS"] , movingTop, false )--
 	movingTop = movingTop - headingHeight	
-
 	AJM.settingsControl.checkBoxAutoSetTeamOnlineorOffline = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 

@@ -27,12 +27,13 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 AJM.moduleName = "Jamba-Trade"
 AJM.settingsDatabaseName = "JambaTradeProfileDB"
 AJM.chatCommand = "jamba-trade"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Interaction"]
-AJM.moduleDisplayName = L["Trade"]
-
---AJM.inventorySeperator = "\008"
---AJM.inventoryPartSeperator = "\009"
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["INTERACTION"]
+AJM.moduleDisplayName = L["TRADE"]
+-- Icon 
+--AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\QuestIcon.tga"
+-- order
+AJM.moduleOrder = 10
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -61,8 +62,8 @@ function AJM:GetConfiguration()
 		args = {
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the trade settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_ALL_SETTINGS"],
 				usage = "/jamba-trade push",
 				get = false,
 				set = "JambaSendSettings",
@@ -89,7 +90,7 @@ end
 
 local function InitializePopupDialogs()
 	StaticPopupDialogs["JAMBATRADE_CONFIRM_REMOVE_TRADE_ITEMS"] = {
-        text = L["Are you sure you wish to remove the selected item from the trade items list?"],
+        text = L["REMOVE_TRADE_LIST"],
         button1 = YES,
         button2 = NO,
         timeout = 0,
@@ -166,33 +167,19 @@ function AJM:SettingsCreateTrade( top )
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local tradeWidth = headingWidth
 	local movingTop = top
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Trade Item List"], movingTop, false )
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["TRADE_LIST_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxShowJambaTradeWindow = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Trade The List Of Items With Master"],
-		AJM.SettingsToggleShowJambaTradeWindow
-	)	
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.checkBoxTradeBoEItems = JambaHelperSettings:CreateCheckBox( 
-	AJM.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["Trades Binds When Equipped Items With Master"],
-		AJM.SettingsToggleTradeBoEItems
-	)	
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.checkBoxTradeCRItems = JambaHelperSettings:CreateCheckBox( 
-	AJM.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["Trades Crafting Reagents Items With Master"],
-		AJM.SettingsToggleTradeCRItems
+		L["TRADE_LIST"],
+		AJM.SettingsToggleShowJambaTradeWindow,
+		L["TRADE_LIST_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.tradeItemsHighlightRow = 1
@@ -223,83 +210,112 @@ function AJM:SettingsCreateTrade( top )
 		buttonControlWidth, 
 		left, 
 		movingTop,
-		L["Remove"],
+		L["REMOVE"],
 		AJM.SettingsTradeItemsRemoveClick
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Add Items"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["ADD_ITEMS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.tradeItemsEditBoxTradeItem = JambaHelperSettings:CreateEditBox( 
 		AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Other Item (drag item to box)"]
+		L["ITEM_DROP"]
 	)
 	AJM.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTradeItem )
 	movingTop = movingTop - editBoxHeight	
+	-- TODO FIX ME FOR GROUPS!
+--[[
 	AJM.settingsControl.tradeItemsEditBoxTradeTag = JambaHelperSettings:CreateEditBox( 
 		AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Other Tag"]
+		L["Groups"]
 	)
 	
 	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTradeItemTag )
+]]
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControl.tradeItemsButtonAdd = JambaHelperSettings:CreateButton(	
 		AJM.settingsControl, 
 		buttonControlWidth, 
 		left, 
 		movingTop, 
-		L["Add"],
+		L["ADD"],
 		AJM.SettingsTradeItemsAddClick
 	)
 	movingTop = movingTop -	buttonHeight		
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Trade Options"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["TRADE_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
+	AJM.settingsControl.checkBoxTradeBoEItems = JambaHelperSettings:CreateCheckBox( 
+	AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Adjust Toon Money While Visiting The Guild Bank"],
-		AJM.SettingsToggleAdjustMoneyOnToonViaGuildBank
+		L["TRADE_BOE_ITEMS"],
+		AJM.SettingsToggleTradeBoEItems,
+		L["TRADE_BOE_ITEMS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["Amount of Gold"]
+	AJM.settingsControl.checkBoxTradeCRItems = JambaHelperSettings:CreateCheckBox( 
+	AJM.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["TRADE_REAGENTS"],
+		AJM.SettingsToggleTradeCRItems,
+		L["TRADE_REAGENTS_HELP"]
 	)	
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetCallback( "OnEnterPressed", AJM.EditBoxChangedGoldAmountToLeaveOnToon )
-	movingTop = movingTop - editBoxHeight
+	-- Trade Gold! Keep
+	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Trade Excess Gold To Master From Minion"],
-		AJM.SettingsToggleAdjustMoneyWithMasterOnTrade
-	)	
+		L["TRADE_GOLD"],
+		AJM.SettingsToggleAdjustMoneyWithMasterOnTrade,
+		L["TRADE_GOLD_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
 		headingWidth,
 		left,
 		movingTop,
-		L["Amount Of Gold To Keep"]
+		L["GOLD_TO_KEEP"]
 	)	
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetCallback( "OnEnterPressed", AJM.EditBoxChangedGoldAmountToLeaveOnToonTrade )
 	movingTop = movingTop - editBoxHeight
-	
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["GB_OPTIONS"], movingTop, false )
+	movingTop = movingTop - headingHeight
+-- TODO REMOVE! PH PH PH EBONY!
+	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank = JambaHelperSettings:CreateCheckBox( 
+		AJM.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["TRADE_GB"],
+		AJM.SettingsToggleAdjustMoneyOnToonViaGuildBank,
+		L["TRADE_GB_HELP"]
+	)
+	movingTop = movingTop - checkBoxHeight
+	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
+		L["GOLD_TO_KEEP"]
+	)
+	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetCallback( "OnEnterPressed", AJM.EditBoxChangedGoldAmountToLeaveOnToon )
+--end
+	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControl.dropdownMessageArea = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Message Area"] 
+		L["MESSAGE_AREA"] 
 	)
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", AJM.SettingsSetMessageArea )
@@ -361,7 +377,7 @@ end
 
 function AJM:SettingsEditBoxChangedTradeItemTag( event, text )
 	if not text or text:trim() == "" or text:find( "%W" ) ~= nil then
-		AJM:Print( L["Item tags must only be made up of letters and numbers."] )
+		AJM:Print( L["TRADE_TAG_ERR"] )
 		return
 	end
 	AJM.autoTradeItemTag = text
@@ -443,7 +459,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
 
@@ -458,8 +474,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxShowJambaTradeWindow:SetValue( AJM.db.showJambaTradeWindow )
 	AJM.settingsControl.checkBoxTradeBoEItems:SetValue( AJM.db.tradeBoEItems)
 	AJM.settingsControl.checkBoxTradeCRItems:SetValue( AJM.db.tradeCRItems)
-	AJM.settingsControl.checkBoxTradeBoEItems:SetDisabled( not AJM.db.showJambaTradeWindow )
-	AJM.settingsControl.checkBoxTradeCRItems:SetDisabled( not AJM.db.showJambaTradeWindow )
+
 	AJM.settingsControl.dropdownMessageArea:SetValue( AJM.db.messageArea )
 	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank:SetValue( AJM.db.adjustMoneyWithGuildBank )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( AJM.db.goldAmountToKeepOnToon ) )
@@ -467,11 +482,14 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade:SetValue( AJM.db.adjustMoneyWithMasterOnTrade )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetText( tostring( AJM.db.goldAmountToKeepOnToonTrade ) )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetDisabled( not AJM.db.adjustMoneyWithMasterOnTrade )
-	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetText( AJM.autoTradeItemTag )
+--fixme
+--	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetText( AJM.autoTradeItemTag )
 	AJM.settingsControl.tradeItemsEditBoxTradeItem:SetDisabled( not AJM.db.showJambaTradeWindow )
-	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetDisabled( not AJM.db.showJambaTradeWindow )	
+--	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetDisabled( not AJM.db.showJambaTradeWindow )	
 	AJM.settingsControl.tradeItemsButtonRemove:SetDisabled( not AJM.db.showJambaTradeWindow )
 	AJM.settingsControl.tradeItemsButtonAdd:SetDisabled( not AJM.db.showJambaTradeWindow )
+--	AJM.settingsControl.checkBoxTradeBoEItems:SetDisabled( not AJM.db.showJambaTradeWindow )
+--	AJM.settingsControl.checkBoxTradeCRItems:SetDisabled( not AJM.db.showJambaTradeWindow )	
 	AJM:SettingsScrollRefresh()
 
 end
@@ -601,7 +619,7 @@ function AJM:TradeItemsFromList()
 				end				
 			end			
 		else
-			--AJM:Print(tradePlayersName, L["Is Not a Member of the team, Will not trade Items."])
+			--AJM:Print(tradePlayersName, L["ERR_WILL_NOT_TRADE"])
 		end	
 	end	
 end

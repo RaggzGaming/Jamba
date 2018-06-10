@@ -543,6 +543,9 @@ function AJM:CoreSettingsCreateInfo( top )
 	local column2LeftIndent = column1LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local column3LeftIndent = column2LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
 	--Main Heading
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["STATUSTEXT"], movingTop, false )
 	movingTop = movingTop - headingHeight

@@ -135,6 +135,9 @@ local function SettingsCreateOptions( top )
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local left2 = left + halfWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["PURCHASE_ITEMS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxAutoBuy = JambaHelperSettings:CreateCheckBox( 

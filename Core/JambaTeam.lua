@@ -222,14 +222,11 @@ local function SettingsCreateTeamList()
 	local buttonHeight = JambaHelperSettings:GetButtonHeight()
 	local top = JambaHelperSettings:TopOfSettings()
 	local left = JambaHelperSettings:LeftOfSettings()
-	local dropdownHeight = JambaHelperSettings:GetDropdownHeight()
-	
+	local dropdownHeight = JambaHelperSettings:GetDropdownHeight()	
 	local lefticon =  left + 35
 	local headingHeight = JambaHelperSettings:HeadingHeight()
 	local headingWidth = JambaHelperSettings:HeadingWidth( false )
-
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
-
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
 	local iconHight = iconSize + 10
@@ -238,10 +235,13 @@ local function SettingsCreateTeamList()
 	local rightOfList = teamListWidth + horizontalSpacing
 	local checkBoxWidth = (headingWidth - horizontalSpacing) / 2
 	local topOfList = top - headingHeight
+	local movingTop = top
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.teamListHighlightRow = 1
 	AJM.settingsControl.teamListOffset = 1
-	-- Create a heading.
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
 	AJM.settingsControl.labelOne = JambaHelperSettings:CreateContinueLabel( 
 		AJM.settingsControl, 
 		teamListButtonControlWidth,

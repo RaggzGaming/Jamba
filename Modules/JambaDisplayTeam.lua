@@ -1182,8 +1182,11 @@ local function SettingsCreateDisplayOptions( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight	
 	-- Create show.
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["SHOW"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["DISPLAY_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowTeamList = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 

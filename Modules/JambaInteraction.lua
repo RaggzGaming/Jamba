@@ -168,9 +168,11 @@ function AJM:SettingsCreateTaxi( top )
 	local halfWidthSlider = (headingWidth - horizontalSpacing) / 2
 	local dropdownHeight = JambaHelperSettings:GetDropdownHeight()
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
-	local leftIcon = left + iconSize
-	
+	local leftIcon = left + iconSize	
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["TAXI_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxTakeMastersTaxi = JambaHelperSettings:CreateCheckBox( 

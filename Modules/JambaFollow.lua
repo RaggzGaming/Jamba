@@ -202,6 +202,9 @@ local function SettingsCreateDisplayOptions( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["FOLLOW_AFTER_COMBAT"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxAutoFollowAfterCombat = JambaHelperSettings:CreateCheckBox( 

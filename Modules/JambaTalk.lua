@@ -166,6 +166,9 @@ local function SettingsCreateOptions( top )
 	local left2 = left + halfWidth + horizontalSpacing
 	local indent = horizontalSpacing * 10
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, "", movingTop, false )
+	movingTop = movingTop - headingHeight	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Talk Options"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxForwardWhispers = JambaHelperSettings:CreateCheckBox( 

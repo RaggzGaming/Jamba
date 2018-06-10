@@ -39,10 +39,6 @@ AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\QuestIcon.tga"
 -- order
 AJM.moduleOrder = 50
 
-
-
-
-
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
@@ -332,6 +328,9 @@ function AJM:SettingsCreateQuestControl( top )
 	local column2LeftIndent = column1LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local column3LeftIndent = column2LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, "", movingTop, false )
+	movingTop = movingTop - headingHeight
 	-- Create a heading for information.
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, AJM.moduleDisplayName..L[" "]..L["Information"], movingTop, false )
 	movingTop = movingTop - headingHeight
@@ -589,6 +588,9 @@ function AJM:SettingsCreateQuestCompletionControl( top )
 	local column2LeftIndent = column1LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local column3LeftIndent = column2LeftIndent + checkBoxThirdWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControlCompletion, "", movingTop, false )
+	movingTop = movingTop - headingHeight
 	-- Create a heading for quest completion.
 	JambaHelperSettings:CreateHeading( AJM.settingsControlCompletion, L["Quest Completion"], movingTop, false )
 	movingTop = movingTop - headingHeight
@@ -1536,7 +1538,7 @@ function AJM:AcknowledgeAutoAcceptQuest()
 		if AJM.db.slaveMirrorMasterAccept == true then
 			if AJM.isInternalCommand == false then
                 AJM:DebugMessage( "MagicAutoAcceptQuestGrrrr", QuestGetAutoAccept() )
-					AJM:JambaSendCommandToTeam( AJM.COMMAND_ACCEPT_QUEST_FAKE )
+				AJM:JambaSendCommandToTeam( AJM.COMMAND_ACCEPT_QUEST_FAKE )
 			end	
 		end
 	end

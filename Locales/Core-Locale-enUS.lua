@@ -30,6 +30,7 @@ L["MASTER"] = "Master"
 L["ALL"] = "All"
 L["MESSAGES_HEADER"] = "Messages"
 L["MESSAGE_AREA"]  = "Message Area"
+L["SEND_WARNING_AREA"] = "Warning Area"
 L["PH"] = "PH"
 L["GUILD"] = "Guild"
 
@@ -95,6 +96,9 @@ L["FOLLOW"] = "Follow"
 L["PURCHASE"] = "Purchase"
 L["VENDER"] = "Vender"
 L["PURCHASE"] = "Purchase"
+L["QUEST"] = "Quest"
+L["TRADE"] = "Trade"
+
 
 --------------------------
 -- Pecoded String Formats
@@ -331,7 +335,7 @@ L["SELL_RARE"] = "Sell Rare Items"
 L["SELL_RARE_HELP"] = "Sell All Rare(Blue) Items"
 L["SELL_EPIC"] = "Sell Epic Items"
 L["SELL_EPIC_HELP"]	= "Sell All Epic(Purple) Items"
-L["SELL_LIST_DROP_ITEM"] = "Sell:Other Item (drag item to box)"
+L["SELL_LIST_DROP_ITEM"] = "Sell Other Item (DRAG ITEM TO BOX)"
 L["ITEM_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
 L["POPUP_REMOVE_ITEM"] = "Are You Sure You Wish To Remove The Selected Item From The Auto Sell: Items List?"
 L["ADD_TO_LIST"] = "Adds Item To List"
@@ -385,7 +389,6 @@ L["RARE"] = "Rare"
 L["REQUESTED_STOP_X"] = function( sender )
 	return string.format( "I Have Requested a Stop From %s", sender )
 end
-L["SEND_WARNING_AREA"] = "Send Warning Area"
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
 	return "Settings Received From "..characterName.."."
 end
@@ -423,6 +426,7 @@ L["HIDE_TEAM_DISPLAY"] = "Hide Team Display"
 L["HIDE_TEAM_DISPLAY_HELP"] = "Hide The Display Team Panel."
 L["SHOW_TEAM_DISPLAY"] = "Show Team Display"
 L["SHOW_TEAM_DISPLAY_HELP"] = "Show The Display Team Panel."
+L["DISPLAY_HEADER"] = "Display Team Options"
 L["SHOW"] = "Show"
 L["SHOW_TEAM_FRAME"] = "Show Team Frame"
 L["SHOW_TEAM_FRAME_HELP"] = "Show Jamba Team Frame List"
@@ -534,6 +538,30 @@ L["BUY_POPUP_ACCEPT"] = "Are You Sure You Wish To Remove The Selected Item From 
 L["ERROR_BAGS_FULL"] =  "I Do Not Have Enough Space In My Bags To Complete My Purchases."
 L["ERROR_GOLD"] = "I Do Not Have Enough Money To Complete My Purchases." 
 L["ERROR_CURR"] = "I Do Not Have Enough Other Currency To Complete My Purchases."
+
+--------------------------
+-- Trade Locale
+L["REMOVE_TRADE_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Trade Items List?"
+L["TRADE_LIST_HEADER"] = "Trade Item List"
+L["TRADE_LIST"] = "Trade The List Of Items With Master"
+L["TRADE_LIST_HELP"] = "The List Will Trade With The Current Masster \nGroups Do not Currently Work"
+L["TRADE_BOE_ITEMS"] = "Trades Binds When Equipped Items With Master"
+L["TRADE_BOE_ITEMS_HELP"] = "Trade All Boe Items With The Current Master"
+L["TRADE_REAGENTS"] = "Trades Crafting Reagents Items With Master"
+L["TRADE_REAGENTS_HELP"] = "Trades All Crafting Reagents Items Current Master"
+L["TRADE_OPTIONS"] = "Trade Master Options"
+L["TRADE_GOLD"] = "Trade Excess Gold To Master From Minion"
+L["TRADE_GOLD_HELP"] = "Trade Excess Gold To Master From Minions \nAlways Be Careful When Auto Trading."
+L["GOLD_TO_KEEP"] = "Amount of Gold To Keep On Current Minion"
+L["TRADE_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
+L["ERR_WILL_NOT_TRADE"] = "Is Not A Member Of The Team, Will Not Trade Items."
+L["ADD_ITEMS"] = "Add Items"
+
+-- PH
+L["GB_OPTIONS"] = "[PH]:Guild Bank Options"
+L["TRADE_GB"] = "[PH]:Adjust Characters Money While Visiting A Guild Bank"
+L["TRADE_GB_HELP"] = "[PH]Adjust Characters Money While Visiting A Guild Bank \nThis Is a PlaceHolder And Will Be Moved"
+
 
 --------------------------
 -- X Locale

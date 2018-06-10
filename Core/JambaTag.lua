@@ -129,7 +129,10 @@ local function SettingsCreateGroupList()
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.teamListHighlightRow = 1
 	AJM.settingsControl.teamListOffset = 1
-	-- Create a heading.
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	topOfList = topOfList - headingHeight
+	--Main Heading	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["GROUP_LIST"], top, false )
 	-- Create a team list frame.
 	

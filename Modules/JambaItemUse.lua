@@ -721,6 +721,9 @@ local function SettingsCreateOptions( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["ITEM_USE_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.displayOptionsCheckBoxShowItemUse = JambaHelperSettings:CreateCheckBox( 

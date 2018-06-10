@@ -216,6 +216,9 @@ local function SettingsCreateMain( top )
 	local left2 = left + thirdWidth
 	local left3 = left + halfWidth
 	local movingTop = top
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight	
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["SELL_ALL"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	AJM.settingsControl.checkBoxSellItemOnAllWithAltKey = JambaHelperSettings:CreateCheckBox( 

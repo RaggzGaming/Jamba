@@ -355,6 +355,9 @@ local function SettingsCreateAreaList()
 	-- Team list internal variables (do not change).
 	AJM.settingsControl.areaListHighlightRow = 1
 	AJM.settingsControl.areaListOffset = 1
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	top = top - headingHeight
 	-- Create a heading.
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGE_AREA_LIST"], top, false )
 	-- Create an area list frame.
@@ -418,6 +421,10 @@ local function SettingsCreateAreaTypes( top )
 	local column1Left = left
 	local column2Left = left + halfWidth + (horizontalSpacing * 3)
 	local areaConfigurationTop = top - headingHeight
+	-- A blank to get layout to show right?
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
+	top = top - headingHeight
+	--Main Heading
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["MESSAGE_AREA_CONFIGURATION"], top, false )
 	AJM.settingsControl.areaTypeDropdown = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
