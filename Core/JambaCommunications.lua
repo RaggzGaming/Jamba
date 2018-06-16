@@ -310,7 +310,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", SystemSpamFilter)
 function AJM:CommandReceived( prefix, message, distribution, sender )
     local characterName = JambaUtilities:AddRealmToNameIfMissing( sender )
 	AJM:DebugMessage( "Command received: ", prefix, message, distribution, sender )
-	AJM:Print( "Command received: ", prefix, message, distribution, sender )
+	--AJM:Print( "Command received: ", prefix, message, distribution, sender )
 	-- Check if the command is for Jamba Communications.
 	if prefix == AJM.COMMAND_PREFIX then
 		--checks the char is in the team if not everyone can change settings and we do not want that
