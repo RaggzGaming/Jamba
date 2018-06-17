@@ -94,11 +94,14 @@ L["CURRENCY"] = "Currency"
 L["TOON"] = "Toon"
 L["FOLLOW"] = "Follow"
 L["PURCHASE"] = "Purchase"
-L["VENDER"] = "Vender"
+-- FUCKED UP!
+L["VENDER"] = "Vendor"
+L["VENDOR"] = "Vendor"
 L["PURCHASE"] = "Purchase"
+L["WARNINGS"] = "Warnings"
 L["QUEST"] = "Quest"
 L["TRADE"] = "Trade"
-
+L["REPAIR"] = "Repair"
 
 --------------------------
 -- Pecoded String Formats
@@ -562,6 +565,82 @@ L["GB_OPTIONS"] = "[PH]:Guild Bank Options"
 L["TRADE_GB"] = "[PH]:Adjust Characters Money While Visiting A Guild Bank"
 L["TRADE_GB_HELP"] = "[PH]Adjust Characters Money While Visiting A Guild Bank \nThis Is a PlaceHolder And Will Be Moved"
 
+--------------------------
+-- Toon Locale
+L["ATTACKED"] = "I'm Attacked!"
+L["TARGETING"] = "Not Targeting!"
+L["FOCUS"] = "Not Focus!"
+L["LOW_HEALTH"] = "Low Health!"
+L["LOW_MANA"] = "Low_Mana!"
+L["BAGS_FULL"] = "Bags Full!"
+L["CCED"] = "I'm"
+-- Vendor
+L["AUTO_REPAIR"] = "Auto Repair"
+L["AUTO_REPAIR_HELP"] = "Auto Repairs Toons Items When You Visit a Repair Merchant"
+L["REPAIR_GUILD_FUNDS"] = "Auto Repair With Guild Funds"
+L["REPAIR_GUILD_FUNDS_HELP"] = "Trys To Auto Repair With Guild Bank Funds \n Before There Own Gold"
+-- Requests
+L["REQUESTS"] = "Requests"
+L["DENY_DUELS"] = "Auto Deny Duels"
+L["DENY_DUELS_HELP"] = "Automatically Deny Duels From Players \n On All Team Members"
+L["DENY_GUILD_INVITES"] = "Auto Deny Guild Invites"
+L["DENY_GUILD_INVITES_HELP"] = "Automatically Deny All Guild Invites"
+L["ACCEPT_RESURRECT"] = "Auto Accept Resurrect Request"
+L["ACCEPT_RESURRECT_AUTO"] = "Automatically Accept Resurrect Request \nOn All Team Members"
+L["RELEASE_PROMPTS"] = "Display Team Release Prompts"
+L["RELEASE_PROMPTS_HELP"] = "Display Jamba Team Release Popup Displays when the Team Dies"
+L["SUMMON_REQUEST"] = "Auto Accept Summon Request"
+L["SUMMON_REQUEST_HELP"] = "Automatically Accept Summon Requests"
+L["GROUPTOOLS_HEADING"] = "Instance Tools"
+L["ROLE_CHECKS"] = "Auto Accept Role Checks" 
+L["ROLE_CHECKS_HELP"] = "Automatically Accept Role Checks \n\nIf A Role Is Already Set.."
+L["READY_CHECKS"] = "Accept Ready Checks With Team"
+L["READY_CHECKS_HELP"] = "Accept Ready Checks With Team \n\nIf Team Member Is The One That Does The Ready Check It Is Auto."
+L["LFG_Teleport"] = "Instance Teleport With Team"
+L["LFG_Teleport_HELP"] = "Minions Will Copy The Teams Instance Telport"
+L["ROLL_LOOT"] = "Roll Loot With Team"
+L["ROLL_LOOT_HELP"] = "Roll Loot With the Team \nIf Any Instance Has A Roll On A Item"
+-- Warnings
+L["COMBAT"] = "Combat"
+L["WARN_HIT"] = "Warn If Minion Gets Hit"
+L["WARN_HIT_HELP"] = "Warn If Hit First Time In Combat (Minion)"
+L["TARGET_NOT_MASTER"] = "Warn If Target Not Master"
+L["TARGET_NOT_MASTER_HELP"] = "Warn If Target Not Master On Combat (Minion)"
+L["FOCUS_NOT_MASTER"] = "Warn If Focus Not Master"
+L["FOCUS_NOT_MASTER_HELP"] = "Warn If Focus Not Master On Combat (Minion)"
+L["HEALTH_POWER"] = "Health / Mana"
+L["HEALTH_DROPS_BELOW"] = "Warn If My Health Drops Below"
+L["HEALTH_DROPS_BELOW_HELP"] = "Warn If All Minions Health Drops Below A Certain Percent"
+L["HEALTH_PERCENTAGE"] = "Health Amount - Percentage Allowed Before Warning"
+L["MANA_DROPS_BELOW"] = "Warn If My Mana Drops Below"
+L["MANA_DROPS_BELOW_HELP"] = "Warn If All Minions Mana Drops Below A Certain Percent"
+L["MANA_PERCENTAGE"] = "Mana Amount - Percentage Allowed Before Warning"
+L["BAGS_FULL"] = "Warn If Bags Are Full"
+L["BAGS_FULL_HELP"] = "Warn If All Regular Bags Are Full"
+L["BAG_SPACE"] = "Bag Space"
+L["OTHER"] = "OTHER"
+L["WARN_IF_CC"] = "Warn If Toon Gets Crowd Controled"
+L["WARN_IF_CC_HELP"] = "Warn If any Team Member Gets Crowd Control"
+
+L["RELEASE_TEAM_Q"] = "Release All Team?"
+L["RELEASE_TEAM"] = "Release Team"
+L["RECOVER_CORPSES"] = "Recover All Team Corpses?"
+L["ERR_GOLD_TO_REPAIR"] = "I Do Not Have Enough Money To Repair All My Items"
+L["RELEASE_CORPSE_FOR_X"] = function( delay )
+	return string.format( "I can not release to my Corpse for: %s seconds", delay )
+end
+L["I_REFUSED_A_DUEL_FROM_X"] = function( challenger )
+	return string.format( "I Refused A Duel From: %s", challenger )
+end
+L["REFUSED_GUILD_INVITE"] = function( guild, inviter )
+	return string.format( "I Refused A Guild Invite To: %s From: %s", guild, inviter )
+end
+L["SUMMON_FROM_X_TO_Y"] = function( sender, location )
+	return string.format( "I Accepted Summon From: %s To: %s", sender, location )
+end
+L["REPAIRING_COST_ME_X"] = function( costString )
+    return string.format( "Repairing Cost Me: %s", costString )
+end
 
 --------------------------
 -- X Locale

@@ -2436,7 +2436,7 @@ function AJM:SendExperienceStatusUpdateCommand()
 		local artifactPointsSpent = 0
 
 	
-	if HasArtifactEquipped() == true then
+	if HasArtifactEquipped() == true and JambaApi.isBetaBuild == false then
 		local artifactItemID, _, name, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
 		local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
 		artifactName = name
