@@ -961,9 +961,11 @@ StaticPopupDialogs["TEAMDEATH"] = {
 		self.button1:SetText(L["RELEASE_TEAM"])
 	end,
 	OnAccept = function(self)
-		if ( CannotBeResurrected() ) then
+		AJM:Print("test")
+		if not ( CannotBeResurrected() ) then
 			return 1
 		end
+		
 		AJM.teamDeath()
 	end,
 	OnCancel = function(self, data, reason)
@@ -990,7 +992,7 @@ StaticPopupDialogs["TEAMDEATH"] = {
 		if ( IsFalling() and not IsOutOfBounds()) then
 			self.button1:Disable()
 			self.button2:Disable()
-			self.button3:Disable()
+			--self.button3:Disable()
 			return;
 		end
 		
@@ -1045,6 +1047,7 @@ function AJM:relaseTeam()
 end
 
 function AJM:teamDeath()
+	
 	AJM:JambaSendCommandToTeam( AJM.COMMAND_TEAM_DEATH )
 end
 

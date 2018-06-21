@@ -2436,7 +2436,7 @@ function AJM:SendExperienceStatusUpdateCommand()
 		local artifactPointsSpent = 0
 
 	
-	if HasArtifactEquipped() == true and JambaApi.isBetaBuild == false then
+	if HasArtifactEquipped() == true and JambaPrivate.Core.isBetaBuild() == false then
 		local artifactItemID, _, name, _, artifactTotalXP, artifactPointsSpent, _, _, _, _, _, _, artifactTier = C_ArtifactUI.GetEquippedArtifactInfo()
 		local numPointsAvailableToSpend, xp, xpForNextPoint = MainMenuBar_GetNumArtifactTraitsPurchasableFromXP(artifactPointsSpent, artifactTotalXP, artifactTier)
 		artifactName = name
@@ -2447,7 +2447,7 @@ function AJM:SendExperienceStatusUpdateCommand()
 		
 	end	
 	--- TODO 8.0 Beta Build!
-	if JambaApi.isBetaBuild == true then	
+	if JambaPrivate.Core.isBetaBuild() == true then	
 		local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem() 
 		if (azeriteItemLocation) and HasArtifactEquipped() == false then 
 			local azeriteXP, azeriteTotalXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
@@ -2626,13 +2626,6 @@ function AJM:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 	
 --ArtText
 	local artText = ""
-	if AJM.db.showExpInfo == true then
-		if artifactPointsAvailable > 0 then
-			artText = artText.."+"..artifactPointsAvailable..L[" "]			
-		else
-			artText = artText..artifactPointsSpent..L[" "]
-		end
-	end
 	--AJM:Print("TextTest", artifactXP, artifactForNextPoint)
 	if AJM.db.experienceStatusShowValues == true and AJM.db.experienceStatusShowPercentage == false then
 		artText = artText..tostring( AbbreviateLargeNumbers(artifactXP ) )..L[" / "]..tostring( AbbreviateLargeNumbers(artifactForNextPoint) )..L[" "]
@@ -2644,10 +2637,13 @@ function AJM:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 			artText = artText..L["("]..tostring( floor( (artifactXP/artifactForNextPoint)*100) )..L["%"]..L[")"]
 		end
 	end
-		--AJM:Print("arttest", artText)
-		experienceArtBarText:SetText( artText )		
-		experienceArtBar:SetStatusBarColor( 0.901, 0.8, 0.601, 1.0 )
-		experienceArtBar.backgroundTexture:SetColorTexture( 0.901, 0.8, 0.601, 0.20 )
+	if artifactPointsAvailable > 0 then
+		artText = artText..L[" "].."[+ "..artifactPointsAvailable.."]"		
+	end	
+	--AJM:Print("arttest", artText)
+	experienceArtBarText:SetText( artText )		
+	experienceArtBar:SetStatusBarColor( 0.901, 0.8, 0.601, 1.0 )
+	experienceArtBar.backgroundTexture:SetColorTexture( 0.901, 0.8, 0.601, 0.20 )
 		
 --[[		
 	--HonorText	

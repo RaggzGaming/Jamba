@@ -40,10 +40,10 @@ AJM.settings = {
 		takeMastersTaxi = true,
 		requestTaxiStop = true,
 		changeTexiTime = 2,
-		mountWithTeam = true,
 		--Mount
-		dismountWithTeam = true,
-		dismountWithMaster = true,
+		mountWithTeam = false,
+		dismountWithTeam = false,
+		dismountWithMaster = false,
 		mountInRange = false,
 		--Loot
 		autoLoot = false,
@@ -119,8 +119,10 @@ function AJM:OnEnable()
 	-- Hook the TaketaxiNode function.
 	AJM:SecureHook( "TakeTaxiNode" )
 	AJM:SecureHook( "TaxiRequestEarlyLanding" )
---	AJM:RegisterEvent("UNIT_SPELLCAST_START")
---	AJM:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	if JambaPrivate.Core.isBetaBuild() == false then
+		AJM:RegisterEvent("UNIT_SPELLCAST_START")
+		AJM:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+	end	
 	AJM:RegisterEvent( "LOOT_READY" )
 	if JambaPrivate.Core.isBetaBuild() == true then
 		AJM:RegisterEvent( "TAXIMAP_OPENED" )
@@ -420,7 +422,9 @@ function AJM:SettingsRefresh()
 	-- Set state.
 	AJM.settingsControl.checkBoxDismountWithTeam:SetDisabled( not AJM.db.mountWithTeam )
 	AJM.settingsControl.checkBoxDismountWithMaster:SetDisabled( not AJM.db.dismountWithTeam or not AJM.db.mountWithTeam )
-	AJM.settingsControl.checkBoxMountInRange:SetDisabled( not AJM.db.mountWithTeam )	
+	AJM.settingsControl.checkBoxMountInRange:SetDisabled( not AJM.db.mountWithTeam )
+	-- BETA TODO FIX FOR 8.0!
+	AJM.settingsControl.checkBoxMountWithTeam:SetDisabled( JambaPrivate.Core.isBetaBuild() )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -563,7 +567,7 @@ function AJM:UNIT_SPELLCAST_SUCCEEDED(event, unitID, spell, rank, lineID, spellI
 		--AJM:Print("test", spell)
 		AJM.isMounted = spell
 		--AJM:Print("Mounted!", AJM.isMounted)
-	--	AJM:RegisterEvent("UNIT_AURA")
+		AJM:RegisterEvent("UNIT_AURA")
 	--else
 		-- SomeThing gone wrong! so going to cast a random mount!
 		--AJM:Print("This Mount is not supported!", spell)
@@ -584,7 +588,7 @@ function AJM:UNIT_AURA(event, unitID, ... )
 				if IsShiftKeyDown() == false then	
 					--AJM:Print("test")
 					AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-				--	AJM:UnregisterEvent("UNIT_AURA")
+					AJM:UnregisterEvent("UNIT_AURA")
 				end		
 			else	
 				--AJM:Print("test1")
@@ -592,7 +596,7 @@ function AJM:UNIT_AURA(event, unitID, ... )
 			end
 		else
 			AJM:JambaSendCommandToTeam( AJM.COMMAND_MOUNT_DISMOUNT )
-		--	AJM:UnregisterEvent("UNIT_AURA")
+			AJM:UnregisterEvent("UNIT_AURA")
 		end		
 	end
 end
