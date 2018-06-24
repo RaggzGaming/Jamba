@@ -595,17 +595,9 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM:SettingsRefresh()
 		-- Tell the player.
 		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
 	end
 end
 
-
--- Functions available from Jamba Communications for other Jamba internal objects.
-JambaPrivate.Communications.COMMUNICATION_PRIORITY_BULK = AJM.COMMUNICATION_PRIORITY_BULK
-JambaPrivate.Communications.COMMUNICATION_PRIORITY_NORMAL = AJM.COMMUNICATION_PRIORITY_NORMAL
-JambaPrivate.Communications.COMMUNICATION_PRIORITY_ALERT = AJM.COMMUNICATION_PRIORITY_ALERT
-JambaPrivate.Communications.SendChatMessage = SendChatMessage
 JambaPrivate.Communications.SendSettings = SendSettings
 JambaPrivate.Communications.SendCommandAll = SendCommandAll
 JambaPrivate.Communications.SendCommandMaster = SendCommandMaster

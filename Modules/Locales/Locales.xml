@@ -12,7 +12,4 @@
 	<Script file="JambaQuest-Locale-enUS.lua" />
 	<Script file="JambaQuestWatcher-Locale-enUS.lua" />
 
-	<Script file="JambaTalk-Locale-enUS.lua" />
-
-
 </Ui>

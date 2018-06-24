@@ -25,23 +25,28 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 AJM.moduleName = "Jamba-Talk"
 AJM.settingsDatabaseName = "JambaTalkProfileDB"
 AJM.chatCommand = "jamba-talk"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Toon"]
-AJM.moduleDisplayName = L["Talk"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["TOON"]
+AJM.moduleDisplayName = L["TALK"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\ChatIcon.tga"
+-- order
+AJM.moduleOrder = 99
+
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
 	profile = {
 		forwardWhispers = true,
 		doNotForwardRealIdWhispers = true,
-		forwardViaWhisper = false,
+--		forwardViaWhisper = false,
 		fakeWhisper = true,
 		fakeInjectSenderToReplyQueue = true,
 		fakeInjectOriginatorToReplyQueue = false,
-		fakeWhisperCompact = false,
+--		fakeWhisperCompact = false,
 		whisperMessageArea = "ChatFrame1",
-		enableChatSnippets = false,
-		chatSnippets = {},
+--		enableChatSnippets = false,
+--		chatSnippets = {},
 	},
 }
 
@@ -57,8 +62,8 @@ function AJM:GetConfiguration()
 		args = {	
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the talk settings to all characters in the team."],
+				name = L["PUSH_ALL_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-talk push",
 				get = false,
 				set = "JambaSendSettings",
@@ -104,23 +109,23 @@ function AJM:SettingsRefresh()
 	-- Set values.
 	AJM.settingsControl.checkBoxForwardWhispers:SetValue( AJM.db.forwardWhispers )
 	AJM.settingsControl.checkBoxDoNotForwardRealIdWhispers:SetValue( AJM.db.doNotForwardRealIdWhispers )
-	AJM.settingsControl.checkBoxForwardViaWhisper:SetValue( AJM.db.forwardViaWhisper )
+--	AJM.settingsControl.checkBoxForwardViaWhisper:SetValue( AJM.db.forwardViaWhisper )
 	AJM.settingsControl.checkBoxFakeWhispers:SetValue( AJM.db.fakeWhisper )
 	AJM.settingsControl.checkBoxFakeInjectSenderToReplyQueue:SetValue( AJM.db.fakeInjectSenderToReplyQueue )
 	AJM.settingsControl.checkBoxFakeInjectOriginatorToReplyQueue:SetValue( AJM.db.fakeInjectOriginatorToReplyQueue )
-	AJM.settingsControl.checkBoxFakeWhisperCompact:SetValue( AJM.db.fakeWhisperCompact )
-	AJM.settingsControl.checkBoxEnableChatSnippets:SetValue( AJM.db.enableChatSnippets )
+--	AJM.settingsControl.checkBoxFakeWhisperCompact:SetValue( AJM.db.fakeWhisperCompact )
+--	AJM.settingsControl.checkBoxEnableChatSnippets:SetValue( AJM.db.enableChatSnippets )
 	AJM.settingsControl.dropdownMessageArea:SetValue( AJM.db.whisperMessageArea )
 	-- Set state.
 	AJM.settingsControl.checkBoxFakeInjectSenderToReplyQueue:SetDisabled( not AJM.db.fakeWhisper )
 	AJM.settingsControl.checkBoxFakeInjectOriginatorToReplyQueue:SetDisabled( not AJM.db.fakeWhisper )
-	AJM.settingsControl.checkBoxFakeWhisperCompact:SetDisabled( not AJM.db.fakeWhisper )
+--	AJM.settingsControl.checkBoxFakeWhisperCompact:SetDisabled( not AJM.db.fakeWhisper )
 	AJM.settingsControl.dropdownMessageArea:SetDisabled( not AJM.db.fakeWhisper )
 	AJM.settingsControl.buttonRefreshChatList:SetDisabled( not AJM.db.fakeWhisper )
-	AJM.settingsControl.buttonRemove:SetDisabled( not AJM.db.enableChatSnippets )
-	AJM.settingsControl.buttonAdd:SetDisabled( not AJM.db.enableChatSnippets )
-	AJM.settingsControl.multiEditBoxSnippet:SetDisabled( not AJM.db.enableChatSnippets )
-	AJM:SettingsScrollRefresh()
+--	AJM.settingsControl.buttonRemove:SetDisabled( not AJM.db.enableChatSnippets )
+--	AJM.settingsControl.buttonAdd:SetDisabled( not AJM.db.enableChatSnippets )
+--	AJM.settingsControl.multiEditBoxSnippet:SetDisabled( not AJM.db.enableChatSnippets )
+--	AJM:SettingsScrollRefresh()
 end
 
 -- Settings received.
@@ -130,20 +135,18 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM.db.forwardWhispers = settings.forwardWhispers
 		AJM.db.doNotForwardRealIdWhispers = settings.doNotForwardRealIdWhispers
 		AJM.db.fakeWhisper = settings.fakeWhisper
-		AJM.db.enableChatSnippets = settings.enableChatSnippets
+--		AJM.db.enableChatSnippets = settings.enableChatSnippets
 		AJM.db.whisperMessageArea = settings.whisperMessageArea
-		AJM.db.forwardViaWhisper = settings.forwardViaWhisper
-		AJM.db.fakeWhisperCompact = settings.fakeWhisperCompact
+--		AJM.db.forwardViaWhisper = settings.forwardViaWhisper
+--		AJM.db.fakeWhisperCompact = settings.fakeWhisperCompact
 		AJM.db.fakeInjectSenderToReplyQueue = settings.fakeInjectSenderToReplyQueue
 		AJM.db.fakeInjectOriginatorToReplyQueue = settings.fakeInjectOriginatorToReplyQueue
 		AJM.db.chatSnippets = JambaUtilities:CopyTable( settings.chatSnippets )
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
-	end
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
+		end
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -169,15 +172,16 @@ local function SettingsCreateOptions( top )
 	-- A blank to get layout to show right?
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, "", movingTop, false )
 	movingTop = movingTop - headingHeight	
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Talk Options"], movingTop, false )
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["TALK_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	AJM.settingsControl.checkBoxForwardWhispers = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Forward Whispers To Master And Relay Back"],
-		AJM.SettingsToggleForwardWhispers
+		L["FORWARD_WHISPERS_MASTER_RELAY"],
+		AJM.SettingsToggleForwardWhispers,
+		L["FORWARD_WHISPERS_MASTER_RELAY_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight	
 	AJM.settingsControl.checkBoxDoNotForwardRealIdWhispers = JambaHelperSettings:CreateCheckBox( 
@@ -185,26 +189,31 @@ local function SettingsCreateOptions( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Do Not Forward RealID Whispers"],
-		AJM.SettingsToggleDoNotForwardRealIdWhispers
+		L["DO_NOT_BATTENET_WHISPERS"],
+		AJM.SettingsToggleDoNotForwardRealIdWhispers,
+		L["DO_NOT_BATTENET_WHISPERS_HELP"]
 	)	
+--[[
 	movingTop = movingTop - checkBoxHeight	
 	AJM.settingsControl.checkBoxForwardViaWhisper = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Forward Using Normal Whispers"],
-		AJM.SettingsToggleForwardViaWhisper
-	)	
+		L["FORWARD_USING_NORMAL_WHISPERS"],
+		AJM.SettingsToggleForwardViaWhisper,
+		L["FORWARD_USING_NORMAL_WHISPERS_HRLP"]
+	)
+]]	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxFakeWhispers = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Forward Via Fake Whispers For Clickable Links And Players"],
-		AJM.SettingsToggleFakeWhispers
+		L["FORWARD_FAKE_WHISPERS"],
+		AJM.SettingsToggleFakeWhispers,
+		L["FORWARD_FAKE_WHISPERS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 		AJM.settingsControl.dropdownMessageArea = JambaHelperSettings:CreateDropdown( 
@@ -212,7 +221,7 @@ local function SettingsCreateOptions( top )
 		(headingWidth - indent) / 2, 
 		left + indent, 
 		movingTop, 
-		L["Send Fake Whispers To"] 
+		L["FAKE_WHISPERS_CHANNEL"] 
 	)
 	AJM.settingsControl.dropdownMessageArea:SetList( AJM.chatFrameList )
 	AJM.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", AJM.SettingsSetMessageArea )
@@ -221,7 +230,7 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left + indent + (headingWidth - indent) / 2 + horizontalSpacing, 
 		movingTop - buttonHeight + 4,
-		L["Update"],
+		L["UPDATE"],
 		AJM.SettingsRefreshChatListClick
 	)
 	movingTop = movingTop - dropdownHeight - verticalSpacing
@@ -230,8 +239,9 @@ local function SettingsCreateOptions( top )
 		headingWidth - indent, 
 		left + indent, 
 		movingTop, 
-		L["Add Forwarder To Reply Queue On Master"],
-		AJM.SettingsToggleFakeInjectSenderToReplyQueue
+		L["FORWARDER_REPLY_QUEUE"],
+		AJM.SettingsToggleFakeInjectSenderToReplyQueue,
+		L["FORWARDER_REPLY_QUEUE_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControl.checkBoxFakeInjectOriginatorToReplyQueue = JambaHelperSettings:CreateCheckBox( 
@@ -239,28 +249,35 @@ local function SettingsCreateOptions( top )
 		headingWidth - indent, 
 		left + indent, 
 		movingTop, 
-		L["Add Originator To Reply Queue On Master"],
-		AJM.SettingsToggleFakeInjectOriginatorToReplyQueue
-	)	
-	movingTop = movingTop - checkBoxHeight
+		L["ORIGINATOR_REPLY_QUEUE"],
+		AJM.SettingsToggleFakeInjectOriginatorToReplyQueue,
+		L["ORIGINATOR_REPLY_QUEUE_HELP"]
+		)	
+--[[
+		movingTop = movingTop - checkBoxHeight	
 	AJM.settingsControl.checkBoxFakeWhisperCompact = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth - indent, 
 		left + indent, 
 		movingTop, 
-		L["Only Show Messages With Links"],
-		AJM.SettingsToggleFakeWhisperCompact
+		L["MESSAGES_WITH_LINKS"],
+		AJM.SettingsToggleFakeWhisperCompact,
+		L["MESSAGES_WITH_LINKS_HELP"]
 	)	
+]]	
+--[[
 	movingTop = movingTop - checkBoxHeight	
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["Chat Snippets"], movingTop, false )
+	
+	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["CHAT_SNIPPETS"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	AJM.settingsControl.checkBoxEnableChatSnippets = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControl, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Enable Chat Snippets"],
-		AJM.SettingsToggleChatSnippets
+		L["ENABLE_CHAT_SNIPPETS"],
+		AJM.SettingsToggleChatSnippets,
+		L["ENABLE_CHAT_SNIPPETS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight		
 	AJM.settingsControl.highlightRow = 1
@@ -291,7 +308,7 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left, 
 		movingTop, 
-		L["Add"],
+		L["ADD"],
 		AJM.SettingsAddClick
 	)
 	AJM.settingsControl.buttonRemove = JambaHelperSettings:CreateButton(
@@ -299,7 +316,7 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left + buttonControlWidth + horizontalSpacing, 
 		movingTop,
-		L["Remove"],
+		L["REMOVE"],
 		AJM.SettingsRemoveClick
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
@@ -308,12 +325,14 @@ local function SettingsCreateOptions( top )
 		headingWidth,
 		left,
 		movingTop,
-		L["Snippet Text"],
+		L["SNIPPET_TEXT"],
 		5
 	)
 	AJM.settingsControl.multiEditBoxSnippet:SetCallback( "OnEnterPressed", AJM.SettingsMultiEditBoxChangedSnippet )
 	local multiEditBoxHeightSnippet = 110
+	
 	movingTop = movingTop - multiEditBoxHeightSnippet								
+]]	
 	return movingTop
 end
 
@@ -323,19 +342,19 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	local bottomOfSettings = SettingsCreateOptions( JambaHelperSettings:TopOfSettings() )
-	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfSettings )
-	-- Help
-	local helpTable = {}
-	JambaHelperSettings:CreateHelp( AJM.settingsControl, helpTable, AJM:GetConfiguration() )		
+	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfSettings )	
 end
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Callbacks.
 -------------------------------------------------------------------------------------------------------------
 
+--[[
 function AJM:SettingsScrollRefresh()
 	FauxScrollFrame_Update(
 		AJM.settingsControl.list.listScrollFrame, 
@@ -376,6 +395,7 @@ function AJM:SettingsRowClick( rowNumber, columnNumber )
 		AJM:SettingsScrollRefresh()
 	end
 end
+]]
 
 function AJM:SettingsPushSettingsClick( event )
 	AJM:JambaSendSettings()
@@ -401,10 +421,12 @@ function AJM:SettingsToggleFakeWhispers( event, checked )
 	AJM:SettingsRefresh()
 end
 
+--[[
 function AJM:SettingsToggleForwardViaWhisper( event, checked )
 	AJM.db.forwardViaWhisper = checked
 	AJM:SettingsRefresh()
 end
+]]
 
 function AJM:SettingsToggleFakeInjectSenderToReplyQueue( event, checked )
 	AJM.db.fakeInjectSenderToReplyQueue = checked
@@ -416,11 +438,18 @@ function AJM:SettingsToggleFakeInjectOriginatorToReplyQueue( event, checked )
 	AJM:SettingsRefresh()
 end
 
+function AJM:SettingsRefreshChatListClick( event )
+	AJM:UPDATE_CHAT_WINDOWS()
+end
+
+--[[
 function AJM:SettingsToggleFakeWhisperCompact( event, checked )
 	AJM.db.fakeWhisperCompact = checked
 	AJM:SettingsRefresh()
 end
+]]
 
+--[[
 function AJM:SettingsToggleChatSnippets( event, checked )
 	AJM.db.enableChatSnippets = checked
 	AJM:SettingsRefresh()
@@ -433,11 +462,10 @@ function AJM:SettingsMultiEditBoxChangedSnippet( event, text )
 	end
 	AJM:SettingsRefresh()
 end
+]]
 
-function AJM:SettingsRefreshChatListClick( event )
-	AJM:UPDATE_CHAT_WINDOWS()
-end
 
+--[[
 function AJM:SettingsAddClick( event )
 	StaticPopup_Show( "JAMBATALK_ASK_SNIPPET" )
 end
@@ -445,15 +473,16 @@ end
 function AJM:SettingsRemoveClick( event )
 	StaticPopup_Show( "JAMBATALK_CONFIRM_REMOVE_CHAT_SNIPPET" )
 end
-
+]]
 -------------------------------------------------------------------------------------------------------------
 -- Popup Dialogs.
 -------------------------------------------------------------------------------------------------------------
 
 -- Initialize Popup Dialogs.
 local function InitializePopupDialogs()
-   StaticPopupDialogs["JAMBATALK_ASK_SNIPPET"] = {
-        text = L["Enter the shortcut text for this chat snippet:"],
+	--[[
+	StaticPopupDialogs["JAMBATALK_ASK_SNIPPET"] = {
+        text = L["CHAT_SNIPPET_POPUP"],
         button1 = ACCEPT,
         button2 = CANCEL,
         hasEditBox = 1,
@@ -483,7 +512,7 @@ local function InitializePopupDialogs()
         end,				
     }
 	StaticPopupDialogs["JAMBATALK_CONFIRM_REMOVE_CHAT_SNIPPET"] = {
-        text = L["Are you sure you wish to remove the selected chat snippet?"],
+        text = L["REMOVE_CHAT_SNIPPET"],
         button1 = YES,
         button2 = NO,
         timeout = 0,
@@ -493,6 +522,7 @@ local function InitializePopupDialogs()
 			AJM:RemoveItem()
 		end,
     } 
+	]]
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -512,12 +542,12 @@ function AJM:OnInitialize()
 	-- Initialise the JambaModule part of this module.
 	AJM:JambaModuleInitialize( AJM.settingsControl.widgetSettings.frame )
 	-- Hook the SendChatMessage to translate any chat snippets.
-	AJM:RawHook( "SendChatMessage", true )	
+	--AJM:RawHook( "SendChatMessage", true )	
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
 	-- Populate the settings.
 	AJM:SettingsRefresh()	
-	AJM:SettingsRowClick( 1, 1 )
+--	AJM:SettingsRowClick( 1, 1 )
 end
 
 -- Called when the addon is enabled.
@@ -568,9 +598,11 @@ function AJM:RemoveItem()
 	AJM:SettingsRowClick( 1, 1 )		
 end
 
+--[[
 -- The SendChatMessage hook.
 function AJM:SendChatMessage( ... )
 	local message, chatType, language, target = ...
+	AJM:Print("test")
 	if chatType == "WHISPER" then
 		-- Does this character have chat snippets enabled?
 		if AJM.db.enableChatSnippets == true then
@@ -579,18 +611,23 @@ function AJM:SendChatMessage( ... )
 			if snippetName then
 				-- Then look up the associated text.
 				local messageToSend = AJM:GetTextForSnippet( snippetName )
-				JambaApi.SendChatMessage( messageToSend, "WHISPER", target, JambaApi.COMMUNICATION_PRIORITY_BULK )
+				AJM:Print("test")
+				--JambaPrivate.Communications.SendChatMessage( messageToSend, "WHISPER", target, JambaPrivate.Communications )
+				
 				-- Finish with the chat message, i.e. do not let the original handler run.
 				return true
 			end
 		end
 	end
+	
 	-- Call the orginal function.
 	return AJM.hooks["SendChatMessage"]( ... )
 end
+]]
 
 function AJM:CHAT_MSG_WHISPER( chatType, message, sender, language, channelName, target, flag, ... )
 	-- Does this character forward whispers?
+	--AJM:Print("Test", message, sender)
 	if AJM.db.forwardWhispers == true then
 		-- Set a GM flag if this whisper was from a GM.
 		local isGM = false
@@ -653,7 +690,7 @@ end
 local function BuildWhisperCharacterString( originalSender, viaCharacter )
 	local info = ChatTypeInfo["WHISPER"]
 	local colorString = format( "|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255 )
-	return format( "%s|Hplayer:%2$s|h[%2$s]|h%4$s|Hplayer:%3$s|h[%3$s]|h%5$s|r", colorString, originalSender, viaCharacter, L[" (via "], L[")"] )
+	return format( "%s|Hplayer:%2$s|h[%2$s]|h%4$s|Hplayer:%3$s|h[%3$s]|h%5$s|r", colorString, originalSender, viaCharacter, L["TALK_VIA"], L[")"] )
 end
 
 function AJM:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID )
@@ -669,7 +706,7 @@ function AJM:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 	local fromCharacterWhisper = sender	
 	if isReal == true then
 		-- Get the toon name of the character the RealID person is playing, Blizzard will not reveal player real names, so cannot send those.
-		fromCharacterWhisper = select( 5, BNGetFriendInfoByID( realFriendID ) )..L["(RealID)"]
+		fromCharacterWhisper = select( 5, BNGetFriendInfoByID( realFriendID ) )..L["BATTLE_NET"]
 		--local presenceID, presenceName, battleTag, isBattleTagPresence, toonName, toonID, client, isOnline, lastOnline, isAFK, isDND, messageText = BNGetFriendInfoByID( realFriendID )
 	end
 	if isGM == true then
@@ -677,7 +714,8 @@ function AJM:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 	end
 	-- Whisper the master.
 	if AJM.db.fakeWhisper == true then
-		local completeMessage = L[" whispers: "]..message
+		local completeMessage = L["WHISPERS"]..message
+	--[[	
 		-- Send in compact format?
 		if AJM.db.fakeWhisperCompact == true then
 			-- Does the message contain a link?
@@ -685,9 +723,10 @@ function AJM:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 				-- No, don't display the message.
 				local info = ChatTypeInfo["WHISPER"]
 				local colorString = format( "|cff%02x%02x%02x", info.r * 255, info.g * 255, info.b * 255 )
-				completeMessage = L[" "]..colorString..L["whispered you."].."|r"
+				completeMessage = L[" "]..colorString..L["WHISPERED_YOU"].."|r"
 			end
 		end
+	]]	
 		if isGM == true then
 			completeMessage = L[" "]..L["<GM>"]..L[" "]..completeMessage
 		end
@@ -701,14 +740,16 @@ function AJM:ForwardWhisperToMaster( message, sender, isGM, isReal, realFriendID
 		end
 		AJM:JambaSendCommandToMaster( AJM.COMMAND_MESSAGE, AJM.db.whisperMessageArea, sender, AJM.characterName, completeMessage, inject1, inject2 )
 	end
+	--[[
 	if AJM.db.forwardViaWhisper == true then
 		-- RealID messages do not wrap links in colour codes (text is always all blue), so wrap link in colour code
 		-- so normal whisper forwarding with link works.
 		if (isReal == true) and (DoesMessageHaveLink( message ) == true) then
 			message = ColourCodeLinks( message )
 		end
-		JambaApi.SendChatMessage( fromCharacterWhisper..": "..message, "WHISPER", JambaApi.GetMasterName(), JambaApi.COMMUNICATION_PRIORITY_BULK )
+		JambaPrivate.Communications.SendCommandMaster( fromCharacterWhisper..": "..message, "WHISPER", JambaApi.GetMasterName(), JambaPrivate.Communications.COMMUNICATION_PRIORITY_BULK )
 	end
+	]]
 	-- Remember this sender as the most recent sender.
 	AJM.lastSender = sender
 	AJM.lastSenderIsReal = isReal
@@ -729,6 +770,7 @@ function AJM:ForwardWhisperFromMaster( messageFromMaster )
 	end
 	-- Check to see if there is a snippet name in the message (text with a leading !).
 	local messageToSend = messageToInspect
+--[[	
 	if AJM.db.enableChatSnippets == true then
 		local snippetName = select( 3, messageToInspect:find( "^!(%w+)$" ) )
 		-- If a snippet name was found...
@@ -737,6 +779,7 @@ function AJM:ForwardWhisperFromMaster( messageFromMaster )
 			messageToSend = AJM:GetTextForSnippet( snippetName )
 		end
 	end
+]]	
 	-- If there is a valid character to send to...
 	if sendTo then
 		if messageToSend:trim() ~= "" then
@@ -744,7 +787,8 @@ function AJM:ForwardWhisperFromMaster( messageFromMaster )
 			if AJM.lastSenderIsReal == true and AJM.lastSenderRealID ~= nil then
 				BNSendWhisper( AJM.lastSenderRealID, messageToSend )
 			else
-				JambaApi.SendChatMessage( messageToSend, "WHISPER", sendTo, JambaApi.COMMUNICATION_PRIORITY_BULK )
+				--AJM:Print("chatSend", messageToSend, sendTo ) 
+				SendChatMessage( messageToSend, "WHISPER", nil, sendTo )
 			end
 		end
 		-- Remember this sender as the most recent sender.

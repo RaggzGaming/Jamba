@@ -102,6 +102,7 @@ L["WARNINGS"] = "Warnings"
 L["QUEST"] = "Quest"
 L["TRADE"] = "Trade"
 L["REPAIR"] = "Repair"
+L["TALK"] = "Talk"
 
 --------------------------
 -- Pecoded String Formats
@@ -318,7 +319,7 @@ L["TEAM_BAGS"] = "Items In Team Bags"
 L["BAG_BANK"] = "Bag (Banks)"
 
 --------------------------
--- X Jamba-Sell
+-- Jamba-Sell Locale
 L["SELL"] = "Sell"
 L["SELL_LIST"] = "Sell Item's List"
 L["SELL_ALL"] = "Sell Item's On All Toons"
@@ -355,7 +356,7 @@ L["DELETE_ITEM"] = function( bagItemLink )
 end
 
 --------------------------
--- X Interaction
+-- Interaction Locale
 L["TAXI"] = "Taxi"
 L["TAXI_OPTIONS"] = "Taxi Options"
 L["TAKE_TEAMS_TAXI"] = "Take Teams Taxi"
@@ -363,7 +364,7 @@ L["TAKE_TEAMS_TAXI_HELP"] = "Take The Same Flight As The Any Team Member \n(Othe
 L["REQUEST_TAXI_STOP"] = "Request Taxi Stop With Team"
 L["REQUEST_TAXI_STOP_HELP"] = "[PH] REQUEST_TAXI_STOP_HELP"
 L["CLONES_TO_TAKE_TAXI_AFTER"] = "Clones To Take Taxi After Leader"
---Mount
+--Mount Locale
 L["MOUNT"] = "Mount"
 L["MOUNT_OPTIONS"] = "Mount Options"
 L["MOUNT_WITH_TEAM"] = "Mount With Team"
@@ -375,7 +376,7 @@ L["ONLY_DISMOUNT_WITH_MASTER_HELP"] = "ONLY DISMOUNT'S WHEM MASTER CHARACTER DIS
 L["ONLY_MOUNT_WHEN_IN_RANGE"] = "Only Mount When In Range"
 L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"] = "Dismounts Olny When The Team Is In Range /nOnly Works In A Party!"
 L["I_AM_UNABLE_TO_MOUNT"] = "I Am Unable To Mount."
--- Loot
+-- Loot Locale
 L["LOOT_OPTIONS"] = "Loot v2 Options"
 L["DISMOUNT_WITH_CHARACTER"] = "Dismount With Character That Dismount"
 L["ENABLE_AUTO_LOOT"] = "Enable Auto"
@@ -399,7 +400,7 @@ L["I_AM_UNABLE_TO_FLY_TO_A"] = function( nodename )
 	return string.format( "I Am Unable To Fly To %s .", nodename )
 end
 --------------------------
--- X Locale
+-- Currency Locale
 L["JAMBA_CURRENCY"] = "Jamba Currency"
 L["SHOW_CURRENCY"] = "Show Currency"
 L["SHOW_CURRENCY_HELP"] = "Show The Currency Frame Window."
@@ -475,7 +476,7 @@ L["POWER_BAR_HEADER"] = "Power Bar"
 L["CLASS_BAR_HEADER"] = "Class Power Bar"
 
 --------------------------
--- X Follow
+-- Follow Locale
 L["FOLLOW_BROKEN_MSG"] = "Follow Borken!"
 L["FOLLOW_MASTER"] = "Follow The Master <Group>"
 L["FOLLOW_MASTER_HELP"] = "Follow The Master Currebt Master (Group)"
@@ -483,7 +484,7 @@ L["FOLLOW_TARGET"] = "Follow A Target <TargetName>"
 L["FOLLOW_TARGET_HELP"] = "Follow The Specified Target (Group)"
 L["FOLLOW_AFTER_COMBAT"] = "Auto Folllow After Combat"
 L["FOLLOW_AFTER_COMBAT_HELP"] = "Automatically Follow After Combat"
-L["DELAY_FOLLOW_AFTER_COMBAT"] = "Delay_Follow_After_Combat (S)"
+L["DELAY_FOLLOW_AFTER_COMBAT"] = "Delay Follow After Combat (S)"
 L["DELAY_FOLLOW_AFTER_COMBAT_HELP"] = "Delay_Follow_After_Combat In Seconds"
 L["FOLLOW_STROBING"] = "Begin Follow Strobing <TargetName>"
 L["FOLLOW_STROBING_HELP"] = "Begin A Sequence Of Follow Commands That Strobe Every Second (Configurable) A Specified Target."
@@ -643,4 +644,38 @@ L["REPAIRING_COST_ME_X"] = function( costString )
 end
 
 --------------------------
+-- Talk Locale
+
+L["TALK_OPTIONS"] = "Talk Options"
+L["FORWARD_WHISPERS_MASTER_RELAY"] = "Forward Whispers To Master And Relay Back"
+L["FORWARD_WHISPERS_MASTER_RELAY_HELP"] = "Forward Whispers To Master And \nRelay Back To The Character That Whispered You"
+L["DO_NOT_BATTENET_WHISPERS"] = "Do Not Forward Batte.Net Whispers"
+L["DO_NOT_BATTENET_WHISPERS_HELP"] = "Do Not Forward BatteTag Or RealID Whispers"
+
+L["FORWARD_FAKE_WHISPERS"] = "Forward Via Fake Whispers For Clickable Links And Players"
+L["FORWARD_FAKE_WHISPERS_HELP"] = "Forward Via Fake Whispers To Use As Clickable Links And Players"
+L["FAKE_WHISPERS_CHANNEL"]  = "Send Fake Whispers To"
+L["FORWARDER_REPLY_QUEUE"] = "Add Forwarder To Reply Queue On Master"
+L["FORWARDER_REPLY_QUEUE_HELP"] = "Add Forwarder To Reply Queue On Master"
+L["ORIGINATOR_REPLY_QUEUE"] = "Add Originator To Reply Queue On Master"
+L["ORIGINATOR_REPLY_QUEUE_HELP"] = "Add Originator To Reply Queue On Master" 
+L["MESSAGES_WITH_LINKS"] = "Only Show Messages With Links"
+L["MESSAGES_WITH_LINKS_HELP"] = "Only Show Messages With Links"
+-- TOBEREMOVED
+L["CHAT_SNIPPETS"] = "Chat Snippets"
+L["ENABLE_CHAT_SNIPPETS"] = "Enable Chat Snippets"
+L["ENABLE_CHAT_SNIPPETS_HELP"] = "Chat Snippets Auto Send Messages To Players That Wispers Your Minions"
+L["SNIPPET_TEXT"] = "Snippet Text"
+L["CHAT_SNIPPET_POPUP"] = "Enter The Shortcut Text For This Chat Snippet:"
+L["REMOVE_CHAT_SNIPPET"] = "Are You Sure You Wish To Remove The Selected Chat Snippet?"
+--END
+L["GM"] = "GM"
+L["TALK_VIA"] = " (via "
+L["BATTLE_NET"] = "<BatteTag>"
+L["<GM>"] = "<GameMaster>"
+L["WHISPERS"] = " Whispers: "
+L["WHISPERED_YOU"] = "Whispered You."
+
+
+------------------------
 -- X Locale
