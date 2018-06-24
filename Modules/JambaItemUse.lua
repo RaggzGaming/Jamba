@@ -1116,7 +1116,7 @@ end
 function AJM:OnEnable()
 	AJM:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	AJM:RegisterEvent( "PLAYER_REGEN_DISABLED" )
-	AJM:RegisterEvent( "BAG_UPDATE" )
+	AJM:RegisterEvent( "BAG_UPDATE_DELAYED" )
 	AJM:RegisterEvent( "ITEM_PUSH" )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	AJM:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
@@ -1212,10 +1212,10 @@ function AJM:PLAYER_REGEN_DISABLED()
 	end
 end
 
-function AJM:BAG_UPDATE()
+function AJM:BAG_UPDATE_DELAYED()
 	if not InCombatLockdown() then
-		AJM:UpdateItemsInBar()
-		AJM:UpdateQuestItemsInBar()
+	--	AJM:UpdateItemsInBar()
+	--	AJM:UpdateQuestItemsInBar()
 		-- ItemCount 
 		AJM:GetJambaItemCount()											  
 	end
@@ -1257,6 +1257,7 @@ function AJM:AddToTooltip(toolTip, itemID)
 	for characterName, position in JambaApi.TeamList() do
 		local count, bankCount = AJM:GetItemCountFromItemID( characterName, itemID )
 		if count ~= nil then
+
 			toolTip:AddDoubleLine(Ambiguate(characterName, "none"), count..L[" "]..L["("]..bankCount..L[")"], 1,1,1,1,1,1)
 		end
 	end

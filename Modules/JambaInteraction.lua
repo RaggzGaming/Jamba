@@ -721,7 +721,7 @@ end
 
 function AJM:doLootLoop( tries )
 	--AJM:Print("loop", tries)
-	AJM:ScheduleTimer("doLoot", 0.2, tries )
+	AJM:ScheduleTimer("doLoot", 0.8, tries )
 end
 
 function AJM:DisableAutoLoot()
