@@ -33,6 +33,9 @@ L["MESSAGE_AREA"]  = "Message Area"
 L["SEND_WARNING_AREA"] = "Warning Area"
 L["PH"] = "PH"
 L["GUILD"] = "Guild"
+L["CTRL"] = "Ctrl"
+L["SHIFT"] = "Shift"
+L["ALT"] = "Alt"
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
@@ -103,6 +106,8 @@ L["QUEST"] = "Quest"
 L["TRADE"] = "Trade"
 L["REPAIR"] = "Repair"
 L["TALK"] = "Talk"
+L["QUEST"] = "Quest" 
+L["COMPLETION"] = "Completion"
 
 --------------------------
 -- Pecoded String Formats
@@ -239,7 +244,6 @@ L["STATICPOPUP_REMOVE"] = "Are you sure you wish to remove %s from the team list
 L["DEFAULT_CHAT_WINDOW"] = "Default Chat Window"
 L["WHISPER"] = "Whisper"
 L["PARTY"] = "Party" 
-L["GUILD"] = "Guild"
 L["GUILD_OFFICER"] = "Guild Officer"
 L["RAID"] = "Raid"
 L["RAID_WARNING"] = "Raid Warning"
@@ -619,7 +623,7 @@ L["MANA_PERCENTAGE"] = "Mana Amount - Percentage Allowed Before Warning"
 L["BAGS_FULL"] = "Warn If Bags Are Full"
 L["BAGS_FULL_HELP"] = "Warn If All Regular Bags Are Full"
 L["BAG_SPACE"] = "Bag Space"
-L["OTHER"] = "OTHER"
+L["OTHER"] = "Other"
 L["WARN_IF_CC"] = "Warn If Toon Gets Crowd Controled"
 L["WARN_IF_CC_HELP"] = "Warn If any Team Member Gets Crowd Control"
 
@@ -676,6 +680,110 @@ L["<GM>"] = "<GameMaster>"
 L["WHISPERS"] = " Whispers: "
 L["WHISPERED_YOU"] = "Whispered You."
 
+------------------------
+-- Quest Locale
+
+L["ABANDON_QUESTS_TEAM"] = "Would you like to Abandon \"%s\" On All Toons?"
+L["JUST_ME"] = "Just Me"
+L["ALL_TEAM"] = "All Team"
+L["TRACK_QUEST_ON_TEAM"] = "Would you like to Track \"%s\" On All Toons?"
+L["UNTRACK_QUEST_ON_TEAM"] = "Would you like to Untrack \"%s\" On All Toons?"
+L["ABANDON_ALL_QUESTS"] = "This will abandon ALL quests ON every toon!  Yes, this means you will end up with ZERO quests in your quest log! \nAre you sure?"
+L["YES_IAM_SURE"] = "Yes I'm Sure"
+L["INFORMATION"] = "Information"
+L["QUESTINFORMATIONONE"] = "Jamba-Quest treats any team member as the Master."
+L["QUESTINFORMATIONTWO"] = "Quest actions by one character will be actioned by the other"
+L["QUESTINFORMATIONTHREE"] = "characters regardless of who the Master is."
+L["QUEST_HEADER"] = "Toon Select & Decline Quest With Team"
+L["MIRROR_QUEST"] = "Quest Selection & Acceptance"
+L["MIRROR_QUEST_HELP"] = "Mirror Quest Selection With All Team"
+L["AUTO_SELECT_QUESTS"] = "All Auto Select Quests"
+L["AUTO_SELECT_QUESTS_HELP"] = "Automatically Pick Up Quest \nWhen You Talk To A Quest Giving NPC"
+L["ACCEPT_QUESTS"] = "Accept Quests"
+L["ACCEPT_QUESTS_HELP"] = "Accept Quests"
+L["ACCEPT_QUEST_WITH_TEAM"] = "Accept Quest With Team"
+L["ACCEPT_QUEST_WITH_TEAM_HELP"] = "Accept Quest With Team Members"
+L["QUEST_INFORMATION_AUTO"] = "Automatically: Accept Quests Regardless of the Team Selection"
+L["DONOT_AUTO_ACCEPT_QUESTS"] = "Do Not Auto Accept Quests" 
+L["DONOT_AUTO_ACCEPT_QUESTS_HELP"] = "Nerver Auto Accept Quests From Anyone"
+L["AUTO_ACCEPT_QUESTS"] = "All Auto Accept ANY Quest"
+L["AUTO_ACCEPT_QUESTS_HELP"] = "All Auto Accept ANY Quest From Anyone"
+L["AUTO_ACCEPT_QUESTS_LIST"] = "Only Auto Accept Quests From:"
+L["AUTO_ACCEPT_QUESTS_LIST_HELP"] = "Only Auto Accept Quests From The Following  List"
+L["TEAM_QUEST_HELP"] = "Any Jamba-EE Team Member"
+L["NPC"] = "NPC"
+L["NPC_HELP"] = "Any Non-Player Character"
+L["FRIENDS"] = "Friends"
+L["FRIENDS_HELP"] = "Anyone On Your Friends List Or BattleTag Friends List"
+-- Quest
+L["QUEST_GROUP_HELP"] = "Anyone In Your Party Group"
+L["GUILD_HELP"] = "Anyone In Your Guild"
+L["PH_RAID"] = "[PH] Raid" 
+L["PH_RAID_HELP"] = "[PH] Raid" 
+L["MASTER_SHARE_QUESTS"] = "Master Auto Share Quests When Accepted"
+L["MASTER_SHARE_QUESTS_HELP"] = "Master Will Try And Share Quests When Accepted"
+L["ACCEPT_ESCORT_QUEST"] = "Toon Auto Accept Escort Quest From Team"
+L["ACCEPT_ESCORT_QUEST_HELP"] = "Automatically Accept Escort Quests When A Team Picks One Up"
+L["HOLD_SHIFT_TO_OVERRIDE"] = "Hold Shift To Override Auto Select/Auto Complete"
+L["HOLD_SHIFT_TO_OVERRIDE_HELP"] = "Hold Shift Key To Override Auto Select/Auto Complete"
+L["SHOW_PANEL_UNDER_QUESTLOG"] = "Show Extra Buttons Panel Under WorldMap Quest Log"
+L["SHOW_PANEL_UNDER_QUESTLOG_HELP"] = "Show Extra Buttons Panel Under World Map Quest Log \nEG: TrackALL AbandonALL"
+-- Completion
+L["QUEST_COMPLETION"] = "Quest Completion"
+L["ENABLE_QUEST_COMPLETION"] = "Enable Auto Quest Completion"
+L["ENABLE_QUEST_COMPLETION_HELP"] = "Enable Automatically Handing In Quest's"
+L["NOREWARDS_OR_ONEREWARD"] = "Quest Has No Rewards Or One Reward:"
+L["QUEST_DO_NOTHING"] = "Toon Do Nothing"
+L["QUEST_DO_NOTHING_HELP"] = "Do Not Automatically Hand In Quest"
+L["COMPLETE_QUEST_WITH_TEAM"] = "Toon Complete Quest With Team"
+L["COMPLETE_QUEST_WITH_TEAM_HELP"] = "Complete Quest With Team Jamba-EE Members"
+L["AUTO_COMPLETE_QUEST"] = "Automatically Complete Quest"
+L["AUTO_COMPLETE_QUEST_HELP"] = "Automatically Complete/Turn In The Quest"
+L["MORE_THEN_ONE_REWARD"] = "Quest Has More Than One Reward:"
+L["MUST_CHOOSE_OWN_REWARD"] = "Toon Must Choose Own Reward"
+L["MUST_CHOOSE_OWN_REWARD_HELP"] = "Toon Must Select Own Quest Reward"
+L["CHOOSE_SAME_REWARD"] = "Toon Choose Same Reward As Team"
+L["CHOOSE_SAME_REWARD_HELP"] = "Toon Will Choose Same Reward As Jamba-Ee Team Members \n\nOnly Use If All Team Members Class"
+L["MODIFIER_CHOOSE_SAME_REWARD"] = "If Modifier Keys Pressed, Toon Choose Same Reward"
+L["MODIFIER_CHOOSE_SAME_REWARD_HELP"] = "If Modifier Key Below Is Pressed, Minion Can Choose Same Reward"
+L["OVERRIDE_REWARD_SELECTED"] = "Override: If Minion Already Has Reward Selected, Choose That Reward"
+L["OVERRIDE_REWARD_SELECTED_HELP"] = "Override: If Minion Already Has Reward Selected, Choose That Reward \nAnd Not Use The Current Toons Reward"
+L["SHARING_QUEST_TO_ALLMINIONS"] = "Sharing Quest's To All Minions"
+L["TRACKING_QUEST_TO_ALLMINIONS"] = "Tracking Quest's To All Minions"
+L["UNTRACKING_QUESTS_ALLMINIONS"] = "Untracking Quest's To All Minions"
+L["TOGGLE"] = "Toggle"
+L["ABANDON_ALL"] = "Abandon All Quests"
+L["ABANDON_ALL_TOOLTIP"] = "Aabandon All Quests On All Minions"
+L["SHARE_ALL"] = "Share ALL"
+L["SHARE_ALL_TOOLTIP"] = "Share All Quests To All Minions"
+L["TRACK_ALL"] = "Track All"
+L["TRACK_ALL_TOOLTIP"] = "Track All Quests On All Minions"
+L["UNTRACK_ALL"] = "Untrack All"
+L["UNTRACK_ALL_TOOLTIP"] = "Untrack All Quests on all Minions"
+L["ABANDONING_ALLQUEST"] = "Abandoning Quest's To All Toons"
+
+-- Quest Strings
+L["AUTOMATICALLY_ACCEPTED_ESCORT_QUEST"] = function( questName )
+	return string.format( "Automatically Accepted Escort Quest: %s", questName )
+end
+L["INVENTORY_IS_FULL_CAN_NOT_HAND_IN_QUEST"] = function( questName )
+	return string.format( "Inventory Is Full Can Not Hand In Quest: %s", questName )
+end
+L["ACCEPTED_QUEST_QN"] = function( questName )
+	return string.format( "Accepted Quest: %s", questName )
+end
+L["AUTO_ACCEPTED_PICKUPQUEST_QN"] = function( questName )
+	return string.format( "Automatically Accepted PickupQuest: %s", questName )
+end
+L["AUTOMATICALLY_ACCEPTED_QUEST"] = function( questName )
+	return string.format( "Automatically Accepted Quest: %s", questName )
+end
+L["JAMBA_QUESTLOG_DONOT_HAVE_QUEST"] = function( questName )
+	return string.format( "I Do Not Have The Quest: %s", questName )
+end
+L["JAMBA_QUESTLOG_Have_Abandoned_Quest"] = function( questName )
+	return string.format( "I Have Abandoned The Quest: %s", questName )
+end
 
 ------------------------
 -- X Locale

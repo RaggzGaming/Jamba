@@ -961,7 +961,6 @@ StaticPopupDialogs["TEAMDEATH"] = {
 		self.button1:SetText(L["RELEASE_TEAM"])
 	end,
 	OnAccept = function(self)
-		AJM:Print("test")
 		if not ( CannotBeResurrected() ) then
 			return 1
 		end
