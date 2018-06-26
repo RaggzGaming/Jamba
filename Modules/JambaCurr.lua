@@ -31,7 +31,7 @@ local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["DISPLAY"]
 AJM.moduleDisplayName = L["CURRENCY"]
 -- Icon 
---AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TeamCore.tga"
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\SellIcon.tga"
 -- order
 AJM.moduleOrder = 3
 

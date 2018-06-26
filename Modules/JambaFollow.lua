@@ -28,6 +28,12 @@ AJM.chatCommand = "jamba-follow"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TOON"]
 AJM.moduleDisplayName = L["FOLLOW"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\FollowIcon.tga"
+-- order
+AJM.moduleOrder = 50
+
+
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -421,7 +427,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	local bottomOfDisplayOptions = SettingsCreateDisplayOptions( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfDisplayOptions )

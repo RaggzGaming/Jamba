@@ -33,6 +33,12 @@ AJM.chatCommand = "jamba-message"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["OPTIONS"]
 AJM.moduleDisplayName = L["MESSAGE_DISPLAY"]
+-- Icon 
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\ChatIcon.tga"
+-- order
+AJM.moduleOrder = 80
+
+
 
 -------------------------------------------------------------------------------------------------------------
 -- Message area management.
@@ -515,7 +521,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	-- Create the area list controls.
 	local bottomOfAreaList = SettingsCreateAreaList()

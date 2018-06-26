@@ -33,7 +33,7 @@ local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core"  )
 AJM.parentDisplayName = L["DISPLAY"]
 AJM.moduleDisplayName = L["ITEM_USE"]
 -- Icon 
-AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\Toon.tga"
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\ItemUseIcon.tga"
 -- order
 AJM.moduleOrder = 1
 
@@ -921,7 +921,9 @@ local function SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	local bottomOfOptions = SettingsCreateOptions( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfOptions )

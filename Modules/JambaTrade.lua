@@ -31,7 +31,7 @@ local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]
 AJM.moduleDisplayName = L["TRADE"]
 -- Icon 
---AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\QuestIcon.tga"
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\TradeIcon.tga"
 -- order
 AJM.moduleOrder = 10
 
@@ -141,7 +141,9 @@ function AJM:SettingsCreate()
 		AJM.settingsControl, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder		
 	)
 	local bottomOfInfo = AJM:SettingsCreateTrade( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControl.widgetSettings.content:SetHeight( -bottomOfInfo )
