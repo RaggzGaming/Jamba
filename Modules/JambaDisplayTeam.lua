@@ -1362,7 +1362,7 @@ local function SettingsCreateDisplayOptions( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["FONT SIZE"]
+		L["FONT_SIZE"]
 	)
 	AJM.settingsControl.displayOptionsSetFontSize:SetSliderValues( 8, 20 , 1 )
 	AJM.settingsControl.displayOptionsSetFontSize:SetCallback( "OnValueChanged", AJM.SettingsChangeFontSize )

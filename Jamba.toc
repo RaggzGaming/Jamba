@@ -2,7 +2,7 @@
 ## Title: Jamba
 ## Notes: Jamba Ebony's_Edition
 ## Author: Ebony
-## Version: v8.0.0-Alpha(0052)
+## Version: v8.0.0-Alpha(0053)
 ## SavedVariables: JambaCoreProfileDB, JambaCommunicationsProfileDB, JambaTeamProfileDB, JambaTagProfileDB, JambaMessageProfileDB, JambaCurrProfileDB, JambaDisplayTeamProfileDB, JambaFollowProfileDB, JambaInteractionProfileDB, JambaItemUseProfileDB, JambaPurchaseProfileDB, JambaQuestProfileDB,  JambaQuestWatcherProfileDB, JambaSellProfileDB, JambaTalkProfileDB,  JambaToonProfileDB, JambaTradeProfileDB
 
 #Libs
@@ -11,7 +11,6 @@ JambaUtilities.lua
 
 #Locales
 Locales\Locales.xml
-Modules\Locales\Locales.xml
 
 #GUI
 GUI\JambaHelperSettings.lua

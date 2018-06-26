@@ -427,7 +427,7 @@ function AJM:SettingsCreateCurrency( top )
 		halfWidthSlider, 
 		column2left, 
 		movingTop, 
-		L["FONT SIZE"]
+		L["FONT_SIZE"]
 	)	
 	AJM.settingsControl.currencyFontSize:SetSliderValues( 8, 20 , 1 )
 	AJM.settingsControl.currencyFontSize:SetCallback( "OnValueChanged", AJM.SettingsChangeFontSize )

@@ -27,9 +27,14 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 AJM.moduleName = "Jamba-QuestWatcher"
 AJM.settingsDatabaseName = "JambaQuestWatcherProfileDB"
 AJM.chatCommand = "jamba-quest-watcher"
-local L = LibStub( "AceLocale-3.0" ):GetLocale( AJM.moduleName )
-AJM.parentDisplayName = L["Quest"]
-AJM.moduleDisplayName = L["Tracker"]
+local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
+AJM.parentDisplayName = L["QUEST"]
+AJM.moduleDisplayName = L["TRACKER"]
+-- Icon
+AJM.moduleIcon = "Interface\\Addons\\Jamba\\Media\\QuestTrackerIcon.tga"
+-- order
+AJM.moduleOrder = 20
+
 
 -- Settings - the values to store and their defaults for the settings database.
 AJM.settings = {
@@ -41,9 +46,9 @@ AJM.settings = {
 		watcherFrameYOffset = 150,
 		watcherFrameAlpha = 1.0,
 		watcherFrameScale = 1.0,
-		borderStyle = L["Blizzard Tooltip"],
-		backgroundStyle = L["Blizzard Dialog Background"],
-		watchFontStyle = L["Arial Narrow"],
+		borderStyle = L["BLIZZARD_TOOLTIP"],
+		backgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
+		watchFontStyle = L["ARIAL_NARROW"],
 		watchFontSize = 14,
 		hideQuestWatcherInCombat = false,
 		enableQuestWatcherOnMasterOnly = false,
@@ -79,24 +84,24 @@ function AJM:GetConfiguration()
 		args = {
 			show = {
 				type = "input",
-				name = L["Show Quest Watcher"],
-				desc = L["Show the quest watcher window."],
+				name = L["SHOW_QUEST_WATCHER"],
+				desc = L["SHOW_QUEST_WATCHER_HELP"],
 				usage = "/jamba-quest-watcher show",
 				get = false,
 				set = "ShowFrameCommand",
 			},		
 			hide = {
 				type = "input",
-				name = L["Hide Quest Watcher"],
-				desc = L["Hide the quest watcher window."],
+				name = L["HIDE_QUEST_WATCHER"] ,
+				desc = L["HIDE_QUEST_WATCHER_HELP"] ,
 				usage = "/jamba-quest-watcher hide",
 				get = false,
 				set = "HideFrameCommand",
 			},		
 			push = {
 				type = "input",
-				name = L["Push Settings"],
-				desc = L["Push the quest settings to all characters in the team."],
+				name = L["PUSH_SETTINGS"],
+				desc = L["PUSH_SETTINGS_INFO"],
 				usage = "/jamba-quest-watcher push",
 				get = false,
 				set = "JambaSendSettings",
@@ -164,13 +169,11 @@ function AJM:OnEnable()
 	-- For in the field auto quests. And Bonus Quests.
 	AJM:RegisterEvent("QUEST_ACCEPTED", "QUEST_WATCH_UPDATE")
 	AJM:RegisterEvent("QUEST_REMOVED", "RemoveQuestsNotBeingWatched")
-	--AJM:RegisterEvent("UNIT_QUEST_LOG_CHANGED", "JambaQuestWatchListUpdateButtonClicked")
 	AJM:RegisterEvent( "QUEST_AUTOCOMPLETE" )
 	AJM:RegisterEvent( "QUEST_COMPLETE" )
 	AJM:RegisterEvent( "QUEST_DETAIL" )
 	AJM:RegisterEvent( "SCENARIO_UPDATE" )
 	AJM:RegisterEvent( "SCENARIO_CRITERIA_UPDATE" )
-	--AJM:RegisterEvent( "SUPER_TRACKED_QUEST_CHANGED", "QUEST_WATCH_UPDATE" )
 	AJM:RegisterEvent( "PLAYER_ENTERING_WORLD" )
    -- Quest post hooks.
     AJM:SecureHook( "SelectActiveQuest" )
@@ -185,8 +188,6 @@ function AJM:OnEnable()
 	AJM:UpdateUnlockWatcherFrame()
 	-- To Hide After elv changes. --ebony
 	AJM:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
-	-- Remvoed me somtime 7.0.4
-	--AJM:UpdateHideBlizzardWatchFrame()
 	if AJM.db.enableQuestWatcher == true then
 		AJM:QuestWatcherQuestListScrollRefresh()
 	end
@@ -219,14 +220,13 @@ function AJM:SettingsCreate()
 		AJM.settingsControlWatcher, 
 		AJM.moduleDisplayName, 
 		AJM.parentDisplayName, 
-		AJM.SettingsPushSettingsClick 
+		AJM.SettingsPushSettingsClick,
+		AJM.moduleIcon,
+		AJM.moduleOrder	
 	)	
 	-- Create the quest controls.
 	local bottomOfQuestWatcherOptions = AJM:SettingsCreateQuestWatcherControl( JambaHelperSettings:TopOfSettings() )
 	AJM.settingsControlWatcher.widgetSettings.content:SetHeight( -bottomOfQuestWatcherOptions )
-		-- Help
-	local helpTable = {}
-	JambaHelperSettings:CreateHelp( AJM.settingsControlWatcher, helpTable, AJM:GetConfiguration() )	
 end
 
 function AJM:SettingsCreateQuestWatcherControl( top )
@@ -258,7 +258,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, "", movingTop, false )
 	movingTop = movingTop - headingHeight	
 	-- Create a heading for quest completion.
-	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["Quest Watcher"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["QUEST_TRACKER_HEADER"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	-- Check box: Enable auto quest completion.
 	AJM.settingsControlWatcher.checkBoxEnableQuestWatcher = JambaHelperSettings:CreateCheckBox( 
@@ -266,29 +266,20 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		column1Left, 
 		movingTop,
-		L["Enable JoT"],
+		L["ENABLE_TRACKER"],
 		AJM.SettingsToggleEnableQuestWatcher,
-		L["Enables Jamba Objective Tracker"]
+		L["ENABLE_TRACKER_HELP"]
 	)	
---	movingTop = movingTop - checkBoxHeight
---	AJM.settingsControlWatcher.checkBoxShowFrame = JambaHelperSettings:CreateCheckBox( 
---		AJM.settingsControlWatcher, 
---		headingWidth, 
---		left, 
---		movingTop, 
---		L["Show Quest Watcher"],
---		AJM.SettingsToggleShowFrame,
---		L["Show Quest Watcher"]
---	)
+
 	movingTop = movingTop - checkBoxHeight		
 	AJM.settingsControlWatcher.checkBoxUnlockWatcherFrame = JambaHelperSettings:CreateCheckBox( 
 		AJM.settingsControlWatcher, 
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Unlock JoT"],
+		L["UNLOCK_TRACKER"],
 		AJM.SettingsToggleUnlockWatcherFrame,
-		L["Unlocks Jamba Objective Tracker\n Hold Alt key To Move It\n Lock to Click Through"]
+		L["UNLOCK_TRACKER_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight	
 	AJM.settingsControlWatcher.checkBoxHideBlizzardWatchFrame = JambaHelperSettings:CreateCheckBox( 
@@ -296,9 +287,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Hide Blizzard's Objectives Tracker"],
+		L["HIDE_BLIZZ_OBJ_TRACKER"],
 		AJM.SettingsToggleHideBlizzardWatchFrame,
-		L["Hides Defualt Objective Tracker"]
+		L["HIDE_BLIZZ_OBJ_TRACKER_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight	
 	AJM.settingsControlWatcher.checkBoxEnableQuestWatcherMasterOnly = JambaHelperSettings:CreateCheckBox( 
@@ -306,9 +297,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		column1Left, 
 		movingTop,
-		L["Show JoT On Master Only"],
+		L["SHOW_JOT_ON_MASTER"],
 		AJM.SettingsToggleEnableQuestWatcherMasterOnly,
-		L["Olny show Jamba Objective Tracker On Master Character Olny"]
+		L["SHOW_JOT_ON_MASTER_HELP"]
 		
 	)	
 	movingTop = movingTop - checkBoxHeight	
@@ -317,9 +308,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		column1Left, 
 		movingTop, 
-		L["Hide JoT In Combat"],
+		L["HIDE_JOT_IN_COMBAT"],
 		AJM.SettingsToggleHideQuestWatcherInCombat,
-		L["Hide Jamba Objective Tracker in Combat"]
+		L["HIDE_JOT_IN_COMBAT_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControlWatcher.checkBoxShowCompletedObjectivesAsDone = JambaHelperSettings:CreateCheckBox( 
@@ -327,9 +318,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Show Completed objective As 'DONE'"],
+		L["SHOW_COMPLETED_OBJ_DONE"],
 		AJM.SettingsShowCompletedObjectivesAsDone,
-		L["Show Completed Objectives/Quests As 'DONE'"]
+		L["SHOW_COMPLETED_OBJ_DONE_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControlWatcher.checkBoxHideQuestIfAllComplete = JambaHelperSettings:CreateCheckBox( 
@@ -337,19 +328,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Hide objectives Completed By Team"],
+		L["HIDE_OBJ_COMPLETED"],
 		AJM.SettingsHideQuestIfAllComplete,
-		L["Hide Objectives/Quests Completed By Team"]
-	)
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControlWatcher.checkBoxShowDoNotHideCompletedObjectives = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControlWatcher, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["Do Not Hide An Individuals Completed Objectives"],
-		AJM.SettingsDoNotHideCompletedObjectives,
-		L["Do Not Hide An Individuals Completed Objectives"]
+		L["HIDE_OBJ_COMPLETED_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
 	AJM.settingsControlWatcher.checkBoxSendProgressChatMessages = JambaHelperSettings:CreateCheckBox( 
@@ -357,9 +338,9 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Send Progress Messages To Message Area"],
+		L["SEND_PROGRESS_MESSAGES"],
 		AJM.SettingsToggleSendProgressChatMessages,
-		L["Send Progress Messages To Message Area/Chat"]
+		L["SEND_PROGRESS_MESSAGES_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight			
 	-- Message area.
@@ -368,12 +349,12 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		headingWidth, 
 		left, 
 		movingTop, 
-		L["Send Message Area"]	
+		L["MESSAGE_AREA"]	
 	)
 	AJM.settingsControlWatcher.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControlWatcher.dropdownMessageArea:SetCallback( "OnValueChanged", AJM.SettingsSetMessageArea )
 	movingTop = movingTop - dropdownHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["Appearance & Layout"], movingTop, true )
+	JambaHelperSettings:CreateHeading( AJM.settingsControlWatcher, L["APPEARANCE_LAYOUT_HEALDER"], movingTop, true )
 	movingTop = movingTop - headingHeight - verticalSpacing
 
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherLinesSlider = JambaHelperSettings:CreateSlider( 
@@ -381,7 +362,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		left, 
 		movingTop, 
-		L["Lines Of Info To Display"]
+		L["LINES_TO_DISPLAY"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherLinesSlider:SetSliderValues( 5, 50, 1 )
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherLinesSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeWatchLines )
@@ -390,7 +371,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		column2Left, 
 		movingTop, 
-		L["Quest Watcher Width"]
+		L["TRACKER_WIDTH"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherFrameWidthSlider:SetSliderValues( 250, 600, 5 )
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherFrameWidthSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeWatchFrameWidth )
@@ -400,7 +381,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Border Style"]
+		L["BORDER_STYLE"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherMediaBorder:SetCallback( "OnValueChanged", AJM.SettingsChangeBorderStyle )
 	AJM.settingsControlWatcher.questWatchBorderColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -408,7 +389,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider,
 		column2Left + 15,
 		movingTop - 15,
-		L["Border Colour"]
+		L["BORDER COLOUR"]
 	)
 	AJM.settingsControlWatcher.questWatchBorderColourPicker:SetHasAlpha( true )
 	AJM.settingsControlWatcher.questWatchBorderColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsQuestWatchBorderColourPickerChanged )
@@ -418,7 +399,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		column1Left, 
 		movingTop,
-		L["Background"]
+		L["BACKGROUND"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherMediaBackground:SetCallback( "OnValueChanged", AJM.SettingsChangeBackgroundStyle )
 	AJM.settingsControlWatcher.questWatchBackgroundColourPicker = JambaHelperSettings:CreateColourPicker(
@@ -426,7 +407,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider,
 		column2Left + 15,
 		movingTop - 15,
-		L["Background Colour"]
+		L["BG_COLOUR"]
 	)
 	AJM.settingsControlWatcher.questWatchBackgroundColourPicker:SetHasAlpha( true )
 	AJM.settingsControlWatcher.questWatchBackgroundColourPicker:SetCallback( "OnValueConfirmed", AJM.SettingsQuestWatchBackgroundColourPickerChanged )
@@ -436,7 +417,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		left, 
 		movingTop,
-		L["Font"]
+		L["FONT"]
 	)
 	AJM.settingsControlWatcher.questWatchMediaFont:SetCallback( "OnValueChanged", AJM.SettingsChangeFontStyle )
 	AJM.settingsControlWatcher.questWatchFontSize = JambaHelperSettings:CreateSlider( 
@@ -444,7 +425,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		column2Left, 
 		movingTop, 
-		L["Font Size"]
+		L["FONT_SIZE"]
 	)	
 	AJM.settingsControlWatcher.questWatchFontSize:SetSliderValues( 8, 20 , 1 )
 	AJM.settingsControlWatcher.questWatchFontSize:SetCallback( "OnValueChanged", AJM.SettingsChangeFontSize )	
@@ -454,7 +435,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		column1Left, 
 		movingTop, 
-		L["Scale"]
+		L["SCALE"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherScaleSlider:SetSliderValues( 0.5, 2, 0.01 )
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherScaleSlider:SetCallback( "OnValueChanged", AJM.SettingsChangeScale )
@@ -464,7 +445,7 @@ function AJM:SettingsCreateQuestWatcherControl( top )
 		halfWidthSlider, 
 		column2Left, 
 		movingTop, 
-		L["Transparency"]
+		L["TRANSPARENCY"]
 	)
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherTransparencySlider:SetSliderValues( 0, 1, 0.01 )
 	AJM.settingsControlWatcher.displayOptionsQuestWatcherTransparencySlider:SetCallback( "OnValueChanged", AJM.SettingsChangeTransparency )
@@ -543,7 +524,7 @@ function AJM:CreateQuestWatcherFrame()
 	local titleName = frame:CreateFontString( "JambaQuestWatcherWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
     titleName:SetPoint( "TOPLEFT", frame, "TOPLEFT", 7, -7 )
     titleName:SetTextColor( 1.00, 1.00, 1.00 )
-    titleName:SetText( L["Jamba Objective Tracker"] )
+    titleName:SetText( L["TRACKER_TITLE_NAME"] )
 	frame.titleName = titleName
 	-- Update button.
 	local updateButton = CreateFrame( "Button", "JambaQuestWatcherWindowFrameButtonUpdate", frame, "UIPanelButtonGrayTemplate" )
@@ -551,7 +532,7 @@ function AJM:CreateQuestWatcherFrame()
 	updateButton:SetPoint( "TOPRIGHT", frame, "TOPRIGHT", -5, -4 )
 	updateButton:SetHeight( 20 )
 	updateButton:SetWidth( 100 )
-	updateButton:SetText( L["Update"] )		
+	updateButton:SetText( L["UPDATE"] )		
 	-- Add an area for the "in the field quest" notifications.
 	frame.fieldNotificationsTop = -24
 	frame.fieldNotifications = CreateFrame( "Frame", "JambaQuestWatcherFieldQuestFrame", frame )
@@ -703,9 +684,7 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		--AJM:UpdateHideBlizzardWatchFrame()
 		AJM:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
 		-- Tell the player.
-		AJM:Print( L["Settings received from A."]( characterName ) )
-		-- Tell the team?
-		--AJM:JambaSendMessageToTeam( AJM.db.messageArea,  L["Settings received from A."]( characterName ), false )
+		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"] ( characterName ) )
 	end
 end
 
@@ -740,9 +719,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWatcher.checkBoxUnlockWatcherFrame:SetValue( AJM.db.unlockWatcherFrame )
 	AJM.settingsControlWatcher.checkBoxHideBlizzardWatchFrame:SetValue( AJM.db.hideBlizzardWatchFrame )
 	AJM.settingsControlWatcher.checkBoxShowCompletedObjectivesAsDone:SetValue( AJM.db.showCompletedObjectivesAsDone  )
-	AJM.settingsControlWatcher.checkBoxShowDoNotHideCompletedObjectives:SetValue( AJM.db.doNotHideCompletedObjectives )
 	AJM.settingsControlWatcher.checkBoxHideQuestIfAllComplete:SetValue( AJM.db.hideQuestIfAllComplete )
---	AJM.settingsControlWatcher.checkBoxShowFrame:SetValue( AJM.db.showFrame )
 	AJM.settingsControlWatcher.dropdownMessageArea:SetValue( AJM.db.messageArea )
 	AJM.settingsControlWatcher.checkBoxSendProgressChatMessages:SetValue( AJM.db.sendProgressChatMessages )
 	-- Quest watcher state.
@@ -762,9 +739,7 @@ function AJM:SettingsRefresh()
 	AJM.settingsControlWatcher.checkBoxUnlockWatcherFrame:SetDisabled( not AJM.db.enableQuestWatcher )
 	AJM.settingsControlWatcher.checkBoxHideBlizzardWatchFrame:SetDisabled( not AJM.db.enableQuestWatcher )
 	AJM.settingsControlWatcher.checkBoxShowCompletedObjectivesAsDone:SetDisabled( not AJM.db.enableQuestWatcher )
-	AJM.settingsControlWatcher.checkBoxShowDoNotHideCompletedObjectives:SetDisabled( not AJM.db.enableQuestWatcher )
 	AJM.settingsControlWatcher.checkBoxHideQuestIfAllComplete:SetDisabled( not AJM.db.enableQuestWatcher )
---	AJM.settingsControlWatcher.checkBoxShowFrame:SetDisabled( not AJM.db.enableQuestWatcher )
 	AJM.settingsControlWatcher.dropdownMessageArea:SetDisabled( not AJM.db.enableQuestWatcher )
 	AJM.settingsControlWatcher.checkBoxSendProgressChatMessages:SetDisabled( not AJM.db.enableQuestWatcher )
 	if AJM.questWatcherFrameCreated == true then
@@ -1652,7 +1627,7 @@ function AJM:GetQuestHeaderInWatchList( questID, questName, characterName )
 	end
 	local iconTexture = ("Interface\\ICONS\\INV_Misc_Map07")
 	local icon = strconcat(" |T"..iconTexture..":18|t")
-	local questWatchInfo = AJM:CreateQuestWatchInfo( questID, "QUEST_HEADER", -1, "", questName, icon ) --L["<Map>"] )
+	local questWatchInfo = AJM:CreateQuestWatchInfo( questID, "QUEST_HEADER", -1, "", questName, icon )
 	AJM:UpdateTeamQuestCountAddCharacter( questWatchInfo, characterName )
 	if AJM.db.hideQuestIfAllComplete == true then
 		AJM:CheckQuestForAllObjectivesCompleteAndHide( questID )

@@ -21,6 +21,7 @@ L["("] = true
 L[")"] = true
 L[" / "] = true
 L["%"] = true
+L["N/A"] = true
 L["PUSH_SETTINGS"] = "Push Settings"
 L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
@@ -36,6 +37,8 @@ L["GUILD"] = "Guild"
 L["CTRL"] = "Ctrl"
 L["SHIFT"] = "Shift"
 L["ALT"] = "Alt"
+L["UPDATE"] = "Update"
+
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
@@ -51,7 +54,7 @@ L["BORDER COLOUR"] = "Border Colour"
 L["BACKGROUND"] = "Background"
 L["BG_COLOUR"] = "Background Colour"
 L["FONT"] = "Font"
-L["FONT SIZE"] = "Font Size"
+L["FONT_SIZE"] = "Font Size"
 L["BAR_TEXTURES"] = "Status Bar Textures"
 L["WIDTH"] = "Width"
 L["HEIGHT"] = "Hight"
@@ -108,6 +111,7 @@ L["REPAIR"] = "Repair"
 L["TALK"] = "Talk"
 L["QUEST"] = "Quest" 
 L["COMPLETION"] = "Completion"
+L["TRACKER"] = "Tracker"
 
 --------------------------
 -- Pecoded String Formats
@@ -425,7 +429,7 @@ L["SPACE_FOR_POINTS"] = "Space For Points"
 L["SPACE_BETWEEN_VALUES"] = "Space Between Values"
 L["TOTAL"] = "Total"
 L["CURR"] = "Curr"
-L["UPDATE"] = "Update"
+
 
 --------------------------
 -- Display Team Locale
@@ -784,6 +788,38 @@ end
 L["JAMBA_QUESTLOG_Have_Abandoned_Quest"] = function( questName )
 	return string.format( "I Have Abandoned The Quest: %s", questName )
 end
+
+------------------------
+-- QuestTracker Locale
+
+L["SHOW_QUEST_WATCHER"] = "Show Objective Tracker"
+L["SHOW_QUEST_WATCHER_HELP"] = "Show The Objective/Quest Jamba Tracker Window."
+L["HIDE_QUEST_WATCHER"] = "Hide Objective Tracker"
+L["HIDE_QUEST_WATCHER_HELP"] = "Hides The Objective/Quest Jamba Tracker Window."
+L["QUEST_TRACKER_HEADER"] = "Quest Tracker Settings"
+L["ENABLE_TRACKER"] = "Enable Objective Tracker"
+L["ENABLE_TRACKER_HELP"] = "Enables The Jamba Objective/Quest Tracker"
+L["UNLOCK_TRACKER"] = "Unlocks The Objective Tracker"
+L["UNLOCK_TRACKER_HELP"] = "Unlocks The Objective/Quest Tracker \n\nHold Alt key To Move It\nLock to Click Through"
+L["HIDE_BLIZZ_OBJ_TRACKER"] = "Hide Blizzard's Objectives Tracker" 
+L["HIDE_BLIZZ_OBJ_TRACKER_HELP"] = "Hides Defualt Blizzard Objective\Quest Tracker"
+L["SHOW_JOT_ON_MASTER"] = "Show The JOT On Master Toon"
+L["SHOW_JOT_ON_MASTER_HELP"] = "Only show (Jamba Objective Tracker) On Master Character Only"
+L["HIDE_JOT_IN_COMBAT"] = "Hide JOT In Combat"
+L["HIDE_JOT_IN_COMBAT_HELP"] = "Hide Jamba Objective/Quest Tracker in Combat"
+L["SHOW_COMPLETED_OBJ_DONE"] = "Show Completed Objectives As 'DONE'"
+L["SHOW_COMPLETED_OBJ_DONE_HELP"] = "Show Completed Objectives/Quests As 'DONE'"
+L["HIDE_OBJ_COMPLETED"] = "Hide Objectives Completed"
+L["HIDE_OBJ_COMPLETED_HELP"] = "Hide Objectives/Quests Completed By The Team"
+L["SEND_PROGRESS_MESSAGES"] = "Send Progress Messages"
+L["SEND_PROGRESS_MESSAGES_HELP"] = "Send Progress Messages To Message Area Box Below"
+L["LINES_TO_DISPLAY"] = "Lines Of Information To Display"
+L["TRACKER_WIDTH"] = "Tracker Width"
+L["DONE"] = "Done"
+L["TRACKER_TITLE_NAME"] = "Jamba Objectives Tracker"
+
+
+
 
 ------------------------
 -- X Locale
