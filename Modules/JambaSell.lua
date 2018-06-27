@@ -27,7 +27,7 @@ local ItemUpgradeInfo = LibStub:GetLibrary( "LibItemUpgradeInfo-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Sell"
-AJM.settingsDatabaseName = "JambaSellProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-sell"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["VENDER"]
@@ -386,6 +386,7 @@ local function SettingsCreateOthers( top )
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local othersWidth = headingWidth
+	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
 	local movingTop = top
 	JambaHelperSettings:CreateHeading( AJM.settingsControlOthers, L["SELL_LIST"], movingTop, false )
 	movingTop = movingTop - headingHeight
@@ -441,14 +442,15 @@ local function SettingsCreateOthers( top )
 	)
 	AJM.settingsControlOthers.othersEditBoxOtherItem:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedOtherItem )
 	movingTop = movingTop - editBoxHeight	
-	AJM.settingsControlOthers.othersEditBoxOtherTag = JambaHelperSettings:CreateEditBox( 
-		AJM.settingsControlOthers,
-		headingWidth,
+	AJM.settingsControlOthers.othersEditBoxOtherTag = JambaHelperSettings:CreateDropdown(
+		AJM.settingsControlOthers, 
+		dropBoxWidth,	
 		left,
-		movingTop,
-		L["PH"]
+		movingTop, 
+		L["GROUP_LIST"]
 	)
-	AJM.settingsControlOthers.othersEditBoxOtherTag:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedOtherTag )
+	AJM.settingsControlOthers.othersEditBoxOtherTag:SetList( JambaApi.GroupList() )
+	AJM.settingsControlOthers.othersEditBoxOtherTag:SetCallback( "OnValueChanged",  AJM.SellOtherGroupDropDownList )	
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControlOthers.othersButtonAdd = JambaHelperSettings:CreateButton(	
 		AJM.settingsControlOthers, 
@@ -605,6 +607,9 @@ function AJM:SettingsToggleAutoSellBoEEpic( event, checked )
 	AJM:SettingsRefresh()
 end
 
+function AJM:OnGroupAreasChanged( message )
+	AJM.settingsControlOthers.othersEditBoxOtherTag:SetList( JambaApi.GroupList() )
+end
 
 function AJM:SettingsSetMessageArea( event, value )
 	AJM.db.messageArea = value
@@ -625,12 +630,17 @@ function AJM:SettingsEditBoxChangedOtherItem( event, text )
 	AJM:SettingsRefresh()
 end
 
-function AJM:SettingsEditBoxChangedOtherTag( event, text )
-	if not text or text:trim() == "" or text:find( "%W" ) ~= nil then
-		AJM:Print( L["ITEM_TAG_ERR"] )
-		return
+function AJM:SellOtherGroupDropDownList (event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
 	end
-	AJM.autoSellOtherItemTag = text
+	for index, groupName in ipairs( JambaApi.GroupList() ) do
+		if index == value then
+			AJM.autoSellOtherItemTag = groupName
+			break
+		end
+	end
 	AJM:SettingsRefresh()
 end
 
@@ -696,6 +706,7 @@ function AJM:OnEnable()
 	-- Hook the item click event.
 	AJM:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
+	AJM:RegisterMessage( JambaApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
 
 -- Called when the addon is disabled.
@@ -911,7 +922,7 @@ function AJM:DoMerchantSellOtherItems()
 	-- Iterate all the wanted items...
 	for position, itemInformation in pairs( AJM.db.autoSellOtherItemsList ) do
 		-- Does this character have the item tag?  No, don't sell.
-		if JambaApi.DoesCharacterHaveTag( AJM.characterName, itemInformation.tag ) == true then
+		if JambaApi.IsCharacterInGroup( AJM.characterName, itemInformation.tag ) == true then
 			-- Attempt to sell any items in the players bags.
 			-- Iterate each bag the player has.		
 			for bag = AJM.BAG_PLAYER_BACKPACK, AJM.BAG_PLAYER_MAXIMUM do 

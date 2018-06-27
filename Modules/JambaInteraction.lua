@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Interaction"
-AJM.settingsDatabaseName = "JambaInteractionProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-Interaction"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]
@@ -307,7 +307,6 @@ function AJM:SettingsCreateTaxi( top )
 end
 
 function AJM:OnMessageAreasChanged( message )
-	AJM:Print("callBackTest")
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
 	AJM.settingsControl.dropdownWarningArea:SetList( JambaApi.MessageAreaList() )
 end

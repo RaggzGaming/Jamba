@@ -29,7 +29,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 -- JambaCommunications is not a module, but the same naming convention for these values is convenient.
 AJM.moduleName = "Jamba-Communications"
 AJM.moduleDisplayName = L["COMMUNICATIONS"]
-AJM.settingsDatabaseName = "JambaCommunicationsProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.parentDisplayName = L["OPTIONS"]
 AJM.chatCommand = "jamba-comm"
 AJM.teamModuleName = "Jamba-Team"
@@ -598,6 +598,61 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 	end
 end
 
+-- text = message to send -- This is mosty used for sending over jamba Own Comms mosty of Whispers
+-- chatDestination = "PARTY, WHISPER, RAID, CHANNEL, etc"
+-- characterOrChannelName = character name if WHISPER or channel name if CHANNEL or nil otherwise
+-- If we clean up jamba-msg then we can remove this maybe again Eboyn TODO::::
+-- priority = one of 
+--   AJM.COMMUNICATION_PRIORITY_BULK,
+--   AJM.COMMUNICATION_PRIORITY_NORMAL
+--   AJM.COMMUNICATION_PRIORITY_ALERT
+
+local function SendChatMessage( text, chatDestination, characterOrChannelName, priority )
+	-- Message small enough to send?
+	--AJM:Print("test", text, chatDestination, characterOrChannelName, priority)
+	if text:len() <= 255 then
+		--AJM:Print("test TURE!!!!! TOBIG" )
+		ChatThrottleLib:SendChatMessage( priority, AJM.MESSAGE_PREFIX, text, chatDestination, nil, characterOrChannelName, nil )
+	
+	
+	else
+		-- No, message is too big, split into smaller messages, taking UTF8 characters into account.	
+		local bytesAvailable = string.utf8len(text1)
+		local currentPosition = 1
+		local countBytes = 1
+		local startPosition = currentPosition
+		local splitText = ""
+		-- Iterate all the utf8 characters, character by character until we reach 255 characters, then send
+		-- those off and start counting over.
+		while currentPosition <= bytesAvailable do
+			-- Count the number of bytes the character at this position takes up.
+			countBytes = countBytes + jambautf8charbytes( text, currentPosition )
+			-- More than 255 bytes yet?
+			if countBytes <= 255 then
+				-- No, increment the position and keep counting.
+				currentPosition = currentPosition + jambautf8charbytes( text, currentPosition )
+			else
+				-- Yes, more than 255.  Send this amount off.
+				splitText = text:sub( startPosition, currentPosition )
+				ChatThrottleLib:SendChatMessage( priority, AJM.MESSAGE_PREFIX, splitText, chatDestination, nil, characterOrChannelName, nil )
+				-- New start position and count.
+				startPosition = currentPosition + 1
+				countBytes = 1
+			end
+		end
+		-- Any more bytes left to send?
+		if startPosition < currentPosition then
+			-- Yes, send them.
+			splitText = text:sub( startPosition, currentPosition )
+			ChatThrottleLib:SendChatMessage( priority, AJM.MESSAGE_PREFIX, splitText, chatDestination, nil, characterOrChannelName, nil )
+		end
+	end
+end
+
+JambaPrivate.Communications.COMMUNICATION_PRIORITY_BULK = AJM.COMMUNICATION_PRIORITY_BULK
+JambaPrivate.Communications.COMMUNICATION_PRIORITY_NORMAL = AJM.COMMUNICATION_PRIORITY_NORMAL
+JambaPrivate.Communications.COMMUNICATION_PRIORITY_ALERT = AJM.COMMUNICATION_PRIORITY_ALERT
+JambaPrivate.Communications.SendChatMessage = SendChatMessage
 JambaPrivate.Communications.SendSettings = SendSettings
 JambaPrivate.Communications.SendCommandAll = SendCommandAll
 JambaPrivate.Communications.SendCommandMaster = SendCommandMaster

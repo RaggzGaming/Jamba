@@ -8,6 +8,9 @@
 --																					--
 -- ================================================================================ --
 
+-- THIS FILE NEED A GOOD REWIRE ONEDAY, AND A PAIN IN THE NECK TO USE.........
+
+
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local AJM = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"JambaMessage",
@@ -28,7 +31,7 @@ local Media = LibStub("LibSharedMedia-3.0")
  
 -- Constants and Locale for this module.
 AJM.moduleName = "Jamba-Message"
-AJM.settingsDatabaseName = "JambaMessageProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-message"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["OPTIONS"]
@@ -824,6 +827,7 @@ end
 
 local function DisplayMessageChatWhisper( sender, message, suppressSender )
 	-- The whisper comes across the wire and you whisper yourself...
+	-- If we clean up jamba-msg then we can remove this maybe again Eboyn TODO::::
 	JambaPrivate.Communications.SendChatMessage( message, "WHISPER", sender, JambaPrivate.Communications.COMMUNICATION_PRIORITY_ALERT )
 end
 
@@ -851,6 +855,7 @@ local function DisplayMessageChat( sender, message, chatDestination, suppressSen
 		end
 	end
 	if canSend == true then
+		-- If we clean up jamba-msg then we can remove this maybe again Eboyn TODO::::
 		JambaPrivate.Communications.SendChatMessage( message, chatDestination, nil, JambaPrivate.Communications.COMMUNICATION_PRIORITY_ALERT )
 	else
 		AJM:Print( message )	
@@ -937,7 +942,8 @@ local function SendMessage( areaName, message, suppressSender, ... )
 	-- Get the area requested.
 	local area = GetAreaByName( areaName )
 	if area == nil then
-		AJM:Print( L["ERROR: Could not find area: A"]( areaName ) )
+		AJM:Print( L["ERR_COULD_NOT_FIND_AREA"]( areaName ) )
+		
 		AJM:Print( message )
 		return
 	end

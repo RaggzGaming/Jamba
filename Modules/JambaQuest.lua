@@ -27,7 +27,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Quest"
-AJM.settingsDatabaseName = "JambaQuestProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-quest"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["QUEST"]

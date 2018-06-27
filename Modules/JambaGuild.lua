@@ -25,7 +25,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Guild"
-AJM.settingsDatabaseName = "JambaCoreEEProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-guild"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]
@@ -262,7 +262,7 @@ function AJM:SettingsCreateGuild( top )
 	)
 	AJM.settingsControl.tabNumListDropDownList:SetList( AJM.TabAreaList() )
 	AJM.settingsControl.tabNumListDropDownList:SetCallback( "OnValueChanged",  AJM.GBTabDropDownList )
-
+	--Group
 	AJM.settingsControl.GuildItemsEditBoxGuildTag = JambaHelperSettings:CreateDropdown(
 		AJM.settingsControl, 
 		dropBoxWidth,	
@@ -272,7 +272,6 @@ function AJM:SettingsCreateGuild( top )
 	)
 	AJM.settingsControl.GuildItemsEditBoxGuildTag:SetList( JambaApi.GroupList() )
 	AJM.settingsControl.GuildItemsEditBoxGuildTag:SetCallback( "OnValueChanged",  AJM.GroupListDropDownList )
-	
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControl.GuildItemsButtonAdd = JambaHelperSettings:CreateButton(	
 		AJM.settingsControl, 

@@ -1,9 +1,9 @@
 ## Interface: 70300
 ## Title: Jamba
-## Notes: Jamba Ebony's_Edition
+## Notes: Jamba Ebony's Edition
 ## Author: Ebony
-## Version: v8.0.0-Alpha(0055)
-## SavedVariables: JambaCoreEEProfileDB, JambaCoreProfileDB, JambaCommunicationsProfileDB, JambaTeamProfileDB, JambaTagProfileDB, JambaMessageProfileDB, JambaCurrProfileDB, JambaDisplayTeamProfileDB, JambaFollowProfileDB, JambaInteractionProfileDB, JambaItemUseProfileDB, JambaPurchaseProfileDB, JambaQuestProfileDB,  JambaQuestWatcherProfileDB, JambaSellProfileDB, JambaTalkProfileDB,  JambaToonProfileDB, JambaTradeProfileDB
+## Version: v8.0.0-Alpha(0056)
+## SavedVariables: JambaEECoreProfileDB
 
 #Libs
 JambaEmbeds.xml

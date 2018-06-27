@@ -266,7 +266,9 @@ L["STATICPOPUP_ADD_MSG"] = "Enter Name Of The Message Area To Add:"
 L['Are you sure you wish to remove "%s" from the message area list?'] = true
 L["MESSAGE_AREA_LIST"] = "Message Area List"
 L["MESSAGE_AREA_CONFIGURATION"] = "Message Area Configuration"
-
+L["ERR_COULD_NOT_FIND_AREA"] = function( areaName )
+	return string.format("ERROR: Could not find area: %s", areaName) 
+end
 --------------------------
 -- Tag/Group Locale
 L["ADD_TAG_HELP"]= "Add a Group To This Character."
@@ -329,8 +331,8 @@ L["BAG_BANK"] = "Bag (Banks)"
 --------------------------
 -- Jamba-Sell Locale
 L["SELL"] = "Sell"
-L["SELL_LIST"] = "Sell Item's List"
-L["SELL_ALL"] = "Sell Item's On All Toons"
+L["SELL_LIST"] = "Sell/Delete Item's List"
+L["SELL_ALL"] = "Sell or Delete If Not Sell Price All Item's In This List"
 L["ALT_SELL_ALL"] = "Hold [Alt] While Selling An Item, To Sell On All Toons"
 L["ALT_SELL_ALL_HELP"] = "Hold [Alt] Key While Selling An Item To The Vender, To Sell That Item On All Toons"
 L["AUTO_SELL_ITEMS"] = "Automatically Sell Items"

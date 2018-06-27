@@ -24,7 +24,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Tag"
-AJM.settingsDatabaseName = "JambaTagProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-group"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]
@@ -227,10 +227,11 @@ function AJM:JambaOnSettingsReceived( characterName, settings )
 		AJM:InitializeAllTagsList()
 		-- New team and tag lists coming up, highlight first item in each list.
 		AJM.settingsControl.groupListHighlightRow = 1
-		--AJM.settingsControl.tagListHighlightRow = 1
 		-- Refresh the settings.
 		AJM:SettingsRefresh()
 		AJM:SettingsGroupListRowClick( 1, 1 )
+		AJM:SendMessage( AJM.GROUP_LIST_CHANGED )
+		JambaApi.refreshDropDownList()
 		-- Tell the player.
 		AJM:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end

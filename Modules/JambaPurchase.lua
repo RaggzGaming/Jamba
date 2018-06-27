@@ -24,7 +24,7 @@ local AceGUI = LibStub:GetLibrary( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Purchase"
-AJM.settingsDatabaseName = " JambaPurchaseProfileDB"
+AJM.settingsDatabaseName = "JambaEECoreProfileDB"
 AJM.chatCommand = "jamba-purchase"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["VENDER"]
@@ -134,6 +134,7 @@ local function SettingsCreateOptions( top )
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local left2 = left + halfWidth + horizontalSpacing
+	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
 	local movingTop = top
 	-- A blank to get layout to show right?
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
@@ -203,19 +204,20 @@ local function SettingsCreateOptions( top )
 		L["ITEM_DROP"]
 	)
 	AJM.settingsControl.editBoxItem:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedItem )
-	movingTop = movingTop - editBoxHeight	
-	AJM.settingsControl.editBoxTag = JambaHelperSettings:CreateEditBox( 
-		AJM.settingsControl,
-		halfWidth,
+	movingTop = movingTop - editBoxHeight		
+	AJM.settingsControl.editBoxTag = JambaHelperSettings:CreateDropdown(
+		AJM.settingsControl, 
+		dropBoxWidth,	
 		left,
-		movingTop,
-		L["GROUP"]
+		movingTop, 
+		L["GROUP_LIST"]
 	)
-	AJM.settingsControl.editBoxTag:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTag )
+	AJM.settingsControl.editBoxTag:SetList( JambaApi.GroupList() )
+	AJM.settingsControl.editBoxTag:SetCallback( "OnValueChanged",  AJM.GroupDropDownList )	
 	AJM.settingsControl.editBoxAmount = JambaHelperSettings:CreateEditBox( 
 		AJM.settingsControl,
-		halfWidth,
-		left2,
+		dropBoxWidth,
+		left + dropBoxWidth + horizontalSpacing,
 		movingTop,
 		L["AMOUNT"]
 	)
@@ -247,6 +249,10 @@ end
 
 function AJM:OnMessageAreasChanged( message )
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
+end
+
+function AJM:OnGroupAreasChanged( message )
+	AJM.settingsControl.editBoxTag:SetList( JambaApi.GroupList() )
 end
 
 local function SettingsCreate()
@@ -338,14 +344,23 @@ function AJM:SettingsEditBoxChangedItem( event, text )
 	AJM:SettingsRefresh()
 end
 
-function AJM:SettingsEditBoxChangedTag( event, text )
-	if not text or text:trim() == "" or text:find( "%W" ) ~= nil then
-		AJM:Print( L["ITEM_ERROR"] )
-		return
+function AJM:GroupDropDownList (event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
 	end
-	AJM.autoBuyItemTag = text
+	for index, groupName in ipairs( JambaApi.GroupList() ) do
+		if index == value then
+			AJM.autoBuyItemTag = groupName
+			break
+		end
+	end
 	AJM:SettingsRefresh()
 end
+
+
+
+
 
 function AJM:SettingsEditBoxChangedAmount( event, text )
 	if not text or text:trim() == "" or text:find( "^(%d+)$" ) == nil then
@@ -407,6 +422,7 @@ end
 function AJM:OnEnable()
 	AJM:RegisterEvent( "MERCHANT_SHOW" )
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
+	AJM:RegisterMessage( JambaApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
 
 -- Called when the addon is disabled.
@@ -468,7 +484,7 @@ function AJM:DoMerchantAutoBuy()
 		local itemTag = itemInfoTable.tag
 		local itemLink = itemInfoTable.link
 		-- Does this character have the item tag?  No, don't buy.
-		if JambaApi.DoesCharacterHaveTag( AJM.characterName, itemTag ) then
+		if JambaApi.IsCharacterInGroup( AJM.characterName, itemTag ) then
 			-- Does the merchant have the item in stock?
 			local itemIndexMerchant = AJM:DoesMerchantHaveItemInStock( itemLink )
 			if itemIndexMerchant ~= nil then
