@@ -594,7 +594,8 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function AJM:GroupAreaList()
-	return pairs( AJM.simpleAreaList )
+	table.sort( AJM.simpleAreaList )
+	return AJM.simpleAreaList
 end
 
 local function refreshDropDownList()
@@ -1676,6 +1677,8 @@ end
 
 function AJM:SettingsPushSettingsClick( event )
 	AJM:JambaSendSettings()
+	--We Needs to Update The TeamGroup List as well.
+	JambaApi.PushGroupSettings()
 end
 
 function AJM:SettingsMoveUpClick( event )
@@ -1889,5 +1892,5 @@ JambaApi.TeamListOrderedOnline = TeamListOrderedOnline
 JambaApi.GetPositionForCharacterNameOnline = GetPositionForCharacterNameOnline
 JambaApi.GetClass = GetClass
 --JambaApi.SetClass = setClass
-JambaApi.GroupAreaList = GroupAreaList
+JambaApi.GroupAreaList = AJM.GroupAreaList
 JambaApi.refreshDropDownList = refreshDropDownList

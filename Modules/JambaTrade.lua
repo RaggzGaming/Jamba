@@ -43,8 +43,6 @@ AJM.settings = {
 		tradeBoEItems = false,
 		tradeCRItems = false,
 		autoTradeItemsList = {},
-		adjustMoneyWithGuildBank = false,
-		goldAmountToKeepOnToon = 200,
 		adjustMoneyWithMasterOnTrade = false,
 		goldAmountToKeepOnToonTrade = 200,
 	},
@@ -125,8 +123,8 @@ end
 function AJM:OnEnable()
 	AJM:RegisterEvent( "TRADE_SHOW" )
 	AJM:RegisterEvent( "TRADE_CLOSED" ) -- Unsued but we keep it for now!
-	AJM:RegisterEvent( "GUILDBANKFRAME_OPENED" ) -- Temp!
 	AJM:RegisterMessage( JambaApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
+	AJM:RegisterMessage( JambaApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
 
 -- Called when the addon is disabled.
@@ -168,6 +166,7 @@ function AJM:SettingsCreateTrade( top )
 	local horizontalSpacing = JambaHelperSettings:GetHorizontalSpacing()
 	local verticalSpacing = JambaHelperSettings:GetVerticalSpacing()
 	local tradeWidth = headingWidth
+	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4
 	local movingTop = top
 	-- A blank to get layout to show right?
 	JambaHelperSettings:CreateHeading( AJM.settingsControl, L[""], movingTop, false )
@@ -225,20 +224,19 @@ function AJM:SettingsCreateTrade( top )
 		movingTop,
 		L["ITEM_DROP"]
 	)
+
 	AJM.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTradeItem )
-	movingTop = movingTop - editBoxHeight	
-	-- TODO FIX ME FOR GROUPS!
---[[
-	AJM.settingsControl.tradeItemsEditBoxTradeTag = JambaHelperSettings:CreateEditBox( 
-		AJM.settingsControl,
-		headingWidth,
+	movingTop = movingTop - editBoxHeight
+	AJM.settingsControl.tradeItemsEditBoxToonTag = JambaHelperSettings:CreateDropdown(
+		AJM.settingsControl, 
+		dropBoxWidth,	
 		left,
-		movingTop,
-		L["Groups"]
+		movingTop, 
+		L["GROUP_LIST"]
 	)
-	
-	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetCallback( "OnEnterPressed", AJM.SettingsEditBoxChangedTradeItemTag )
-]]
+	AJM.settingsControl.tradeItemsEditBoxToonTag:SetList( JambaApi.GroupList() )
+	AJM.settingsControl.tradeItemsEditBoxToonTag:SetCallback( "OnValueChanged",  AJM.TradeGroupListDropDownList )
+
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControl.tradeItemsButtonAdd = JambaHelperSettings:CreateButton(	
 		AJM.settingsControl, 
@@ -289,28 +287,6 @@ function AJM:SettingsCreateTrade( top )
 		L["GOLD_TO_KEEP"]
 	)	
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetCallback( "OnEnterPressed", AJM.EditBoxChangedGoldAmountToLeaveOnToonTrade )
-	movingTop = movingTop - editBoxHeight
-	JambaHelperSettings:CreateHeading( AJM.settingsControl, L["GB_OPTIONS"], movingTop, false )
-	movingTop = movingTop - headingHeight
--- TODO REMOVE! PH PH PH EBONY!
-	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank = JambaHelperSettings:CreateCheckBox( 
-		AJM.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["TRADE_GB"],
-		AJM.SettingsToggleAdjustMoneyOnToonViaGuildBank,
-		L["TRADE_GB_HELP"]
-	)
-	movingTop = movingTop - checkBoxHeight
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon = JambaHelperSettings:CreateEditBox( AJM.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["GOLD_TO_KEEP"]
-	)
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetCallback( "OnEnterPressed", AJM.EditBoxChangedGoldAmountToLeaveOnToon )
---end
 	movingTop = movingTop - editBoxHeight	
 	AJM.settingsControl.dropdownMessageArea = JambaHelperSettings:CreateDropdown( 
 		AJM.settingsControl, 
@@ -377,14 +353,20 @@ function AJM:SettingsEditBoxChangedTradeItem( event, text )
 	AJM:SettingsRefresh()
 end
 
-function AJM:SettingsEditBoxChangedTradeItemTag( event, text )
-	if not text or text:trim() == "" or text:find( "%W" ) ~= nil then
-		AJM:Print( L["TRADE_TAG_ERR"] )
-		return
+function AJM:TradeGroupListDropDownList (event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
 	end
-	AJM.autoTradeItemTag = text
+	for index, groupName in ipairs( JambaApi.GroupList() ) do
+		if index == value then
+			AJM.autoTradeItemTag = groupName
+			break
+		end
+	end
 	AJM:SettingsRefresh()
 end
+
 
 function AJM:SettingsTradeItemsAddClick( event )
 	if AJM.autoTradeItemLink ~= nil and AJM.autoTradeItemTag ~= nil then
@@ -397,6 +379,10 @@ end
 
 function AJM:OnMessageAreasChanged( message )
 	AJM.settingsControl.dropdownMessageArea:SetList( JambaApi.MessageAreaList() )
+end
+
+function AJM:OnGroupAreasChanged( message )
+	AJM.settingsControl.tradeItemsEditBoxToonTag:SetList( JambaApi.GroupList() )
 end
 
 function AJM:SettingsSetMessageArea( event, value )
@@ -476,22 +462,14 @@ function AJM:SettingsRefresh()
 	AJM.settingsControl.checkBoxShowJambaTradeWindow:SetValue( AJM.db.showJambaTradeWindow )
 	AJM.settingsControl.checkBoxTradeBoEItems:SetValue( AJM.db.tradeBoEItems)
 	AJM.settingsControl.checkBoxTradeCRItems:SetValue( AJM.db.tradeCRItems)
-
 	AJM.settingsControl.dropdownMessageArea:SetValue( AJM.db.messageArea )
-	AJM.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank:SetValue( AJM.db.adjustMoneyWithGuildBank )
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( AJM.db.goldAmountToKeepOnToon ) )
-	AJM.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not AJM.db.adjustMoneyWithGuildBank )
 	AJM.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade:SetValue( AJM.db.adjustMoneyWithMasterOnTrade )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetText( tostring( AJM.db.goldAmountToKeepOnToonTrade ) )
 	AJM.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetDisabled( not AJM.db.adjustMoneyWithMasterOnTrade )
---fixme
---	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetText( AJM.autoTradeItemTag )
 	AJM.settingsControl.tradeItemsEditBoxTradeItem:SetDisabled( not AJM.db.showJambaTradeWindow )
---	AJM.settingsControl.tradeItemsEditBoxTradeTag:SetDisabled( not AJM.db.showJambaTradeWindow )	
+	AJM.settingsControl.tradeItemsEditBoxToonTag:SetDisabled( not AJM.db.showJambaTradeWindow )	
 	AJM.settingsControl.tradeItemsButtonRemove:SetDisabled( not AJM.db.showJambaTradeWindow )
-	AJM.settingsControl.tradeItemsButtonAdd:SetDisabled( not AJM.db.showJambaTradeWindow )
---	AJM.settingsControl.checkBoxTradeBoEItems:SetDisabled( not AJM.db.showJambaTradeWindow )
---	AJM.settingsControl.checkBoxTradeCRItems:SetDisabled( not AJM.db.showJambaTradeWindow )	
+	AJM.settingsControl.tradeItemsButtonAdd:SetDisabled( not AJM.db.showJambaTradeWindow )	
 	AJM:SettingsScrollRefresh()
 
 end
@@ -590,30 +568,23 @@ end
 
 
 function AJM:TradeItemsFromList()
-	if JambaApi.IsCharacterTheMaster( AJM.characterName ) == true then
-		return
-	end
 	for index, character in JambaApi.TeamListOrderedOnline() do
 		--AJM:Print("Team", character )
 		local teamCharacterName = ( Ambiguate( character, "short" ) )
 		local tradePlayersName = GetUnitName("NPC")
 		if tradePlayersName == teamCharacterName then
 			--AJM:Print("found", tradePlayersName, teamCharacterName, character )
-			if JambaApi.IsCharacterTheMaster(character) == true and JambaUtilities:CheckIsFromMyRealm(character) == true then
-				--Checks the D_B for any items in the list.
-				for position, itemInformation in pairs( AJM.db.autoTradeItemsList ) do
-					--AJM:Print("Items in list", itemInformation.link )
-					if JambaApi.DoesCharacterHaveTag( AJM.characterName, itemInformation.tag ) == true then
-					--Checks if there is a item in the bag with the name
-						--local bag, slot, link = LibBagUtils:Find("BAGS", itemInformation.link ) --did olny the find the 1st stack of a item.
-						for bag,slot,link in LibBagUtils:Iterate("BAGS", itemInformation.link ) do
-							if bag ~= nil then
-								--AJM:Print("found", bag, slot)
-								for iterateTradeSlots = 1, (MAX_TRADE_ITEMS - 1) do
-									if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
-										PickupContainerItem( bag, slot )
-										ClickTradeButton( iterateTradeSlots )
-									end	
+			--Checks the D_B for any items in the list.
+			for position, itemInformation in pairs( AJM.db.autoTradeItemsList ) do	
+				if JambaApi.IsCharacterInGroup(AJM.characterName, itemInformation.tag ) == true and JambaUtilities:CheckIsFromMyRealm(character) == true then
+				--AJM:Print("Items in list", itemInformation.link )
+					for bag,slot,link in LibBagUtils:Iterate("BAGS", itemInformation.link ) do
+						if bag ~= nil then
+							--AJM:Print("found", bag, slot)
+							for iterateTradeSlots = 1, (MAX_TRADE_ITEMS - 1) do
+								if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
+									PickupContainerItem( bag, slot )
+									ClickTradeButton( iterateTradeSlots )
 								end		
 							end
 						end		
@@ -704,38 +675,3 @@ end
 function AJM:TRADE_CLOSED()
 	
 end
--- Guild bank stuff keep TEMP!
-
-function AJM:GUILDBANKFRAME_OPENED()
-	--AJM:Print("guildBankOpen")
-	if AJM.db.adjustMoneyWithGuildBank == false then
-		return
-	end
-	if not CanWithdrawGuildBankMoney() then
-		return
-	end
-	local moneyToKeepOnToon = tonumber( AJM.db.goldAmountToKeepOnToon ) * 10000
-	local moneyOnToon = GetMoney()
-	local moneyToDepositOrWithdraw = moneyOnToon - moneyToKeepOnToon
-	--AJM:Print(" testa", moneyToDepositOrWithdraw )
-	if moneyToDepositOrWithdraw == 0 then
-		return
-	end
-	if moneyToDepositOrWithdraw > 0 then
-	--	AJM:Print(" test", moneyToDepositOrWithdraw )
-		--DepositGuildBankMoney( moneyToDepositOrWithdraw )
-		AJM:ScheduleTimer("SendMoneyToGuild", 0.5, moneyToDepositOrWithdraw)
-	else
-		local takeoutmoney = -1 * moneyToDepositOrWithdraw
-	--	AJM:Print("takeout", takeoutmoney)
-		AJM:ScheduleTimer("TakeMoneyOut", 0.5, takeoutmoney )
-	end
-end
-
-function AJM:SendMoneyToGuild( money )
-	DepositGuildBankMoney( money )
-end
-
-function AJM:TakeMoneyOut( money )
-	WithdrawGuildBankMoney( money )	
-end	

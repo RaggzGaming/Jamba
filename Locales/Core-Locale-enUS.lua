@@ -394,7 +394,7 @@ L["TELL_TEAM_BOE_RARE_HELP"] = "Tell The Team If I Loot A Boe Rare"
 L["TELL_TEAM_BOE_EPIC"] = "Tell Team Boe Epic"
 L["TELL_TEAM_BOE_EPIC_HELP"] = "Tell The Team If I Loot A Boe Epic"
 L["I_HAVE_LOOTED_X_Y_ITEM"] = function( rarity, itemName )
-	return string.format( "I Have Looted A %q BoE Item: %s .", rarity, itemName )
+	return string.format( "I Have Looted A %q BoE Item: %s", rarity, itemName )
 end
 L["EPIC"] = "Epic"
 L["RARE"] = "Rare"
@@ -402,10 +402,10 @@ L["REQUESTED_STOP_X"] = function( sender )
 	return string.format( "I Have Requested a Stop From %s", sender )
 end
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
-	return "Settings Received From "..characterName.."."
+	return string.format( "Settings Received From %s.", characterName )
 end
 L["I_AM_UNABLE_TO_FLY_TO_A"] = function( nodename )
-	return string.format( "I Am Unable To Fly To %s .", nodename )
+	return string.format( "I Am Unable To Fly To %s.", nodename )
 end
 --------------------------
 -- Currency Locale
@@ -558,21 +558,16 @@ L["TRADE_LIST_HEADER"] = "Trade Item List"
 L["TRADE_LIST"] = "Trade The List Of Items With Master"
 L["TRADE_LIST_HELP"] = "The List Will Trade With The Current Masster \nGroups Do not Currently Work"
 L["TRADE_BOE_ITEMS"] = "Trades Binds When Equipped Items With Master"
-L["TRADE_BOE_ITEMS_HELP"] = "Trade All Boe Items With The Current Master"
+L["TRADE_BOE_ITEMS_HELP"] = "Trade All Binds When Equipped Items With The Current Master"
 L["TRADE_REAGENTS"] = "Trades Crafting Reagents Items With Master"
 L["TRADE_REAGENTS_HELP"] = "Trades All Crafting Reagents Items Current Master"
-L["TRADE_OPTIONS"] = "Trade Master Options"
+L["TRADE_OPTIONS"] = "Trade To \"Master\" Options"
 L["TRADE_GOLD"] = "Trade Excess Gold To Master From Minion"
 L["TRADE_GOLD_HELP"] = "Trade Excess Gold To Master From Minions \nAlways Be Careful When Auto Trading."
 L["GOLD_TO_KEEP"] = "Amount of Gold To Keep On Current Minion"
 L["TRADE_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
 L["ERR_WILL_NOT_TRADE"] = "Is Not A Member Of The Team, Will Not Trade Items."
 L["ADD_ITEMS"] = "Add Items"
-
--- PH
-L["GB_OPTIONS"] = "[PH]:Guild Bank Options"
-L["TRADE_GB"] = "[PH]:Adjust Characters Money While Visiting A Guild Bank"
-L["TRADE_GB_HELP"] = "[PH]Adjust Characters Money While Visiting A Guild Bank \nThis Is a PlaceHolder And Will Be Moved"
 
 --------------------------
 -- Toon Locale
@@ -818,8 +813,21 @@ L["TRACKER_WIDTH"] = "Tracker Width"
 L["DONE"] = "Done"
 L["TRACKER_TITLE_NAME"] = "Jamba Objectives Tracker"
 
-
-
+------------------------
+-- Guild Locale
+L["GUILDTAB"] = ""
+L["GUILD_LIST_HEADER"] = "Guild Bank List"
+L["GUILD_LIST"] = "Put Listed Items In The Guild Bank"
+L["GUILD_LIST_HELP"] = "Automatically Put Listed Items Below In The Guild Bank"
+L["GB_TAB_LIST"] = "Guild Bank Number Tab"
+L["GUILD_BOE_ITEMS"] = "Places All Binds When Equipped Items In The GuildBank" 
+L["GUILD_BOE_ITEMS_HELP"] = "Places All Binds When Equipped Items In The GuildBank"
+L["GUILD_REAGENTS"] =  "Places All Crafting Reagents Items In The GuildBank"
+L["GUILD_REAGENTS_HELP"] = "Places All Crafting Reagents Items In The GuildBank"
+L["GB_OPTIONS"] = "Guild Bank Options"
+L["GB_GOLD"] = "Adjust Characters Money While Visiting A Guild Bank"
+L["GB_GOLD_HELP"] = "Adjust Characters Money While Visiting A Guild Bank"
+L["REMOVE_GUILD_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Guild Items List?"
 
 ------------------------
 -- X Locale

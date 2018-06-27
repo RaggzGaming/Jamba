@@ -103,7 +103,7 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
 -------------------------------------------------------------------------------------------------------------
-
+AJM.GROUP_LIST_CHANGED = "JambaMessageGroupListChanged"
 -------------------------------------------------------------------------------------------------------------
 -- Constants used by module.
 -------------------------------------------------------------------------------------------------------------
@@ -327,6 +327,7 @@ local function AddGroup( group )
 			table.insert( AJM.db.groupList, group )
 			table.sort( AJM.db.groupList )
 			JambaApi.refreshDropDownList()
+			AJM:SendMessage( AJM.GROUP_LIST_CHANGED )
 		end
 	end	
 end
@@ -342,6 +343,7 @@ local function RemoveFromGroupList( tag )
 		end
 	AJM:SettingsGroupListScrollRefresh()
 	JambaApi.refreshDropDownList()
+	AJM:SendMessage( AJM.GROUP_LIST_CHANGED )
 	end	
 end
 
@@ -358,6 +360,7 @@ local function RemoveGroup( tag )
 	RemoveFromGroupList( tag )
 	AJM:SettingsGroupListScrollRefresh()
 	JambaPrivate.Team.RefreshGroupList()
+	AJM:SendMessage( AJM.GROUP_LIST_CHANGED )
 end
 
 -- We Do Not Want To Remove "System" Groups!
@@ -365,11 +368,13 @@ local function IsASystemGroup( tag )
 	if tag == MasterTag() or tag == MinionTag() or tag == AllTag() then
 		return true
 	end
+	--[[
 	for id, apiClass in pairs( CLASS_SORT_ORDER ) do
 		if tag == JambaUtilities:Lowercase(apiClass) then
 			return true
 		end	
 	end
+	]]
 	return false
 end
 
@@ -457,7 +462,6 @@ local function CharacterAlreadyInGroup( characterName, tag )
 	return canAdd	
 	end
 end	
-
 
 local function AddCharacterToGroup( characterName, tag )
 	if characterName == nil or tag == nil then
@@ -733,6 +737,7 @@ end
 -- Functions available for other addons Jamba-EE > v8 
 -- Group List API
 JambaApi.GroupList = GroupList
+JambaApi.GROUP_LIST_CHANGED = AJM.GROUP_LIST_CHANGED
 JambaApi.DoesGroupExist = DoesGroupExist
 JambaApi.IsASystemGroup = IsASystemGroup
 JambaApi.GetGroupListMaximumOrder = GetGroupListMaximumOrder
@@ -748,6 +753,7 @@ JambaApi.CharacterMaxGroups = CharacterMaxGroups
 JambaApi.AddCharacterToGroup = AddCharacterToGroup
 JambaApi.RemoveGroupFromCharacter = RemoveGroupFromCharacter
 JambaApi.CharacterAlreadyInGroup = CharacterAlreadyInGroup
+JambaApi.PushGroupSettings = AJM.SettingsPushSettingsClick
 
 -- SystemTags API
 JambaApi.AllGroup = AllTag

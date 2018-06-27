@@ -20,6 +20,7 @@
 	
 	<Script file="JambaInteraction.lua" />	
 	<Script file="JambaTrade.lua" />
+	<Script file="JambaGuild.lua" />
 	
 	<Script file="JambaQuest.lua" /> 
 	<Script file="JambaQuestWatcher.lua" /> 
