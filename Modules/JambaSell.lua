@@ -27,7 +27,7 @@ local ItemUpgradeInfo = LibStub:GetLibrary( "LibItemUpgradeInfo-1.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Sell"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaSellProfileDB"
 AJM.chatCommand = "jamba-sell"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["VENDER"]

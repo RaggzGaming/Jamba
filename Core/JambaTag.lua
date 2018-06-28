@@ -24,7 +24,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Tag"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaTagProfileDB"
 AJM.chatCommand = "jamba-group"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]

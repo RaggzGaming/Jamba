@@ -26,7 +26,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Toon"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaToonProfileDB"
 AJM.chatCommand = "jamba-toon"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TOON"]

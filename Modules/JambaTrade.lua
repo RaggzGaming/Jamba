@@ -25,7 +25,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
 AJM.moduleName = "Jamba-Trade"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaTradeProfileDB"
 AJM.chatCommand = "jamba-trade"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["INTERACTION"]

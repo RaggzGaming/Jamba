@@ -24,7 +24,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "Jamba-Team"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaTeamProfileDB"
 AJM.chatCommand = "jamba-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["TEAM"]

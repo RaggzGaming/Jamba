@@ -27,7 +27,7 @@ AJM.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 -- Constants required by JambaModule and Locale for this module.
 AJM.moduleName = "JmbDspTm"
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaDisplayTeamProfileDB"
 AJM.chatCommand = "jamba-display-team"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 AJM.parentDisplayName = L["DISPLAY"]

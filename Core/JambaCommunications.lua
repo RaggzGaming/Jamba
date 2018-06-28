@@ -29,7 +29,7 @@ local JambaHelperSettings = LibStub:GetLibrary( "JambaHelperSettings-1.0" )
 -- JambaCommunications is not a module, but the same naming convention for these values is convenient.
 AJM.moduleName = "Jamba-Communications"
 AJM.moduleDisplayName = L["COMMUNICATIONS"]
-AJM.settingsDatabaseName = "JambaEECoreProfileDB"
+AJM.settingsDatabaseName = "JambaCommunicationsProfileDB"
 AJM.parentDisplayName = L["OPTIONS"]
 AJM.chatCommand = "jamba-comm"
 AJM.teamModuleName = "Jamba-Team"
