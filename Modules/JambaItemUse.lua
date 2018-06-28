@@ -1249,11 +1249,20 @@ function AJM:PLAYER_ENTERING_WORLD( event, ... )
 end		
 
 function AJM:AddTooltipInfo( toolTip, itemID )
+	if AJM.db.showItemUse == false then
+		return
+	end
+
+	
+	
 	AJM:AddToTooltip( toolTip, itemID )
 	toolTip:Show()
 end
 
 function AJM:AddToTooltip(toolTip, itemID) 
+	if InCombatLockdown() then
+		return
+    end
 	toolTip:AddLine(" ")
 	toolTip:AddDoubleLine(L["TEAM_BAGS"], L["BAG_BANK"], 1,0.82,0,1,0.82,0)
 	for characterName, position in JambaApi.TeamList() do
@@ -1266,6 +1275,9 @@ function AJM:AddToTooltip(toolTip, itemID)
 end		
 
 function AJM:GetJambaItemCount()
+	if AJM.db.showItemUse == false then
+		return
+	end
 	local iteminfo = {}
 	for iterateItems , itemInfo in pairs( AJM.db.itemsAdvanced ) do
 		local itemID = itemInfo.action
@@ -1284,6 +1296,9 @@ function AJM:GetJambaItemCount()
 end
 
 function AJM:ReceiveItemCount( characterName, dataTable )
+	if InCombatLockdown() then
+		return
+    end
 	--AJM:Print("ReceiveItemCount", characterName )
 	for itemName, info in pairs( dataTable ) do
 		for i, data in pairs( info ) do
@@ -1300,6 +1315,9 @@ function AJM:ReceiveItemCount( characterName, dataTable )
 end
 
 function AJM:GetItemCountFromItemID( characterName, itemID )
+	if AJM.db.showItemUse == false then
+		return
+	end
 	local count = nil 
 	local countBank = nil
 	for itemName, data in pairs( AJM.sharedInvData ) do
