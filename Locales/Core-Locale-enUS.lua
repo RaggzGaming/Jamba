@@ -487,7 +487,7 @@ L["CLASS_BAR_HEADER"] = "Class Power Bar"
 
 --------------------------
 -- Follow Locale
-L["FOLLOW_BROKEN_MSG"] = "Follow Borken!"
+L["FOLLOW_BROKEN_MSG"] = "Follow Broken!"
 L["FOLLOW_MASTER"] = "Follow The Master <Group>"
 L["FOLLOW_MASTER_HELP"] = "Follow The Master Currebt Master (Group)"
 L["FOLLOW_TARGET"] = "Follow A Target <TargetName>"
